@@ -85,6 +85,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-sans)", "Inter", "system-ui", "sans-serif"],
+        serif: ["'Newsreader'", "Georgia", "Cambria", "'Times New Roman'", "serif"],
         mono: ["var(--font-mono)", "JetBrains Mono", "Consolas", "monospace"],
       },
       keyframes: {
