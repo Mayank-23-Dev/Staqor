@@ -68,3 +68,11 @@ If a requirement isn't explicitly covered by PRD.md, Architecture.md, or this fi
 1. Default to the simplest MVP-safe choice.
 2. Flag the assumption explicitly in your output/commit message.
 3. Do not silently expand scope beyond the current Phase in Phases.md.
+
+## 7. Component Library Discipline
+- **Mandatory shadcn/ui Primitives:** Any interactive UI element (button, input, form, label, card, dialog, sheet, tabs, dropdown-menu, select, checkbox, switch, badge, avatar, separator, skeleton, toast/sonner, tooltip, popover, table, pagination, progress, alert, alert-dialog, scroll-area, command, navigation-menu, breadcrumb, etc.) **MUST** use the installed shadcn/ui component (`components/ui/`) — never hand-roll a custom version of something shadcn already provides.
+- **Strict Enforcement in `(app)` Shell:** This is STRICT and NON-NEGOTIABLE inside the `(app)` route group (dashboard, workspace, challenge browser, admin panel) — no raw `<button>`, no custom modal, no ad-hoc dropdown. If a needed component isn't in the installed set, install it via shadcn CLI first, don't hand-build it.
+- **Extended Usage in `(marketing)` & `(auth)`:** On `(marketing)` and `(auth)` routes, shadcn components are still the default base, but may be extended/wrapped with custom GSAP-animated markup around them (e.g. a shadcn `Button` wrapped in a GSAP hover-scale container) — the underlying interactive element must still be the shadcn primitive, only the animation/decoration layer is custom.
+- **Strict Theme Token Alignment:** Every shadcn component used must be re-themed via the Tailwind tokens from `Design.md` (near-black `#0A0A0F` base, `#111117` panels, `#ABDAC8` mint accent), never left at shadcn's default light/zinc theme.
+- **Zero Competing UI Libraries:** Before writing any new UI, check the installed component list first — do not `npm install` a competing UI library (Radix directly, Headless UI, MUI, Ant Design, Chakra, etc.) for anything shadcn already covers.
+

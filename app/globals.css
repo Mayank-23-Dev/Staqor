@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Staqor Design.md v2 - Near-Black Base Theme */
+    --background: 240 20% 5%; /* #0A0A0F */
+    --foreground: 240 6% 96%; /* #F5F5F7 */
+
+    --card: 240 15% 8%; /* #111117 */
+    --card-foreground: 240 6% 96%;
+
+    --popover: 240 15% 8%; /* #111117 */
+    --popover-foreground: 240 6% 96%;
+
+    /* Sage Mint Primary (#ABDAC8) */
+    --primary: 158 44% 76%;
+    --primary-foreground: 240 20% 5%; /* #0A0A0F for strict high contrast */
+
+    --secondary: 240 17% 10%; /* #16161F */
+    --secondary-foreground: 240 6% 96%;
+
+    --muted: 240 15% 12%; /* #1A1A22 */
+    --muted-foreground: 218 11% 65%; /* #9CA3AF */
+
+    --accent: 158 44% 76%;
+    --accent-foreground: 240 20% 5%;
+
+    --destructive: 0 91% 71%; /* #F87171 */
+    --destructive-foreground: 240 20% 5%;
+
+    --success: 142 71% 58%; /* #4ADE80 */
+    --success-foreground: 240 20% 5%;
+
+    --warning: 38 92% 56%; /* #FBBF24 */
+    --warning-foreground: 240 20% 5%;
+
+    --border: 240 9% 17%; /* #26262E */
+    --input: 240 9% 17%;
+    --ring: 158 44% 76%;
+
+    /* Staqor Dual-Radius Tokens (Design.md v2) */
+    --radius: 0.625rem; /* 10px default */
+    --radius-landing: 1.25rem; /* 20px (16-24px on landing/auth) */
+    --radius-app: 0.625rem; /* 10px (8-12px in app shell) */
+  }
+
+  /* Dual-radius container overrides */
+  .mode-landing,
+  .mode-auth {
+    --radius: var(--radius-landing);
+  }
+
+  .mode-app,
+  .mode-workspace {
+    --radius: var(--radius-app);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    background-color: #0A0A0F;
+    color: #F5F5F7;
+  }
+}
