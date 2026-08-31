@@ -69,7 +69,7 @@ CREATE POLICY "Users can update their own stats" ON user_stats
   FOR UPDATE USING (auth.uid() = user_id);
 
 CREATE POLICY "Users can insert their own stats" ON user_stats
-  FOR INSERT WITH CHECK (auth.uid() = user_id);
+  FOR INSERT WITH CHECK (auth.uid() = user_id); 
 
 -- Indexes for performance
 CREATE INDEX idx_problems_slug ON problems(slug);
