@@ -38,6 +38,9 @@ import {
   Sparkles,
   ExternalLink,
   Flame,
+  Layout,
+  Globe,
+  Server,
 } from "lucide-react";
 import { Category, Difficulty, Problem, ProblemStatus, MOCK_PROBLEMS } from "./types";
 import Link from "next/link";
@@ -192,11 +195,11 @@ export function ProblemsTable({
 
   const categories = [
     { name: "All Topics", icon: Layers },
-    { name: "Algorithms", icon: Code2 },
-    { name: "Database", icon: Database },
-    { name: "Shell", icon: Terminal },
-    { name: "Concurrency", icon: Cpu },
-    { name: "JavaScript", icon: Sparkles },
+    { name: "HTML & CSS", icon: Layout },
+    { name: "JavaScript DOM", icon: Code2 },
+    { name: "React & UI", icon: Sparkles },
+    { name: "Web APIs", icon: Globe },
+    { name: "Node.js & Backend", icon: Server },
   ];
 
   return (

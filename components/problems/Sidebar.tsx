@@ -52,9 +52,9 @@ export function Sidebar({
 }: SidebarProps) {
   const [lists, setLists] = useState<NavListItem[]>([
     { id: "favorite", name: "Favorite", count: 8, isPrivate: true },
-    { id: "todo", name: "To Do", count: 15, isPrivate: true },
-    { id: "array-mastery", name: "Array Mastery", count: 24, isPrivate: false },
-    { id: "revised", name: "Revised", count: 12, isPrivate: true },
+    { id: "todo", name: "To Do", count: 14, isPrivate: true },
+    { id: "ui-systems", name: "UI & CSS Systems", count: 18, isPrivate: false },
+    { id: "dom-polyfills", name: "DOM & Polyfills", count: 12, isPrivate: true },
   ]);
 
   const [savedTopics, setSavedTopics] = useState<string[]>(MOCK_SAVED_TOPICS);
