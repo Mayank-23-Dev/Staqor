@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Terminal, ArrowRight } from "lucide-react";
 
 export default function SignupPage() {
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -36,13 +36,13 @@ export default function SignupPage() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4 pt-2">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="name">Name</Label>
               <Input
-                id="username"
+                id="name"
                 type="text"
-                placeholder="frontend_ninja"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                placeholder="John Doe"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 className="bg-background border-border"
                 required
               />
