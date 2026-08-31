@@ -3,6 +3,8 @@ import { connectToDatabase } from "@/lib/db";
 import { User } from "@/models/User";
 import { hashPassword, verifyPassword, signToken } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const { action, email, password, username } = await req.json();

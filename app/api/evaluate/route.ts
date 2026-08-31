@@ -5,6 +5,8 @@ import { AttemptCount } from "@/models/AttemptCount";
 import { Submission } from "@/models/Submission";
 import { groq, buildGroqPrompt } from "@/lib/groq";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();

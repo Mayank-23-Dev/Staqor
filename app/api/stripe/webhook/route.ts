@@ -3,6 +3,8 @@ import { connectToDatabase } from "@/lib/db";
 import { User } from "@/models/User";
 import { stripe } from "@/lib/stripe";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   const body = await req.text();
   const signature = req.headers.get("stripe-signature");
