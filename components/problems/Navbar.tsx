@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { createClient } from "@/utils/supabase/client";
 import { Terminal, Flame, Coins, Bell, Menu, PanelRight, Sparkles, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +23,24 @@ interface NavbarProps {
 }
 
 export function Navbar({ onSelectList, onSelectTag, onSelectCompany }: NavbarProps) {
+  const [streak, setStreak] = React.useState(0);
+  const [coins, setCoins] = React.useState(0);
+  const supabase = createClient();
+
+  React.useEffect(() => {
+    async function fetchStats() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data } = await supabase.from("user_stats").select("*").eq("user_id", user.id).single();
+        if (data) {
+          setStreak(data.current_streak);
+          setCoins(data.coins);
+        }
+      }
+    }
+    fetchStats();
+  }, []);
+
   const navItems = [
     { label: "Explore", href: "/explore", active: false },
     { label: "Problems", href: "/problem", active: true },
@@ -94,19 +113,19 @@ export function Navbar({ onSelectList, onSelectTag, onSelectCompany }: NavbarPro
           {/* Flame Streak Indicator */}
           <div
             className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary/80 border border-orange-500/30 text-orange-400 text-xs font-mono font-semibold cursor-pointer hover:border-orange-500/60 transition-colors"
-            title="19 Days Solved Streak!"
+            title={`${streak} Days Solved Streak!`}
           >
             <Flame className="w-3.5 h-3.5 fill-orange-400" />
-            <span>19</span>
+            <span>{streak}</span>
           </div>
 
           {/* Staqor Coins */}
           <div
             className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary/80 border border-amber-500/30 text-amber-300 text-xs font-mono font-semibold cursor-pointer hover:border-amber-500/60 transition-colors"
-            title="Staqor Coins: 480"
+            title={`Staqor Coins: ${coins}`}
           >
             <Coins className="w-3.5 h-3.5 text-amber-400" />
-            <span>480</span>
+            <span>{coins}</span>
           </div>
 
           {/* Pro Premium Badge */}

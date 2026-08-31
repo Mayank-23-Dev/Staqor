@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
+import { createClient } from "@/utils/supabase/client";
 import {
   Table,
   TableBody,
@@ -57,7 +58,55 @@ export function ProblemsTable({
   selectedCompany = "",
   selectedList = "",
 }: ProblemsTableProps) {
-  const [problems, setProblems] = useState<Problem[]>(MOCK_PROBLEMS);
+  const [problems, setProblems] = useState<Problem[]>([]);
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function fetchProblems() {
+      // Fetch problems
+      const { data: probData, error: probError } = await supabase
+        .from("problems")
+        .select("*");
+      
+      if (probError || !probData) {
+        console.error("Error fetching problems", probError);
+        return;
+      }
+
+      // Fetch user status
+      const { data: { user } } = await supabase.auth.getUser();
+      let statusMap: Record<string, ProblemStatus> = {};
+      
+      if (user) {
+        const { data: statusData, error: statusError } = await supabase
+          .from("user_problem_status")
+          .select("*")
+          .eq("user_id", user.id);
+          
+        if (!statusError && statusData) {
+          statusData.forEach(st => {
+            statusMap[st.problem_id] = st.status as ProblemStatus;
+          });
+        }
+      }
+
+      const formatted: Problem[] = probData.map(p => ({
+        id: p.id,
+        title: p.title,
+        slug: p.slug,
+        acceptance: p.acceptance_rate ? `${p.acceptance_rate}%` : "50%",
+        difficulty: p.difficulty as Difficulty,
+        status: statusMap[p.id] || "unsolved",
+        favorite: false,
+        category: (p.category as Category) || "All Topics",
+        tags: p.topic ? [p.topic] : [],
+        companies: [],
+      }));
+
+      setProblems(formatted);
+    }
+    fetchProblems();
+  }, []);
   const [selectedCategory, setSelectedCategory] = useState<string>("All Topics");
   const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState<string>("all");
@@ -68,7 +117,7 @@ export function ProblemsTable({
   const pageSize = 12;
 
   // Toggle favorite
-  const handleToggleFavorite = (id: number, e: React.MouseEvent) => {
+  const handleToggleFavorite = (id: any, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setProblems((prev) =>
@@ -95,7 +144,7 @@ export function ProblemsTable({
         action: {
           label: "Solve",
           onClick: () => {
-            window.location.href = `/challenges/${randomProblem.slug}`;
+            window.location.href = `/problems/${randomProblem.slug}`;
           },
         },
       });
@@ -498,7 +547,7 @@ export function ProblemsTable({
                   {/* Title column */}
                   <TableCell className="py-3 font-medium">
                     <Link
-                      href={`/challenges/${problem.slug}`}
+                      href={`/problems/${problem.slug}`}
                       className="flex items-center gap-2 group-hover:text-primary transition-colors"
                     >
                       <span className="text-xs text-muted-foreground font-mono w-6 text-right">
@@ -586,7 +635,7 @@ export function ProblemsTable({
       {/* Mobile Card-List View (< md breakpoint) */}
       <div className="block md:hidden space-y-2.5">
         {paginatedProblems.map((problem) => (
-          <Link key={problem.id} href={`/challenges/${problem.slug}`} className="block">
+          <Link key={problem.id} href={`/problems/${problem.slug}`} className="block">
             <Card className="bg-card border-border/80 hover:border-primary/50 transition-colors">
               <CardContent className="p-3.5 space-y-2">
                 <div className="flex items-start justify-between gap-2">

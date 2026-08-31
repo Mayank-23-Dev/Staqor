@@ -9,7 +9,7 @@ export type Category =
   | "Node.js & Backend";
 
 export interface Problem {
-  id: number;
+  id: any;
   title: string;
   slug: string;
   acceptance: string;

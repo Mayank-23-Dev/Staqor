@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createClient } from "@/utils/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -38,8 +39,49 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
   // Mock days in current month (August 2026: 31 days)
   // August 1, 2026 is Saturday (starts at offset 6 in a Mon-Sun grid, or offset 6 in Sun-Sat)
   // Days with active solve dots
-  const activeSolveDays = [1, 2, 4, 5, 8, 9, 10, 11, 14, 15, 18, 20, 22, 25, 27, 28, 29, 30, 31];
-  const currentDay = 31; // Local time in metadata is Aug 31, 2026
+  const [activeSolveDays, setActiveSolveDays] = useState<number[]>([]);
+  const [streak, setStreak] = useState(0);
+  const [solvedMonth, setSolvedMonth] = useState(0);
+  const currentDay = 31; // For this mock
+
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function fetchStats() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: stats } = await supabase
+        .from("user_stats")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
+      if (stats) {
+        setStreak(stats.current_streak);
+      }
+
+      // get this month's submissions
+      const year = new Date().getFullYear();
+      const month = String(new Date().getMonth() + 1).padStart(2, '0');
+      const { data: subs } = await supabase
+        .from("submissions")
+        .select("created_at")
+        .eq("user_id", user.id)
+        .eq("status", "solved")
+        .gte("created_at", `${year}-${month}-01T00:00:00Z`);
+
+      if (subs) {
+        const days = new Set<number>();
+        subs.forEach(s => {
+          const date = new Date(s.created_at);
+          days.add(date.getDate());
+        });
+        setActiveSolveDays(Array.from(days));
+        setSolvedMonth(days.size);
+      }
+    }
+    fetchStats();
+  }, []);
 
   // Days of week header
   const weekDays = ["S", "M", "T", "W", "T", "F", "S"];
@@ -48,13 +90,19 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
   const totalSlots = 35; // 5 rows of 7
 
   // Weekly Contest / Challenge Days
-  const weeklyDays = [
-    { label: "W1", day: "Mon", status: "completed", date: "Aug 25" },
-    { label: "W2", day: "Tue", status: "completed", date: "Aug 26" },
-    { label: "W3", day: "Wed", status: "completed", date: "Aug 27" },
-    { label: "W4", day: "Thu", status: "completed", date: "Aug 28" },
-    { label: "W5", day: "Today", status: "current", date: "Aug 31" },
-  ];
+  const weeklyDays = Array.from({ length: 5 }).map((_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (4 - i));
+    const day = d.getDate();
+    const isCompleted = activeSolveDays.includes(day);
+    const isToday = i === 4;
+    return {
+      label: `W${i + 1}`,
+      day: isToday ? "Today" : d.toLocaleDateString("en-US", { weekday: "short" }),
+      status: isCompleted ? "completed" : isToday ? "current" : "unsolved",
+      date: d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    };
+  });
 
   // Filtered companies
   const filteredCompanies = MOCK_COMPANIES.filter((c) =>
@@ -79,7 +127,7 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
         {/* Hexagon Day Counter Badge */}
         <div className="absolute top-3 right-3 flex items-center gap-1.5 px-2 py-1 rounded-md bg-gradient-to-r from-orange-500/20 to-amber-500/20 border border-orange-500/40 text-orange-400">
           <Flame className="w-3.5 h-3.5 fill-orange-400 animate-pulse" />
-          <span className="text-xs font-bold font-mono tracking-tight">19 Days</span>
+          <span className="text-xs font-bold font-mono tracking-tight">{streak} Days</span>
         </div>
 
         <CardHeader className="p-4 pb-2 space-y-0">
@@ -163,7 +211,7 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
             <span className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-primary" /> Active Solves
             </span>
-            <span className="font-mono text-foreground font-medium">19 / 31 Solved</span>
+            <span className="font-mono text-foreground font-medium">{solvedMonth} / 31 Solved</span>
           </div>
         </CardContent>
       </Card>
