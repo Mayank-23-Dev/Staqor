@@ -8,13 +8,34 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Terminal, ArrowRight } from "lucide-react";
 
+import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const supabase = createClient();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Auth submission logic handled in Phase 1
+    setError(null);
+    setLoading(true);
+    
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInError) {
+      setError(signInError.message);
+      setLoading(false);
+    } else {
+      router.push("/dashboard");
+      router.refresh();
+    }
   };
 
   return (
@@ -67,9 +88,10 @@ export default function LoginPage() {
           </CardContent>
 
           <CardFooter className="flex flex-col gap-4 pt-2">
-            <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium">
-              Sign In
-              <ArrowRight className="w-4 h-4 ml-2" />
+            {error && <p className="text-sm font-medium text-destructive">{error}</p>}
+            <Button type="submit" disabled={loading} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium">
+              {loading ? "Signing In..." : "Sign In"}
+              {!loading && <ArrowRight className="w-4 h-4 ml-2" />}
             </Button>
             <p className="text-xs text-center text-muted-foreground">
               Don&apos;t have an account?{" "}
