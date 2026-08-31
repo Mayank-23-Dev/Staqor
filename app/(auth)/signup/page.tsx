@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Terminal, ArrowRight } from "lucide-react";
 
 export default function SignupPage() {
-  const [name, setName] = useState("");
+  const [ name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
