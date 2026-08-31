@@ -224,7 +224,7 @@ export default function LandingPage() {
             <a href="#pricing" className="hover:text-[#F5F5F7] transition-colors">
               Pricing
             </a>
-            <Link href="/challenges" className="hover:text-[#F5F5F7] transition-colors">
+            <Link href="/problems" className="hover:text-[#F5F5F7] transition-colors">
               Browse Challenges
             </Link>
           </nav>
@@ -311,7 +311,7 @@ export default function LandingPage() {
             </button>
           </Link>
 
-          <Link href="/challenges">
+          <Link href="/problems">
             <Button
               size="lg"
               variant="outline"

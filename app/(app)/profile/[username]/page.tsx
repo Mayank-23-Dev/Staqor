@@ -12,7 +12,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   return (
     <main className="min-h-screen bg-background text-foreground py-12 px-6">
       <div className="container mx-auto max-w-4xl space-y-8">
-        <Link href="/challenges" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
+        <Link href="/problems" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
           <ArrowLeft className="w-3.5 h-3.5" />
           Back to challenges
         </Link>

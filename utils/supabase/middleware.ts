@@ -34,10 +34,10 @@ export async function updateSession(request: NextRequest) {
   const isAuthRoute = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/signup')
   
   if (user && isAuthRoute) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    return NextResponse.redirect(new URL('/problems', request.url))
   }
 
-  const isProtectedRoute = request.nextUrl.pathname.startsWith('/dashboard') || request.nextUrl.pathname.startsWith('/admin')
+  const isProtectedRoute = request.nextUrl.pathname.startsWith('/problems') || request.nextUrl.pathname.startsWith('/admin')
 
   if (!user && isProtectedRoute) {
     return NextResponse.redirect(new URL('/login', request.url))

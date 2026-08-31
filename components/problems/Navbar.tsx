@@ -202,10 +202,10 @@ export function Navbar({ onSelectList, onSelectTag, onSelectCompany }: NavbarPro
 
                 <div className="space-y-1 text-xs">
                   <Link
-                    href="/dashboard"
+                    href="/problems"
                     className="block px-2.5 py-1.5 rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
                   >
-                    User Dashboard
+                    Problems
                   </Link>
                   <Link
                     href="/profile/alex_dev"
