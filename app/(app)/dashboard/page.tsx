@@ -3,9 +3,17 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Terminal, Award, Code2, ArrowRight } from "lucide-react";
+import { Terminal, Award, Code2, ArrowRight, Sparkles } from "lucide-react";
+import { UserNav } from "@/components/navigation/UserNav";
+import { getCurrentUser } from "@/lib/auth";
 
-export default function DashboardPage() {
+export const dynamic = "force-dynamic";
+
+export default async function DashboardPage() {
+  const current = await getCurrentUser();
+  const username = current?.profile?.username || (current?.user ? current.user.email?.split("@")[0] : "Developer");
+  const totalSolves = current?.profile?.total_solves || 0;
+
   return (
     <div className="mode-app min-h-screen bg-background text-foreground">
       {/* Top Header */}
@@ -25,17 +33,29 @@ export default function DashboardPage() {
                 Browse Challenges
               </Button>
             </Link>
+            <UserNav />
           </div>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="container mx-auto px-6 py-10 max-w-5xl space-y-8">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight mb-1">Developer Dashboard</h1>
-          <p className="text-sm text-muted-foreground">
-            Track your frontend skill progression and completed portfolio components.
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight mb-1">
+              Welcome back, <span className="text-primary">{username}</span>
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Track your frontend skill progression and completed portfolio components.
+            </p>
+          </div>
+
+          <Link href="/challenges/interactive-pricing-card">
+            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-medium gap-1.5 shadow-sm">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Resume Active Challenge</span>
+            </Button>
+          </Link>
         </div>
 
         {/* Stats Grid */}
@@ -43,38 +63,42 @@ export default function DashboardPage() {
           <Card className="bg-card border-border">
             <CardHeader className="pb-2">
               <CardDescription className="text-xs font-mono">TOTAL SOLVES</CardDescription>
-              <CardTitle className="text-3xl font-extrabold text-foreground">0</CardTitle>
+              <CardTitle className="text-3xl font-extrabold text-foreground">{totalSolves}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-muted-foreground">0 of 20 Core Challenges Completed</p>
-              <Progress value={0} className="h-1.5 mt-3" />
+              <p className="text-xs text-muted-foreground">{totalSolves} of 20 Core Challenges Completed</p>
+              <Progress value={(totalSolves / 20) * 100} className="h-1.5 mt-3" />
             </CardContent>
           </Card>
 
           <Card className="bg-card border-border">
             <CardHeader className="pb-2">
-              <CardDescription className="text-xs font-mono">ACTIVE TIER</CardDescription>
+              <CardDescription className="text-xs font-mono">ACCOUNT STATUS</CardDescription>
               <div className="flex items-center gap-2 mt-1">
-                <CardTitle className="text-2xl font-extrabold text-foreground">Free Starter</CardTitle>
+                <CardTitle className="text-2xl font-extrabold text-foreground">Active Member</CardTitle>
                 <Badge variant="outline" className="text-[10px] text-primary border-primary/30">
-                  5 Runs / 3 Submits
+                  Supabase Verified
                 </Badge>
               </div>
             </CardHeader>
             <CardContent>
-              <Link href="/pricing" className="text-xs text-primary hover:underline font-medium">
-                Upgrade to Pro for Unlimited AI Runs →
-              </Link>
+              <p className="text-xs text-muted-foreground">Unlimited live sandbox runs and code evaluation</p>
             </CardContent>
           </Card>
 
           <Card className="bg-card border-border">
             <CardHeader className="pb-2">
               <CardDescription className="text-xs font-mono">RECRUITER BADGES</CardDescription>
-              <CardTitle className="text-3xl font-extrabold text-foreground">0</CardTitle>
+              <CardTitle className="text-3xl font-extrabold text-foreground">
+                {totalSolves > 0 ? "1" : "0"}
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-muted-foreground">Pass 1 challenge to unlock live portfolio</p>
+              <p className="text-xs text-muted-foreground">
+                {totalSolves > 0
+                  ? "Passed solutions available on your public profile"
+                  : "Pass 1 challenge to unlock live portfolio"}
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -82,9 +106,9 @@ export default function DashboardPage() {
         {/* Quick Start Card */}
         <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-lg">Recommended Next Challenge</CardTitle>
+            <CardTitle className="text-lg">Featured Sandbox Challenge</CardTitle>
             <CardDescription className="text-xs text-muted-foreground">
-              Beginner-friendly DOM and styling task
+              Interactive pricing component with state toggle and responsive layout
             </CardDescription>
           </CardHeader>
           <CardContent className="flex items-center justify-between">
@@ -93,15 +117,15 @@ export default function DashboardPage() {
                 <Code2 className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-foreground">Interactive Pricing Table with Toggle</h4>
+                <h4 className="text-sm font-semibold text-foreground">Interactive Pricing Card</h4>
                 <div className="flex items-center gap-2 mt-1">
-                  <Badge variant="outline" className="text-[10px] text-success border-success/30">EASY</Badge>
-                  <span className="text-xs text-muted-foreground">HTML & CSS Track</span>
+                  <Badge variant="outline" className="text-[10px] text-emerald-400 border-emerald-500/30">EASY</Badge>
+                  <span className="text-xs text-muted-foreground">HTML & CSS / JavaScript DOM</span>
                 </div>
               </div>
             </div>
 
-            <Link href="/challenges/responsive-pricing-table">
+            <Link href="/challenges/interactive-pricing-card">
               <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-medium gap-1.5">
                 Open Workspace
                 <ArrowRight className="w-3.5 h-3.5" />

@@ -1,100 +1,38 @@
-import { NextRequest, NextResponse } from "next/server";
-import { connectToDatabase } from "@/lib/db";
-import { User } from "@/models/User";
-import { hashPassword, verifyPassword, signToken } from "@/lib/auth";
+import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/auth";
 
-export async function POST(req: NextRequest) {
+export async function GET() {
+  const current = await getCurrentUser();
+  if (!current) {
+    return NextResponse.json({ user: null }, { status: 401 });
+  }
+
+  return NextResponse.json({
+    user: {
+      id: current.user.id,
+      email: current.profile?.email || current.user.email,
+      username: current.profile?.username,
+      role: current.profile?.role || "free",
+      total_solves: current.profile?.total_solves || 0,
+      avatar_url: current.profile?.avatar_url,
+    },
+  });
+}
+
+export async function POST(req: Request) {
   try {
-    const { action, email, password, username } = await req.json();
-    await connectToDatabase();
-
-    if (action === "signup") {
-      const existingUser = await User.findOne({
-        $or: [{ email: email.toLowerCase() }, { username }],
-      });
-
-      if (existingUser) {
-        return NextResponse.json(
-          { error: "User with this email or username already exists" },
-          { status: 400 }
-        );
-      }
-
-      const password_hash = await hashPassword(password);
-      const user = await User.create({
-        email: email.toLowerCase(),
-        username,
-        password_hash,
-        role: "free",
-      });
-
-      const token = signToken({
-        userId: user._id.toString(),
-        email: user.email,
-        role: user.role,
-      });
-
-      const response = NextResponse.json({
-        user: { id: user._id, email: user.email, username: user.username, role: user.role },
-      });
-
-      response.cookies.set({
-        name: "staqor_token",
-        value: token,
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-        maxAge: 60 * 60 * 24 * 7, // 7 days
-      });
-
-      return response;
-    }
-
-    if (action === "login") {
-      const user = await User.findOne({ email: email.toLowerCase() });
-      if (!user) {
-        return NextResponse.json(
-          { error: "Invalid email or password" },
-          { status: 401 }
-        );
-      }
-
-      const isValid = await verifyPassword(password, user.password_hash);
-      if (!isValid) {
-        return NextResponse.json(
-          { error: "Invalid email or password" },
-          { status: 401 }
-        );
-      }
-
-      const token = signToken({
-        userId: user._id.toString(),
-        email: user.email,
-        role: user.role,
-      });
-
-      const response = NextResponse.json({
-        user: { id: user._id, email: user.email, username: user.username, role: user.role },
-      });
-
-      response.cookies.set({
-        name: "staqor_token",
-        value: token,
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-        maxAge: 60 * 60 * 24 * 7,
-      });
-
-      return response;
+    const { action } = await req.json();
+    if (action === "logout") {
+      const supabase = await createClient();
+      await supabase.auth.signOut();
+      return NextResponse.json({ success: true });
     }
 
     return NextResponse.json({ error: "Invalid action" }, { status: 400 });
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
-      { error: "Authentication request failed" },
+      { error: error?.message || "Auth action failed" },
       { status: 500 }
     );
   }

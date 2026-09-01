@@ -25,6 +25,7 @@ import {
 import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { UserNav } from "@/components/navigation/UserNav";
 
 export default function LandingPage() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -231,22 +232,7 @@ export default function LandingPage() {
 
           {/* Action CTAs */}
           <div className="flex items-center gap-3">
-            <Link href="/login">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-xs text-[#9CA3AF] hover:text-[#F5F5F7] hover:bg-[#16161F]"
-              >
-                Sign In
-              </Button>
-            </Link>
-            <Link href="/signup">
-              {/* 3D Offset Button Style */}
-              <button className="px-4 py-2 text-xs font-semibold rounded-lg bg-[#ABDAC8] text-[#0A0A0F] border border-[#ABDAC8] shadow-[3px_3px_0px_#26262E] hover:shadow-[1px_1px_0px_#26262E] hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[3px] active:translate-y-[3px] transition-all flex items-center gap-1.5 cursor-pointer">
-                <span>Get Started</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </Link>
+            <UserNav />
           </div>
         </div>
       </header>

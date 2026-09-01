@@ -11,9 +11,10 @@ and testable.** Each phase should end in something demoable, even if ugly.
 - **Done when:** app boots, DB connects, one health-check API route responds.
 
 ## Phase 1 — Auth (Foundation)
-- Signup/login/logout, JWT + HTTP-only cookies
-- `users` collection fully wired (profile, role, stats stub)
-- Protected route middleware for the `(app)` group
+- Supabase Auth integration (`@supabase/supabase-js`, `@supabase/ssr`)
+- Signup/login/logout flow via Supabase + session cookies
+- User profile sync with MongoDB `users` collection (linked via `supabase_user_id`)
+- Protected route middleware for the `(app)` and `admin` groups
 - **Done when:** a user can register, log in, hit a protected page, log out.
 
 ## Phase 2 — Single Challenge, End-to-End (The Critical Path)
@@ -43,13 +44,7 @@ Build **one hardcoded challenge** all the way through, before adding more conten
 - **Done when:** a passed solution is viewable, interactive, and toggle-able from a
   recruiter's-eye view (logged out).
 
-## Phase 5 — Monetization
-- Stripe integration: checkout, webhooks, `user.role` sync
-- Pro tier unlocks: unlimited run/submit, priority queue flag, Verified badge
-- Notifier "Upgrade Now" wired to real Stripe checkout
-- **Done when:** a Free user can upgrade to Pro and immediately get unlimited attempts.
-
-## Phase 6 — Hardening & Edge Cases
+## Phase 5 — Hardening & Edge Cases
 - Groq outage caching/fallback behavior (Architecture.md §5, §6 spec section 10)
 - Rate limiting + payload caps on `/api/evaluate`
 - Empty-code submission handling
@@ -59,6 +54,7 @@ Build **one hardcoded challenge** all the way through, before adding more conten
   and manually tested.
 
 ## Explicitly Deferred (Do Not Build Until Told)
+- Payments / Stripe subscription system (deferred for now)
 - Pair programming mode (v1.5)
 - Real Docker-based execution for full-stack/API tasks (v2.0)
 - Company-specific tracks (v2.5)
