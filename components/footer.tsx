@@ -3,132 +3,175 @@
 import React from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Terminal, ArrowUpRight, ShieldCheck, Sparkles, Heart } from "lucide-react";
-import { FacebookIcon } from "@/components/facebook-icon";
-import { InstagramIcon } from "@/components/instagram-icon";
-import { LinkedinIcon } from "@/components/linkedin-icon";
-import { YoutubeIcon } from "@/components/youtube-icon";
-
-type FooterLink = {
-  title: string;
-  href: string;
-  external?: boolean;
-};
-
-type FooterSection = {
-  label: string;
-  links: FooterLink[];
-};
-
-const footerSections: FooterSection[] = [
-  {
-    label: "Platform",
-    links: [
-      { title: "Challenge Catalog", href: "/challenges" },
-      { title: "How It Works", href: "#how-it-works" },
-      { title: "8 Practice Tracks", href: "#tracks" },
-      { title: "Architecture", href: "#features" },
-      { title: "Pricing & Quotas", href: "#pricing" },
-    ],
-  },
-  {
-    label: "Tracks",
-    links: [
-      { title: "HTML & CSS Layouts", href: "/challenges?track=html-css" },
-      { title: "JavaScript & DOM", href: "/challenges?track=javascript" },
-      { title: "React Components", href: "/challenges?track=react" },
-      { title: "Vue.js Reactive UI", href: "/challenges?track=vue" },
-      { title: "Node.js & Mock APIs", href: "/challenges?track=node-api" },
-    ],
-  },
-  {
-    label: "Developers",
-    links: [
-      { title: "Sign Up Free", href: "/signup" },
-      { title: "Sign In", href: "/login" },
-      { title: "Frequently Asked Questions", href: "#faq" },
-      { title: "Verified Public Portfolios", href: "/challenges" },
-      { title: "Contact Sales", href: "mailto:sales@staqor.dev?subject=Staqor%20Inquiry" },
-    ],
-  },
-];
+import { Logo } from "@/components/logo";
+import { Button } from "@/components/ui/button";
+import { FullWidthDivider } from "@/components/full-width-divider";
+import { MessageSquare, Mail } from "lucide-react";
 
 export function Footer() {
   return (
     <footer
       className={cn(
-        "relative mx-auto flex w-full max-w-6xl flex-col items-center justify-center border-t border-[#26262E]/80 px-6 py-12 md:px-8",
-        "bg-[#0E0E14]/60 backdrop-blur-md"
+        "relative mx-auto max-w-6xl border-t border-[#26262E] bg-[#0A0A0F] text-zinc-400 text-xs",
+        "bg-[radial-gradient(40%_80%_at_50%_0%,rgba(171,218,200,0.06),transparent)]"
       )}
     >
-      <div className="absolute top-0 right-1/2 left-1/2 h-px w-1/3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#ABDAC8]/30 blur-xs" />
-
-      <div className="grid w-full gap-10 py-6 lg:grid-cols-12">
-        {/* Brand Column */}
-        <div className="lg:col-span-4 space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#ABDAC8]/15 border border-[#ABDAC8]/30 flex items-center justify-center shadow-[0_0_15px_rgba(171,218,200,0.15)]">
-              <Terminal className="w-4 h-4 text-[#ABDAC8]" />
-            </div>
-            <span className="font-bold text-lg tracking-tight text-[#F5F5F7]">Staqor</span>
-          </div>
-
-          <p className="text-xs text-[#9CA3AF] leading-relaxed max-w-sm font-mono">
-            The in-browser IDE for modern frontend craftsmanship. Graded against weighted multi-criteria rubrics in &lt;2.5s by Groq AI with zero server latency.
+      <FullWidthDivider position="top" />
+      <div className="grid max-w-6xl grid-cols-1 md:grid-cols-6 gap-8 p-6 md:p-8">
+        {/* Col 1: Brand & Tagline */}
+        <div className="col-span-1 md:col-span-3 flex flex-col gap-4">
+          <Link href="/" className="w-max">
+            <Logo />
+          </Link>
+          <p className="max-w-sm text-zinc-400 text-xs sm:text-sm leading-relaxed">
+            The in-browser IDE for modern frontend craftsmanship. Solve real UI challenges, pass sub-2.5s Groq AI rubrics, and generate verified recruiter portfolios.
           </p>
-
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#111117] border border-[#26262E] text-[11px] font-mono text-[#4ADE80]">
-            <span className="w-2 h-2 rounded-full bg-[#4ADE80] animate-pulse" />
-            <span>All Systems Operational • Groq p95 &lt; 2.2s</span>
+          <div className="flex items-center gap-2 pt-1">
+            {socialLinks.map((item, index) => (
+              <Button
+                asChild
+                key={`social-${item.link}-${index}`}
+                size="icon"
+                variant="outline"
+                className="w-8 h-8 rounded-full bg-[#111117] border-[#26262E] text-zinc-400 hover:text-white hover:border-[#ABDAC8]/40 hover:bg-zinc-800 transition-all hover:scale-105"
+              >
+                <a href={item.link} target="_blank" rel="noopener noreferrer" aria-label={item.name}>
+                  {item.icon}
+                </a>
+              </Button>
+            ))}
           </div>
         </div>
 
-        {/* Links Columns */}
-        <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-8">
-          {footerSections.map((section) => (
-            <div key={section.label} className="space-y-3">
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#ABDAC8]">
-                {section.label}
-              </h3>
-              <ul className="space-y-2 text-xs font-mono text-[#9CA3AF]">
-                {section.links.map((link) => (
-                  <li key={link.title}>
-                    <Link
-                      href={link.href}
-                      className="hover:text-[#F5F5F7] transition-colors inline-flex items-center gap-1 group"
-                    >
-                      <span>{link.title}</span>
-                      {link.external && (
-                        <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      )}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+        {/* Col 2: Curriculum & Tracks */}
+        <div className="col-span-1 md:col-span-1">
+          <span className="text-white font-mono text-xs font-bold uppercase tracking-wider block mb-3">
+            Curriculum
+          </span>
+          <div className="flex flex-col gap-2">
+            {curriculumLinks.map(({ href, title }) => (
+              <a
+                className="text-zinc-400 hover:text-[#ABDAC8] transition-colors text-xs"
+                href={href}
+                key={title}
+              >
+                {title}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* Col 3: Platform Resources */}
+        <div className="col-span-1 md:col-span-1">
+          <span className="text-white font-mono text-xs font-bold uppercase tracking-wider block mb-3">
+            Platform
+          </span>
+          <div className="flex flex-col gap-2">
+            {resourcesLinks.map(({ href, title }) => (
+              <a
+                className="text-zinc-400 hover:text-[#ABDAC8] transition-colors text-xs"
+                href={href}
+                key={title}
+              >
+                {title}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* Col 4: Company & Legal */}
+        <div className="col-span-1 md:col-span-1">
+          <span className="text-white font-mono text-xs font-bold uppercase tracking-wider block mb-3">
+            Company
+          </span>
+          <div className="flex flex-col gap-2">
+            {companyLinks.map(({ href, title }) => (
+              <a
+                className="text-zinc-400 hover:text-[#ABDAC8] transition-colors text-xs"
+                href={href}
+                key={title}
+              >
+                {title}
+              </a>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="h-px w-full bg-[#26262E]/70 my-6" />
+      <FullWidthDivider />
 
-      {/* Bottom Bar */}
-      <div className="flex flex-col sm:flex-row w-full items-center justify-between gap-4 text-xs font-mono text-[#9CA3AF]">
+      {/* Bottom Copyright & Enquiry Bar */}
+      <div className="max-w-6xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-zinc-500 text-[11px] font-mono">
         <p>
-          &copy; {new Date().getFullYear()} Staqor Inc. Built for frontend engineers.
+          &copy; {new Date().getFullYear()} Staqor Inc. Built for Frontend Engineers.
         </p>
-        <div className="flex items-center gap-6">
-          <Link href="/challenges" className="hover:text-[#F5F5F7] transition-colors">
-            Challenges
-          </Link>
-          <Link href="/pricing" className="hover:text-[#F5F5F7] transition-colors">
-            Pricing
-          </Link>
-          <a href="#faq" className="hover:text-[#F5F5F7] transition-colors">
-            FAQ
-          </a>
+        <div className="flex items-center gap-2">
+          <Mail className="w-3.5 h-3.5 text-[#ABDAC8]" />
+          <span>
+            Enquiries:{" "}
+            <a href="mailto:team@staqor.dev" className="text-zinc-300 hover:text-white hover:underline">
+              team@staqor.dev
+            </a>
+          </span>
         </div>
       </div>
     </footer>
   );
 }
+
+const curriculumLinks = [
+  { title: "HTML & CSS", href: "/challenges?track=html-css" },
+  { title: "JavaScript DOM", href: "/challenges?track=javascript" },
+  { title: "React Components", href: "/challenges?track=react" },
+  { title: "Vue.js Reactive", href: "/challenges?track=vue" },
+  { title: "Mock APIs", href: "/challenges?track=node-api" },
+  { title: "Real Bug Fixes", href: "/challenges?track=bug-fix" },
+];
+
+const resourcesLinks = [
+  { title: "Challenges Catalog", href: "/challenges" },
+  { title: "Evaluation Rubric", href: "#how-it-works" },
+  { title: "Recruiter Sandboxes", href: "#ecosystem" },
+  { title: "Developer FAQ", href: "#faq" },
+];
+
+const companyLinks = [
+  { title: "About Staqor", href: "#" },
+  { title: "Privacy Policy", href: "#" },
+  { title: "Terms of Service", href: "#" },
+  { title: "Contact Support", href: "mailto:team@staqor.dev" },
+];
+
+const socialLinks = [
+  {
+    name: "Instagram",
+    icon: (
+      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+    ),
+    link: "https://instagram.com",
+  },
+  {
+    name: "LinkedIn",
+    icon: (
+      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+    ),
+    link: "https://linkedin.com",
+  },
+  {
+    name: "YouTube",
+    icon: (
+      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1 1.4-1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17z"/><path d="m10 15 5-3-5-3v6z"/></svg>
+    ),
+    link: "https://youtube.com",
+  },
+  {
+    name: "X",
+    icon: <span className="font-bold text-xs font-sans">X</span>,
+    link: "https://x.com",
+  },
+  {
+    name: "Discord",
+    icon: <MessageSquare className="w-3.5 h-3.5" />,
+    link: "https://discord.com",
+  },
+];

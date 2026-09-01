@@ -2,28 +2,19 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   ArrowRight,
-  ChevronRight,
   Sparkles,
   CheckCircle2,
   ShieldCheck,
   Code2,
-  Layers,
   Terminal,
-  Trophy,
-  HelpCircle,
-  ChevronDown,
   X,
-  Mail,
-  MessageSquare,
-  Menu,
   Cpu,
   Lock,
-  Play,
   Monitor,
   Tablet,
   Smartphone,
@@ -32,19 +23,18 @@ import {
   Server,
   Bug,
   Layout,
-  Flame,
-  Plus,
-  Minus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
 import { SpotlightCard } from "@/components/SpotlightCard";
 import { GSAPAnimatedBox } from "@/components/gsap-company-box";
 import { ScrollGlowingLine } from "@/components/ScrollGlowingLine";
+import { Header } from "@/components/header";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { CapabilitiesShowcase } from "@/components/landing/CapabilitiesShowcase";
-import { UserNav } from "@/components/navigation/UserNav";
+import { FaqsSection } from "@/components/faqs-page";
+import { Footer } from "@/components/footer";
 import { DecorIcon } from "@/components/decor-icon";
 
 // ---------------------------------------------------------------------------
@@ -306,46 +296,7 @@ function useVirtualList(itemCount, itemHeight, viewportHeight) {
   },
 ];
 
-// ---------------------------------------------------------------------------
-// Comprehensive All-Visible FAQ Data
-// ---------------------------------------------------------------------------
-const FAQS = [
-  {
-    q: "How does Staqor evaluate frontend code in under 2.5 seconds?",
-    a: "Staqor compiles HTML, CSS, and JS 100% client-side inside an isolated iframe with a 2000ms loop-killer. When you run or submit, a zero-token syntax pre-filter checks structural code in 0.02s before Groq LPU models grade layout fidelity (35%), DOM/state logic (35%), and semantic cleanliness (30%) in <2.5 seconds.",
-  },
-  {
-    q: "Is Staqor completely free for developers and students?",
-    a: "Yes! Every challenge comes with a generous lifetime free quota (5 Runs & 3 Submits per challenge). You get instant client-side execution, live Groq AI rubric feedback, and verified public portfolio replays at $0.",
-  },
-  {
-    q: "What are the 8 specialized practice tracks covered in Staqor?",
-    a: "The catalog spans HTML & CSS Layouts, JavaScript & DOM Events, React Components, Vue.js Reactive UI, Node.js & Mock APIs, Real-World Bug Fixes, Full-Stack Scenarios, and Performance Optimization across Easy, Medium, and Hard tiers.",
-  },
-  {
-    q: "How do locked scaffolding and read-only files work?",
-    a: "To enforce targeted practice, challenges lock boilerplate files. For example, in a JS DOM challenge, HTML markup and CSS styling are locked read-only so you focus purely on DOM manipulation and state logic without breaking scaffolding.",
-  },
-  {
-    q: "How do recruiters and engineering leads verify candidate work?",
-    a: "When you solve a challenge, Staqor generates a verified candidate showcase link. Recruiters can test your live component in an interactive sandbox and inspect your Monaco code tabs with one click—no repository cloning required.",
-  },
-  {
-    q: "Can I test responsive breakpoints and mobile viewports inside the IDE?",
-    a: "Yes! The workspace includes instant Desktop (100%), Tablet (768px), and Mobile (375px) viewport toggles with interactive mouse events, keyboard access, and local storage state persistence.",
-  },
-];
-
 export default function HomePage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [openFaqs, setOpenFaqs] = useState<number[]>([0, 1, 2, 3, 4, 5]); // All open by default for full visibility
-
-  const toggleFaq = (index: number) => {
-    setOpenFaqs((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
-    );
-  };
-
   // Interactive IDE Mockup State
   const [heroChallengeIdx, setHeroChallengeIdx] = useState(0);
   const currentHeroChallenge = HERO_CHALLENGES[heroChallengeIdx];
@@ -371,12 +322,6 @@ export default function HomePage() {
   const badge2Ref = useRef<HTMLDivElement>(null);
   const badge3Ref = useRef<HTMLDivElement>(null);
   const badge4Ref = useRef<HTMLDivElement>(null);
-
-  const progHeaderRef = useRef<HTMLDivElement>(null);
-  const progGridRef = useRef<HTMLDivElement>(null);
-  const whyHeaderRef = useRef<HTMLDivElement>(null);
-  const whyGridRef = useRef<HTMLDivElement>(null);
-  const faqHeaderRef = useRef<HTMLDivElement>(null);
 
   // Simulate IDE Evaluation
   const handleRunEvaluation = (type: "run" | "submit") => {
@@ -439,42 +384,6 @@ export default function HomePage() {
         }
       });
 
-      // 3. Section Entrance ScrollTriggers
-      const animateSection = (header: React.RefObject<HTMLDivElement>, grid?: React.RefObject<HTMLDivElement>) => {
-        if (header.current) {
-          gsap.from(header.current.children, {
-            opacity: 0,
-            y: 35,
-            duration: 0.8,
-            stagger: 0.12,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: header.current,
-              start: "top 90%",
-              once: true,
-            },
-          });
-        }
-        if (grid && grid.current) {
-          gsap.from(grid.current.children, {
-            opacity: 0,
-            y: 35,
-            duration: 0.8,
-            stagger: 0.1,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: grid.current,
-              start: "top 88%",
-              once: true,
-            },
-          });
-        }
-      };
-
-      animateSection(progHeaderRef, progGridRef);
-      animateSection(whyHeaderRef, whyGridRef);
-      animateSection(faqHeaderRef);
-
       ScrollTrigger.refresh();
     }, pageContainerRef);
 
@@ -509,106 +418,9 @@ export default function HomePage() {
       <div className="absolute top-24 left-1/2 -translate-x-1/2 w-[850px] h-[400px] bg-[radial-gradient(ellipse_60%_50%_at_50%_35%,#ABDAC826_0%,#ABDAC808_60%,transparent_100%)] blur-[110px] pointer-events-none z-0" />
 
       {/* ========================================================================= */}
-      {/* NAVBAR */}
+      {/* HEADER (@efferd/header-2) */}
       {/* ========================================================================= */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#0A0A0F]/90 border-b border-[#26262E] transition-all">
-        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-8 h-8 rounded-lg bg-[#ABDAC8]/15 border border-[#ABDAC8]/30 flex items-center justify-center shadow-[0_0_15px_rgba(171,218,200,0.15)] group-hover:scale-105 transition-transform">
-              <Terminal className="w-4 h-4 text-[#ABDAC8]" />
-            </div>
-            <span className="font-bold text-lg tracking-tight text-[#F5F5F7]">Staqor</span>
-            <Badge
-              variant="outline"
-              className="text-[10px] uppercase font-mono text-[#ABDAC8] border-[#ABDAC8]/30 ml-1 py-0 px-2 bg-[#111614]"
-            >
-              v1.0 MVP
-            </Badge>
-          </Link>
-
-          {/* Navigation Links */}
-          <nav className="hidden md:flex items-center gap-7 text-sm font-semibold text-zinc-300">
-            <a
-              href="#tracks"
-              className="text-zinc-300 hover:text-white transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#ABDAC8] hover:after:w-full after:transition-all after:duration-200"
-            >
-              8 Tracks
-            </a>
-            <a
-              href="#how-it-works"
-              className="text-zinc-300 hover:text-white transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#ABDAC8] hover:after:w-full after:transition-all after:duration-200"
-            >
-              How It Works
-            </a>
-            <a
-              href="#why-staqor"
-              className="text-zinc-300 hover:text-white transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#ABDAC8] hover:after:w-full after:transition-all after:duration-200"
-            >
-              Why Staqor
-            </a>
-            <a
-              href="#faq"
-              className="text-zinc-300 hover:text-white transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#ABDAC8] hover:after:w-full after:transition-all after:duration-200"
-            >
-              FAQ
-            </a>
-          </nav>
-
-          {/* Right Actions */}
-          <div className="flex items-center gap-3">
-            <Link href="/challenges" className="hidden sm:block">
-              <Button
-                size="sm"
-                className="bg-gradient-to-b from-[#ABDAC8] via-[#ABDAC8] to-[#7BC4A8] hover:from-[#c2e8dc] hover:to-[#8cd4b9] text-[#0A0A0F] font-bold rounded-xl px-5 py-2.5 text-sm shadow-lg shadow-[#ABDAC8]/25 hover:shadow-xl hover:shadow-[#ABDAC8]/40 border border-[#ABDAC8]/40 transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
-              >
-                <span>Browse Catalog</span>
-                <ChevronRight className="w-4 h-4 ml-0.5" />
-              </Button>
-            </Link>
-
-            <UserNav />
-
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2.5 rounded-xl bg-[#111117] border border-[#26262E] text-zinc-300 hover:text-white transition-all active:scale-95"
-              aria-label="Toggle Navigation Menu"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation Dropdown */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="md:hidden border-t border-[#26262E] bg-[#0A0A0F] px-6 py-5 flex flex-col gap-4 text-sm font-semibold text-zinc-300"
-            >
-              <a href="#tracks" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#ABDAC8] transition-colors py-1">
-                8 Tracks
-              </a>
-              <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#ABDAC8] transition-colors py-1">
-                How It Works
-              </a>
-              <a href="#why-staqor" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#ABDAC8] transition-colors py-1">
-                Why Staqor
-              </a>
-              <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#ABDAC8] transition-colors py-1">
-                FAQ
-              </a>
-              <Link href="/challenges" onClick={() => setMobileMenuOpen(false)} className="pt-2">
-                <Button size="sm" className="w-full bg-gradient-to-b from-[#ABDAC8] to-[#7BC4A8] text-[#0A0A0F] font-bold rounded-xl py-2.5">
-                  Browse Catalog
-                </Button>
-              </Link>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </header>
+      <Header />
 
       {/* ========================================================================= */}
       {/* 2. HERO SECTION */}
@@ -1068,10 +880,9 @@ export default function HomePage() {
                     <span className="text-[10px] font-mono text-[#9CA3AF]">Monaco Editor v0.46</span>
                   </div>
 
-                  {/* Monaco Editor Code Display with Line Numbers & High Contrast */}
+                  {/* Monaco Editor Code Display with Line Numbers */}
                   <div className="p-4 font-mono text-[11px] text-[#9CA3AF] bg-[#0B0B10] flex-1 overflow-x-auto leading-relaxed border-b border-[#26262E]">
                     <div className="flex gap-4">
-                      {/* Line Numbers */}
                       <div className="select-none text-zinc-600 text-right pr-2 border-r border-zinc-800/80">
                         {currentHeroChallenge.code[mockupEditorTab]
                           .split("\n")
@@ -1139,7 +950,7 @@ export default function HomePage() {
         {/* 4. 8 PRACTICE TRACKS CATALOG (Curriculum Explorer) */}
         {/* ========================================================================= */}
         <section id="tracks" className="py-16 md:py-24 border-t border-[#26262E]">
-          <div ref={progHeaderRef} className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
             <div>
               <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2 font-mono">Curriculum Catalog</div>
               <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight">
@@ -1151,10 +962,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div
-            ref={progGridRef}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {TRACKS_DATA.map((tr) => {
               const Icon = tr.icon;
               return (
@@ -1198,10 +1006,16 @@ export default function HomePage() {
         <HowItWorks />
 
         {/* ========================================================================= */}
-        {/* 6. WHY STAQOR COMPARISON */}
+        {/* 6. WHY STAQOR COMPARISON (Reliable Framer Motion Reveal - 0 Glitches) */}
         {/* ========================================================================= */}
         <section id="why-staqor" className="py-16 md:py-24 border-t border-[#26262E]">
-          <div ref={whyHeaderRef} className="text-center max-w-3xl mx-auto mb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.5 }}
+            className="text-center max-w-3xl mx-auto mb-12"
+          >
             <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2 font-mono">The Proof of Work Loop</div>
             <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-4">
               Why Staqor Wins Over <GSAPAnimatedBox text="LeetCode" />
@@ -1209,9 +1023,15 @@ export default function HomePage() {
             <p className="text-zinc-300 text-base sm:text-lg">
               Stop solving abstract tree puzzles. Start building real, verified engineering portfolios that get you hired.
             </p>
-          </div>
+          </motion.div>
 
-          <div ref={whyGridRef} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-8"
+          >
             {/* Traditional LeetCode */}
             <SpotlightCard accentColor="purple" watermark="OLD">
               <div className="p-8 h-full">
@@ -1261,66 +1081,13 @@ export default function HomePage() {
                 </div>
               </div>
             </SpotlightCard>
-          </div>
+          </motion.div>
         </section>
 
         {/* ========================================================================= */}
-        {/* 7. ALL-VISIBLE COMPREHENSIVE FAQ ACCORDION */}
+        {/* 7. ALL-VISIBLE COMPREHENSIVE FAQ ACCORDION (@efferd/faqs-2) */}
         {/* ========================================================================= */}
-        <section id="faq" className="py-16 md:py-24 border-t border-[#26262E]">
-          <div ref={faqHeaderRef} className="text-center max-w-2xl mx-auto mb-14">
-            <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2 flex items-center justify-center gap-1.5 font-mono">
-              <HelpCircle className="w-4 h-4" />
-              <span>Got Questions? We Have Answers</span>
-            </div>
-            <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-3">
-              Frequently Asked <GSAPAnimatedBox text="Questions." />
-            </h2>
-            <p className="text-zinc-300 text-base font-normal">
-              Everything you need to know about Staqor challenges, Groq AI rubric scoring, and verified recruiter sandboxes.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-5xl mx-auto">
-            {FAQS.map((faq, index) => {
-              const isOpen = openFaqs.includes(index);
-              return (
-                <div
-                  key={index}
-                  className="rounded-2xl border border-[#26262E] bg-[#111117] overflow-hidden hover:border-[#ABDAC8]/40 transition-all duration-300"
-                >
-                  <button
-                    onClick={() => toggleFaq(index)}
-                    className="w-full p-5 sm:p-6 text-left flex items-start justify-between gap-4 font-display text-base font-bold text-white hover:text-[#ABDAC8] transition-colors cursor-pointer group"
-                  >
-                    <span className="flex-1 leading-snug">{faq.q}</span>
-                    <div className="w-7 h-7 rounded-lg bg-[#16161F] group-hover:bg-[#ABDAC8]/20 flex items-center justify-center transition-colors shrink-0 mt-0.5">
-                      {isOpen ? (
-                        <Minus className="w-3.5 h-3.5 text-[#ABDAC8]" />
-                      ) : (
-                        <Plus className="w-3.5 h-3.5 text-zinc-400 group-hover:text-[#ABDAC8]" />
-                      )}
-                    </div>
-                  </button>
-
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.25, ease: "easeInOut" }}
-                        className="px-5 sm:px-6 pb-6 text-xs sm:text-sm text-zinc-300 leading-relaxed border-t border-[#26262E]/60 pt-3"
-                      >
-                        {faq.a}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+        <FaqsSection />
 
         {/* ========================================================================= */}
         {/* 8. COMMUNITY CTA BAND */}
@@ -1350,78 +1117,9 @@ export default function HomePage() {
       </main>
 
       {/* ========================================================================= */}
-      {/* 9. FOOTER */}
+      {/* 9. FOOTER (@efferd/footer-2) */}
       {/* ========================================================================= */}
-      <footer className="border-t border-[#26262E] bg-[#0A0A0F] py-12 text-xs text-zinc-400 relative z-10 font-medium">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-7 h-7 rounded-lg bg-[#ABDAC8]/15 border border-[#ABDAC8]/30 flex items-center justify-center">
-              <Terminal className="w-3.5 h-3.5 text-[#ABDAC8]" />
-            </div>
-            <span className="font-bold text-base text-white">Staqor</span>
-          </Link>
-
-          {/* Social Icons */}
-          <div className="flex items-center gap-3 text-zinc-400">
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-9 h-9 rounded-full bg-[#111117] border border-[#26262E] text-zinc-400 hover:text-white hover:bg-zinc-800 hover:border-zinc-600 transition-all duration-200 hover:scale-110 active:scale-95 flex items-center justify-center shadow-sm"
-              aria-label="Instagram"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-            </a>
-            <a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-9 h-9 rounded-full bg-[#111117] border border-[#26262E] text-zinc-400 hover:text-white hover:bg-zinc-800 hover:border-zinc-600 transition-all duration-200 hover:scale-110 active:scale-95 flex items-center justify-center shadow-sm"
-              aria-label="LinkedIn"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
-            </a>
-            <a
-              href="https://youtube.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-9 h-9 rounded-full bg-[#111117] border border-[#26262E] text-zinc-400 hover:text-white hover:bg-zinc-800 hover:border-zinc-600 transition-all duration-200 hover:scale-110 active:scale-95 flex items-center justify-center shadow-sm"
-              aria-label="YouTube"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1 1.4-1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17z"/><path d="m10 15 5-3-5-3v6z"/></svg>
-            </a>
-            <a
-              href="https://x.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-9 h-9 rounded-full bg-[#111117] border border-[#26262E] text-zinc-400 hover:text-white hover:bg-zinc-800 hover:border-zinc-600 transition-all duration-200 hover:scale-110 active:scale-95 flex items-center justify-center shadow-sm"
-              aria-label="X"
-            >
-              <span className="font-bold text-xs font-sans">X</span>
-            </a>
-            <a
-              href="https://discord.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-9 h-9 rounded-full bg-[#111117] border border-[#26262E] text-zinc-400 hover:text-white hover:bg-zinc-800 hover:border-zinc-600 transition-all duration-200 hover:scale-110 active:scale-95 flex items-center justify-center shadow-sm"
-              aria-label="Discord"
-            >
-              <MessageSquare className="w-4 h-4" />
-            </a>
-          </div>
-
-          {/* Contact Line */}
-          <div className="flex items-center gap-2 text-zinc-400">
-            <Mail className="w-3.5 h-3.5 text-[#ABDAC8]" />
-            <span>
-              For any enquiry:{" "}
-              <a href="mailto:team@staqor.dev" className="text-white hover:underline font-semibold">
-                team@staqor.dev
-              </a>
-            </span>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
