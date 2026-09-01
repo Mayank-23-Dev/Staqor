@@ -39,12 +39,17 @@ import {
   Star,
   Menu,
   X,
+  Database,
+  ArrowUpRight,
 } from "lucide-react";
 import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { UserNav } from "@/components/navigation/UserNav";
 import { DecorIcon } from "@/components/decor-icon";
+import { LogoCloud } from "@/components/logo-cloud";
+import { Integrations } from "@/components/integrations";
+import { Footer } from "@/components/footer";
 
 // ---------------------------------------------------------------------------
 // 8 Tracks Data (Matches App Catalog)
@@ -270,36 +275,24 @@ const TESTIMONIALS = [
   },
 ];
 
-export default function LandingPage() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const heroRef = useRef<HTMLDivElement>(null);
-  const heroMockupRef = useRef<HTMLDivElement>(null);
-  const floatingBadgeRef = useRef<HTMLDivElement>(null);
-  const glowPathRef = useRef<SVGPathElement>(null);
-  const lenisRef = useRef<Lenis | null>(null);
-
-  // State
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
-  const [selectedTrack, setSelectedTrack] = useState(0);
-
-  // Interactive IDE Mockup State
-  const [mockupEditorTab, setMockupEditorTab] = useState<"html" | "css" | "js">("html");
-  const [mockupLeftTab, setMockupLeftTab] = useState<"spec" | "rubric" | "preview" | "feedback">("spec");
-  const [mockupViewport, setMockupViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
-  const [isEvaluating, setIsEvaluating] = useState(false);
-  const [evalTimer, setEvalTimer] = useState("1.8s");
-  const [mockupAnnualBilling, setMockupAnnualBilling] = useState(true);
-  const [mockupScore, setMockupScore] = useState(94);
-  const [mockupLogs, setMockupLogs] = useState<string[]>([
-    "[Sandbox] DOM container mounted in isolated iframe.",
-    "[Pre-Filter] Syntax validation passed. Zero parse errors.",
-    "[Groq LPU] Ready for diagnostic Run or official Submit.",
-  ]);
-
-  // Code Snippets for Mockup
-  const codeSnippets = {
-    html: `<!-- 3-Tier Responsive Pricing Matrix -->
+// ---------------------------------------------------------------------------
+// Hero Interactive Challenges
+// ---------------------------------------------------------------------------
+const HERO_CHALLENGES = [
+  {
+    id: "pricing",
+    label: "Pricing Switcher",
+    track: "HTML & CSS",
+    difficulty: "EASY",
+    score: 94,
+    time: "1.8s",
+    title: "Interactive Pricing Table with Monthly/Annual Switch",
+    desc: "Build a responsive 3-tier card layout with an annual billing toggle that updates prices dynamically with zero layout shifts.",
+    rubricDesign: "35/35%",
+    rubricLogic: "34/35%",
+    rubricQuality: "25/30%",
+    code: {
+      html: `<!-- 3-Tier Responsive Pricing Matrix -->
 <div class="pricing-container">
   <div class="billing-toggle">
     <span>Monthly</span>
@@ -321,34 +314,32 @@ export default function LandingPage() {
     </div>
   </div>
 </div>`,
-    css: `/* Responsive Grid & 3D Tactile Buttons */
+      css: `/* Responsive Grid & 3D Tactile Buttons */
 .pricing-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.5rem;
-  margin-top: 2rem;
 }
 
 .card-popular {
   background: #111614;
   border: 2px solid #ABDAC8;
   border-radius: 1.25rem;
-  padding: 2rem;
+  padding: 1.5rem;
   box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(171,218,200,0.15);
-  transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
 .cta-btn {
   width: 100%;
-  padding: 0.875rem;
+  padding: 0.75rem;
   background: #ABDAC8;
   color: #0A0A0F;
   font-weight: 700;
   border-radius: 0.75rem;
-  box-shadow: 4px 4px 0px #26262E;
+  box-shadow: 3px 3px 0px #26262E;
   cursor: pointer;
 }`,
-    js: `// Billing Toggle State Handler
+      js: `// Annual Billing Toggle State Handler
 const toggleBtn = document.getElementById('toggleBtn');
 const priceVal = document.getElementById('priceVal');
 
@@ -357,12 +348,144 @@ let isAnnual = true;
 toggleBtn.addEventListener('click', () => {
   isAnnual = !isAnnual;
   toggleBtn.classList.toggle('active', isAnnual);
-  
-  // Update price with smooth count transition
   priceVal.textContent = isAnnual ? '15' : '19';
   console.log('[Event] Switched billing cycle to:', isAnnual ? 'Annual' : 'Monthly');
 });`,
-  };
+    },
+  },
+  {
+    id: "kanban",
+    label: "Kanban Task Board",
+    track: "JS / DOM",
+    difficulty: "MEDIUM",
+    score: 96,
+    time: "2.1s",
+    title: "Drag-and-Drop Task Board with State Persistence",
+    desc: "Implement HTML5 Drag and Drop event delegation to reorder sprint tasks across To Do, In Progress, and Done columns.",
+    rubricDesign: "34/35%",
+    rubricLogic: "35/35%",
+    rubricQuality: "27/30%",
+    code: {
+      html: `<!-- Kanban Column Layout -->
+<div class="kanban-board">
+  <div class="column" id="col-todo" data-status="todo">
+    <h3>To Do</h3>
+    <div class="card" draggable="true" id="task-1">
+      <span class="badge">UI Design</span>
+      <p>Build accessible modal dialog</p>
+    </div>
+  </div>
+  <div class="column" id="col-done" data-status="done">
+    <h3>Done</h3>
+  </div>
+</div>`,
+      css: `.kanban-board {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+.column {
+  background: #111117;
+  border: 1px solid #26262E;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  min-height: 180px;
+}
+.card {
+  background: #16161F;
+  border: 1px solid #ABDAC8/40;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  cursor: grab;
+}`,
+      js: `// Drag and Drop Event Listeners
+const cards = document.querySelectorAll('.card');
+const columns = document.querySelectorAll('.column');
+
+cards.forEach(card => {
+  card.addEventListener('dragstart', (e) => {
+    e.dataTransfer.setData('text/plain', card.id);
+    console.log('[Drag] Started dragging:', card.id);
+  });
+});`,
+    },
+  },
+  {
+    id: "virtual-scroll",
+    label: "Virtual Grid",
+    track: "React Components",
+    difficulty: "HARD",
+    score: 98,
+    time: "2.3s",
+    title: "Virtualized Infinite Scroll Product Grid",
+    desc: "Build a windowed product list that recycles DOM elements using IntersectionObserver to maintain 60 FPS under 10,000 items.",
+    rubricDesign: "35/35%",
+    rubricLogic: "35/35%",
+    rubricQuality: "28/30%",
+    code: {
+      html: `<!-- React Windowing Scaffolding -->
+<div id="root">
+  <div class="virtual-viewport" style="height: 320px; overflow-y: auto;">
+    <div class="virtual-spacer" style="height: 12000px; position: relative;">
+      <!-- Recycled DOM Item Tiles Rendered Here -->
+    </div>
+  </div>
+</div>`,
+      css: `.virtual-viewport {
+  position: relative;
+  border: 1px solid #26262E;
+  border-radius: 0.75rem;
+  background: #0B0B10;
+}
+.virtual-item {
+  position: absolute;
+  left: 0; right: 0;
+  height: 60px;
+  border-bottom: 1px solid #26262E;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}`,
+      js: `// Custom Virtual List Hook
+function useVirtualList(itemCount, itemHeight, viewportHeight) {
+  const [scrollTop, setScrollTop] = useState(0);
+  const startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - 2);
+  const endIndex = Math.min(itemCount, Math.ceil((scrollTop + viewportHeight) / itemHeight) + 2);
+  return { startIndex, endIndex };
+}`,
+    },
+  },
+];
+
+export default function LandingPage() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const heroMockupRef = useRef<HTMLDivElement>(null);
+  const floatingBadgeRef = useRef<HTMLDivElement>(null);
+  const glowPathRef = useRef<SVGPathElement>(null);
+  const lenisRef = useRef<Lenis | null>(null);
+
+  // State
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
+  const [selectedTrack, setSelectedTrack] = useState(0);
+
+  // Interactive IDE Mockup State
+  const [heroChallengeIdx, setHeroChallengeIdx] = useState(0);
+  const currentHeroChallenge = HERO_CHALLENGES[heroChallengeIdx];
+  const [mockupEditorTab, setMockupEditorTab] = useState<"html" | "css" | "js">("html");
+  const [mockupLeftTab, setMockupLeftTab] = useState<"spec" | "rubric" | "preview" | "feedback">("spec");
+  const [mockupViewport, setMockupViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
+  const [isEvaluating, setIsEvaluating] = useState(false);
+  const [evalTimer, setEvalTimer] = useState(currentHeroChallenge.time);
+  const [mockupAnnualBilling, setMockupAnnualBilling] = useState(true);
+  const [mockupScore, setMockupScore] = useState(currentHeroChallenge.score);
+  const [mockupLogs, setMockupLogs] = useState<string[]>([
+    "[Sandbox Engine] Isolated iframe sandbox mounted with 2000ms loop-killer.",
+    "[Pre-Filter Gate] Checking syntax & locked scaffolding: PASSED (0.02s).",
+    "[Groq LPU] Ready for diagnostic Run or official Submit.",
+  ]);
 
   // Simulate IDE Evaluation
   const handleRunEvaluation = (type: "run" | "submit") => {
@@ -370,21 +493,20 @@ toggleBtn.addEventListener('click', () => {
     setIsEvaluating(true);
     setMockupLogs((prev) => [
       ...prev,
-      `[Trigger] ${type.toUpperCase()} initiated by user...`,
-      `[Pre-Filter] Checking syntax & locked scaffolding: PASSED (0.02s)`,
+      `[Trigger] ${type.toUpperCase()} initiated on challenge: ${currentHeroChallenge.title.slice(0, 30)}...`,
+      `[Pre-Filter] Structural syntax check: PASSED (0.02s)`,
       `[Groq LPU] Dispatching weighted prompt to LPU inference stream...`,
     ]);
 
     setTimeout(() => {
       setIsEvaluating(false);
-      setMockupScore(type === "submit" ? 96 : 94);
+      const newScore = type === "submit" ? currentHeroChallenge.score : currentHeroChallenge.score - 2;
+      setMockupScore(newScore);
       setEvalTimer(type === "submit" ? "2.1s" : "1.8s");
       setMockupLeftTab("feedback");
       setMockupLogs((prev) => [
         ...prev,
-        `[Groq LPU] Response received (200 OK) in ${type === "submit" ? "2.1s" : "1.8s"}. Score: ${
-          type === "submit" ? "96" : "94"
-        }/100 PASSED.`,
+        `[Groq LPU] Response received (200 OK) in ${type === "submit" ? "2.1s" : "1.8s"}. Score: ${newScore}/100 PASSED.`,
       ]);
     }, 1800);
   };
@@ -427,7 +549,7 @@ toggleBtn.addEventListener('click', () => {
     gsap.ticker.lagSmoothing(0);
 
     const ctx = gsap.context(() => {
-      // 1. Hero Entrance Timeline (Subtle, confident easing)
+      // 1. Hero Entrance Timeline
       const heroTl = gsap.timeline({ defaults: { ease: "power2.out" } });
 
       heroTl
@@ -436,6 +558,7 @@ toggleBtn.addEventListener('click', () => {
         .from(".hero-doodle", { scale: 0.8, opacity: 0, duration: 0.4, stagger: 0.08 }, "-=0.3")
         .from(".hero-subhead", { y: 16, opacity: 0, duration: 0.6 }, "-=0.3")
         .from(".hero-cta", { y: 16, opacity: 0, duration: 0.5, stagger: 0.1 }, "-=0.3")
+        .from(".hero-metric-bar", { y: 20, opacity: 0, duration: 0.6 }, "-=0.2")
         .from(heroMockupRef.current, { y: 25, opacity: 0, duration: 0.8 }, "-=0.2")
         .from(floatingBadgeRef.current, { scale: 0.9, opacity: 0, duration: 0.5 }, "-=0.3")
         .from(".hero-connector", { opacity: 0, duration: 0.6 }, "-=0.2");
@@ -487,7 +610,7 @@ toggleBtn.addEventListener('click', () => {
         });
       }
 
-      // 4. Section Reveals (Fixed Dead-Space Bug: start "top 94%", subtle y: 20, once: true)
+      // 4. Section Reveals (Fixed Dead-Space: start "top 94%", subtle y: 20, once: true)
       const revealSections = gsap.utils.toArray<HTMLElement>(".gsap-reveal");
       revealSections.forEach((section) => {
         gsap.fromTo(
@@ -508,7 +631,7 @@ toggleBtn.addEventListener('click', () => {
         );
       });
 
-      // 5. Staggered Cards Reveal (Fixed Dead-Space Bug: start "top 92%", subtle y: 16)
+      // 5. Staggered Cards Reveal (Fixed Dead-Space: start "top 92%", subtle y: 16)
       const cardGrids = gsap.utils.toArray<HTMLElement>(".gsap-stagger-grid");
       cardGrids.forEach((grid) => {
         const cards = grid.querySelectorAll(".gsap-card");
@@ -531,7 +654,6 @@ toggleBtn.addEventListener('click', () => {
         );
       });
 
-      // Refresh ScrollTrigger to calculate accurate layout boundaries
       ScrollTrigger.refresh();
       setTimeout(() => {
         ScrollTrigger.refresh();
@@ -555,7 +677,7 @@ toggleBtn.addEventListener('click', () => {
       {/* BACKGROUND TEXTURE & AMBIENT AQUA/MINT GLOW LAYERS */}
       {/* ========================================================================= */}
 
-      {/* 1. Subtle Low-Opacity Background Grid Texture (#26262E on #0A0A0F) */}
+      {/* 1. Subtle Background Grid Texture */}
       <div
         className="absolute inset-0 pointer-events-none -z-10 opacity-30"
         style={{
@@ -705,6 +827,13 @@ toggleBtn.addEventListener('click', () => {
               ARCHITECTURE
             </a>
             <a
+              href="#ecosystem"
+              onClick={(e) => handleScrollTo(e, "#ecosystem")}
+              className="hover:text-[#F5F5F7] transition-colors"
+            >
+              ECOSYSTEM
+            </a>
+            <a
               href="#comparison"
               onClick={(e) => handleScrollTo(e, "#comparison")}
               className="hover:text-[#F5F5F7] transition-colors"
@@ -784,25 +913,32 @@ toggleBtn.addEventListener('click', () => {
               04 // CORE ARCHITECTURE
             </a>
             <a
+              href="#ecosystem"
+              onClick={(e) => handleScrollTo(e, "#ecosystem")}
+              className="block py-1.5 text-[#9CA3AF] hover:text-[#ABDAC8]"
+            >
+              05 // TOOLING ECOSYSTEM
+            </a>
+            <a
               href="#comparison"
               onClick={(e) => handleScrollTo(e, "#comparison")}
               className="block py-1.5 text-[#9CA3AF] hover:text-[#ABDAC8]"
             >
-              05 // WHY STAQOR
+              06 // WHY STAQOR
             </a>
             <a
               href="#pricing"
               onClick={(e) => handleScrollTo(e, "#pricing")}
               className="block py-1.5 text-[#9CA3AF] hover:text-[#ABDAC8]"
             >
-              06 // PRICING
+              07 // PRICING
             </a>
             <a
               href="#faq"
               onClick={(e) => handleScrollTo(e, "#faq")}
               className="block py-1.5 text-[#9CA3AF] hover:text-[#ABDAC8]"
             >
-              07 // FAQ
+              08 // FAQ
             </a>
             <div className="pt-2 border-t border-[#26262E] flex gap-2">
               <Link href="/challenges" className="flex-1">
@@ -821,8 +957,8 @@ toggleBtn.addEventListener('click', () => {
       <section ref={heroRef} className="container mx-auto px-6 pt-16 sm:pt-20 pb-20 text-center relative z-10">
         {/* Eyebrow Badge */}
         <div className="hero-badge inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#111614] border border-[#26352E] text-xs font-mono text-[#ABDAC8] mb-8 shadow-sm">
-          <Sparkles className="w-3.5 h-3.5 text-[#ABDAC8]" />
-          <span>SUB-2.5S GROQ AI EVALUATION • 100% CLIENT-SIDE SANDBOX</span>
+          <span className="w-2 h-2 rounded-full bg-[#4ADE80] animate-pulse" />
+          <span>GROQ LPU AI GRADING • SUB-2.5S • 100% IN-BROWSER WORKSPACE</span>
         </div>
 
         {/* Editorial Headline + Hand-Drawn Squiggle Accent */}
@@ -858,14 +994,14 @@ toggleBtn.addEventListener('click', () => {
         </div>
 
         {/* Subhead */}
-        <p className="hero-subhead text-base sm:text-lg md:text-xl text-[#9CA3AF] max-w-3xl mx-auto mb-10 leading-relaxed">
+        <p className="hero-subhead text-base sm:text-lg md:text-xl text-[#9CA3AF] max-w-3xl mx-auto mb-8 leading-relaxed">
           Solve real HTML/CSS, JS DOM, and React component challenges inside a split Monaco IDE. Graded against
           multi-criteria rubrics in &lt;2.5s by Groq AI with zero server latency, and proven with live recruiter replay
           sandboxes.
         </p>
 
         {/* Hero CTA Button Group */}
-        <div className="hero-cta relative inline-flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+        <div className="hero-cta relative inline-flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
           <Link href="/signup">
             <button className="px-8 py-4 text-sm font-bold rounded-xl bg-[#ABDAC8] text-[#0A0A0F] border-2 border-[#ABDAC8] shadow-[5px_5px_0px_#26262E] hover:shadow-[2px_2px_0px_#26262E] hover:translate-x-[3px] hover:translate-y-[3px] active:translate-x-[5px] active:translate-y-[5px] transition-all flex items-center gap-2 cursor-pointer">
               <span>Start Practicing Free</span>
@@ -882,17 +1018,32 @@ toggleBtn.addEventListener('click', () => {
               Explore 8 Tracks Catalog
             </Button>
           </Link>
+        </div>
 
-          <div className="hero-doodle absolute -bottom-12 left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-2 text-xs font-mono text-[#ABDAC8]/90 pointer-events-none">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>5 Runs & 3 Submits Free • Zero Server Lag • Lifetime Quota</span>
+        {/* Key Metrics Strip (Hero Feature Bar) */}
+        <div className="hero-metric-bar max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 mb-14">
+          <div className="p-3.5 rounded-xl bg-[#111117]/80 border border-[#26262E] text-left">
+            <span className="text-xl font-bold font-mono text-[#ABDAC8] block">&lt; 2.5s</span>
+            <span className="text-[11px] font-mono text-[#9CA3AF]">Groq AI Inference Time</span>
+          </div>
+          <div className="p-3.5 rounded-xl bg-[#111117]/80 border border-[#26262E] text-left">
+            <span className="text-xl font-bold font-mono text-[#ABDAC8] block">8 Tracks</span>
+            <span className="text-[11px] font-mono text-[#9CA3AF]">HTML/CSS to React & APIs</span>
+          </div>
+          <div className="p-3.5 rounded-xl bg-[#111117]/80 border border-[#26262E] text-left">
+            <span className="text-xl font-bold font-mono text-[#4ADE80] block">100% Client</span>
+            <span className="text-[11px] font-mono text-[#9CA3AF]">Zero Docker Cold Starts</span>
+          </div>
+          <div className="p-3.5 rounded-xl bg-[#111117]/80 border border-[#26262E] text-left">
+            <span className="text-xl font-bold font-mono text-[#ABDAC8] block">35/35/30%</span>
+            <span className="text-[11px] font-mono text-[#9CA3AF]">Weighted Multi-Rubric</span>
           </div>
         </div>
 
         {/* ===================================================================== */}
-        {/* INTERACTIVE HERO WORKSPACE SIMULATION (Lawtrades Signature Overlap) */}
+        {/* INTERACTIVE HERO WORKSPACE SIMULATION */}
         {/* ===================================================================== */}
-        <div id="workspace-demo" className="relative max-w-5xl mx-auto pt-6">
+        <div id="workspace-demo" className="relative max-w-5xl mx-auto pt-4">
           {/* Dotted Connector Line */}
           <svg
             className="hero-connector absolute -top-10 right-24 w-48 h-32 hidden lg:block pointer-events-none z-20"
@@ -931,15 +1082,15 @@ toggleBtn.addEventListener('click', () => {
             <div className="space-y-1.5 text-[11px] font-mono text-[#9CA3AF]">
               <div className="flex justify-between items-center">
                 <span>Layout & Visual Fidelity:</span>
-                <span className="text-[#ABDAC8] font-semibold">35/35%</span>
+                <span className="text-[#ABDAC8] font-semibold">{currentHeroChallenge.rubricDesign}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span>DOM & Toggle State:</span>
-                <span className="text-[#ABDAC8] font-semibold">34/35%</span>
+                <span>DOM & State Logic:</span>
+                <span className="text-[#ABDAC8] font-semibold">{currentHeroChallenge.rubricLogic}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span>Semantic Cleanliness:</span>
-                <span className="text-[#ABDAC8] font-semibold">25/30%</span>
+                <span className="text-[#ABDAC8] font-semibold">{currentHeroChallenge.rubricQuality}</span>
               </div>
             </div>
             <div className="mt-3 pt-2.5 border-t border-[#26262E] flex items-center justify-between text-[10px] font-mono text-[#9CA3AF]">
@@ -948,24 +1099,45 @@ toggleBtn.addEventListener('click', () => {
             </div>
           </div>
 
-          {/* Main Interactive IDE Window */}
+          {/* Main Interactive IDE Window with Efferd Corner Decor */}
           <div
             ref={heroMockupRef}
             className="rounded-2xl border border-[#26262E] bg-[#111117] shadow-[0_30px_90px_rgba(0,0,0,0.9),0_0_30px_rgba(171,218,200,0.06)] overflow-hidden text-left relative"
           >
-            {/* Extended Corner Decor */}
             <DecorIcon position="top-left" className="text-[#ABDAC8]/40" />
             <DecorIcon position="top-right" className="text-[#ABDAC8]/40" />
 
-            {/* Top Workspace Bar */}
-            <div className="h-11 border-b border-[#26262E] bg-[#0E0E14] px-4 flex flex-wrap items-center justify-between gap-2">
+            {/* Top Workspace Bar with Challenge Switcher */}
+            <div className="border-b border-[#26262E] bg-[#0E0E14] px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-[#F87171]/80" />
                 <div className="w-3 h-3 rounded-full bg-[#FBBF24]/80" />
                 <div className="w-3 h-3 rounded-full bg-[#4ADE80]/80" />
-                <span className="text-xs font-mono text-[#9CA3AF] ml-2 hidden sm:inline">
-                  staqor-workspace // interactive-pricing-card
-                </span>
+                
+                {/* Challenge Switcher Pills inside Hero */}
+                <div className="ml-2 flex items-center gap-1.5 bg-[#16161F] p-1 rounded-lg border border-[#26262E]">
+                  {HERO_CHALLENGES.map((ch, idx) => (
+                    <button
+                      key={ch.id}
+                      onClick={() => {
+                        setHeroChallengeIdx(idx);
+                        setMockupScore(ch.score);
+                        setEvalTimer(ch.time);
+                        setMockupLogs((prev) => [
+                          ...prev,
+                          `[Workspace] Switched challenge to: ${ch.title}`,
+                        ]);
+                      }}
+                      className={`px-2.5 py-1 text-[10px] font-mono rounded transition-all cursor-pointer ${
+                        heroChallengeIdx === idx
+                          ? "bg-[#ABDAC8] text-[#0A0A0F] font-bold"
+                          : "text-[#9CA3AF] hover:text-[#F5F5F7]"
+                      }`}
+                    >
+                      {ch.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div className="flex items-center gap-2">
@@ -1036,20 +1208,19 @@ toggleBtn.addEventListener('click', () => {
                     <div className="space-y-3">
                       <div className="flex items-center gap-2">
                         <Badge variant="outline" className="text-[10px] font-mono text-[#4ADE80] border-[#4ADE80]/30">
-                          EASY
+                          {currentHeroChallenge.difficulty}
                         </Badge>
                         <Badge variant="outline" className="text-[10px] font-mono border-[#26262E]">
-                          HTML & CSS
+                          {currentHeroChallenge.track}
                         </Badge>
                         <span className="text-[11px] font-mono text-[#9CA3AF]">Runs: 1/5 • Submits: 1/3</span>
                       </div>
 
                       <h3 className="text-sm sm:text-base font-bold text-[#F5F5F7]">
-                        Interactive Pricing Table with Monthly/Annual Switch
+                        {currentHeroChallenge.title}
                       </h3>
                       <p className="text-xs text-[#9CA3AF] leading-relaxed">
-                        Construct a responsive pricing matrix featuring an annual billing toggle that updates prices
-                        dynamically with accessible semantics and CSS transitions.
+                        {currentHeroChallenge.desc}
                       </p>
 
                       <div className="p-3 rounded-lg bg-[#16161F] border border-[#26262E] space-y-1.5 text-xs">
@@ -1057,15 +1228,13 @@ toggleBtn.addEventListener('click', () => {
                           Requirement Checklist
                         </span>
                         <p className="text-[11px] text-[#9CA3AF] flex items-center gap-1.5">
-                          <Check className="w-3.5 h-3.5 text-[#4ADE80]" /> Responsive CSS Grid (1-col on mobile, 3 on
-                          desktop)
+                          <Check className="w-3.5 h-3.5 text-[#4ADE80]" /> Verified responsive layout & grid alignment
                         </p>
                         <p className="text-[11px] text-[#9CA3AF] flex items-center gap-1.5">
-                          <Check className="w-3.5 h-3.5 text-[#4ADE80]" /> Click listener updates rate without full
-                          page reload
+                          <Check className="w-3.5 h-3.5 text-[#4ADE80]" /> Event delegation & dynamic state transitions
                         </p>
                         <p className="text-[11px] text-[#9CA3AF] flex items-center gap-1.5">
-                          <Check className="w-3.5 h-3.5 text-[#4ADE80]" /> Semantic button tags with ARIA labels
+                          <Check className="w-3.5 h-3.5 text-[#4ADE80]" /> Clean semantic HTML & accessibility ARIA
                         </p>
                       </div>
                     </div>
@@ -1193,14 +1362,13 @@ toggleBtn.addEventListener('click', () => {
                           <span className="text-xs font-mono text-[#ABDAC8] font-bold">{mockupScore}/100</span>
                         </div>
                         <p className="text-[11px] text-[#9CA3AF] leading-relaxed">
-                          Exceptional implementation! The annual billing state changes flawlessly without layout shift.
-                          CSS Grid alignment holds robustly across responsive breakpoints.
+                          Exceptional craft! The solution passes all criteria with zero token waste on syntax errors and complete responsive fidelity.
                         </p>
                       </div>
 
                       <div className="text-[11px] font-mono space-y-1 text-[#9CA3AF]">
                         <p className="text-[#ABDAC8]">💡 Recommendation for production:</p>
-                        <p>Consider adding `aria-pressed=&quot;true&quot;` to the toggle switch for enhanced screen reader feedback.</p>
+                        <p>Consider adding `aria-pressed=&quot;true&quot;` to the interactive toggle element for enhanced screen reader feedback.</p>
                       </div>
                     </div>
                   )}
@@ -1256,7 +1424,7 @@ toggleBtn.addEventListener('click', () => {
 
                 {/* Monaco Code Pane */}
                 <div className="p-4 font-mono text-[11px] text-[#9CA3AF] bg-[#0B0B10] flex-1 overflow-x-auto leading-relaxed border-b border-[#26262E]">
-                  <pre className="text-[#F5F5F7]/90">{codeSnippets[mockupEditorTab]}</pre>
+                  <pre className="text-[#F5F5F7]/90">{currentHeroChallenge.code[mockupEditorTab]}</pre>
                 </div>
 
                 {/* Stacked LeetCode-Style Interactive Console Drawer */}
@@ -1326,24 +1494,15 @@ toggleBtn.addEventListener('click', () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 3. TRUST STRIP / TECH STACK MARQUEE */}
+      {/* 3. TRUST STRIP & EFFRED LOGO CLOUD */}
       {/* ========================================================================= */}
       <section className="gsap-reveal border-y border-[#26262E]/70 py-10 bg-[#0E0E14]/50">
-        <div className="container mx-auto px-6 text-center">
+        <div className="container mx-auto px-6 text-center max-w-6xl">
           <p className="text-xs font-mono uppercase tracking-widest text-[#9CA3AF]/70 mb-6">
-            Targeting modern frontend roles at engineering-led tech teams
+            Supported by Modern Frontend Infrastructure & Industry Standards
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16 opacity-70">
-            {["VERCEL", "STRIPE", "LINEAR", "SUPABASE", "RETOOL", "SHOPIFY", "AIRBNB", "GITHUB"].map((brand) => (
-              <span
-                key={brand}
-                className="text-sm md:text-base font-bold font-mono tracking-widest text-[#9CA3AF] hover:text-[#ABDAC8] transition-colors"
-              >
-                {brand}
-              </span>
-            ))}
-          </div>
+          <LogoCloud />
         </div>
       </section>
 
@@ -1538,7 +1697,7 @@ toggleBtn.addEventListener('click', () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 6. CORE ARCHITECTURE PILLARS */}
+      {/* 6. CORE ARCHITECTURE PILLARS (Efferd Features-4 Style) */}
       {/* ========================================================================= */}
       <section id="features" className="container mx-auto px-6 py-20 max-w-6xl">
         <div className="text-center max-w-2xl mx-auto mb-14">
@@ -1611,7 +1770,26 @@ toggleBtn.addEventListener('click', () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 7. FEATURE COMPARISON TABLE (Why Staqor) */}
+      {/* 7. INTEGRATIONS & DEVELOPER ECOSYSTEM (Efferd Integrations-1) */}
+      {/* ========================================================================= */}
+      <section id="ecosystem" className="gsap-reveal container mx-auto px-6 py-20 max-w-6xl">
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <Badge variant="outline" className="text-xs font-mono text-[#ABDAC8] border-[#ABDAC8]/30 mb-3 bg-[#111614]">
+            DEVELOPER ECOSYSTEM
+          </Badge>
+          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#F5F5F7] mb-4">
+            Built on Cutting-Edge <span className="font-serif italic font-normal text-[#ABDAC8]">Platform Primitives.</span>
+          </h2>
+          <p className="text-sm sm:text-base text-[#9CA3AF]">
+            Zero-bloat architecture integrating industry-standard runtime engines and high-throughput inference pipelines.
+          </p>
+        </div>
+
+        <Integrations />
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 8. FEATURE COMPARISON TABLE (Why Staqor) */}
       {/* ========================================================================= */}
       <section id="comparison" className="gsap-reveal container mx-auto px-6 py-20 max-w-5xl">
         <div className="text-center max-w-2xl mx-auto mb-14">
@@ -1683,7 +1861,7 @@ toggleBtn.addEventListener('click', () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 8. DEVELOPER & RECRUITER TESTIMONIALS */}
+      {/* 9. DEVELOPER & RECRUITER TESTIMONIALS */}
       {/* ========================================================================= */}
       <section className="gsap-reveal container mx-auto px-6 py-16 max-w-6xl">
         <div className="text-center max-w-2xl mx-auto mb-12">
@@ -1728,7 +1906,7 @@ toggleBtn.addEventListener('click', () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 9. PRICING PREVIEW SECTION */}
+      {/* 10. PRICING PREVIEW SECTION */}
       {/* ========================================================================= */}
       <section id="pricing" className="gsap-reveal container mx-auto px-6 py-20 max-w-5xl">
         <div className="text-center max-w-2xl mx-auto mb-14">
@@ -1873,49 +2051,59 @@ toggleBtn.addEventListener('click', () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 10. FREQUENTLY ASKED QUESTIONS (FAQ) — Radix UI Accordion */}
+      {/* 11. FREQUENTLY ASKED QUESTIONS (FAQ) — Efferd Faqs-2 Radix Accordion */}
       {/* ========================================================================= */}
-      <section id="faq" className="gsap-reveal container mx-auto px-6 py-20 max-w-4xl">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <Badge variant="outline" className="text-xs font-mono text-[#ABDAC8] border-[#ABDAC8]/30 mb-3 bg-[#111614]">
-            GOT QUESTIONS?
-          </Badge>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#F5F5F7]">
-            Frequently Asked <span className="font-serif italic font-normal text-[#ABDAC8]">Questions.</span>
-          </h2>
-        </div>
+      <section id="faq" className="gsap-reveal container mx-auto px-6 py-20 max-w-5xl">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+          <div className="md:col-span-5 space-y-4">
+            <Badge variant="outline" className="text-xs font-mono text-[#ABDAC8] border-[#ABDAC8]/30 mb-1 bg-[#111614]">
+              GOT QUESTIONS?
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#F5F5F7]">
+              Frequently Asked <span className="font-serif italic font-normal text-[#ABDAC8]">Questions.</span>
+            </h2>
+            <p className="text-xs sm:text-sm text-[#9CA3AF] leading-relaxed">
+              Everything you need to know about our Groq LPU evaluation engine, client-side sandbox execution, and lifetime quotas.
+            </p>
+            <div className="pt-2">
+              <a
+                href="mailto:support@staqor.dev?subject=Question%20about%20Staqor"
+                className="text-xs font-mono text-[#ABDAC8] hover:underline inline-flex items-center gap-1"
+              >
+                <span>Have a custom question? Email our engineering team</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </a>
+            </div>
+          </div>
 
-        <Accordion type="single" collapsible defaultValue="faq-1" className="space-y-3">
-          {FAQ_ITEMS.map((item) => (
-            <AccordionItem
-              key={item.id}
-              value={item.id}
-              className="rounded-2xl border border-[#26262E] bg-[#111117] px-6 transition-all overflow-hidden"
-            >
-              <AccordionTrigger className="text-left text-sm sm:text-base font-bold text-[#F5F5F7] hover:no-underline py-5 focus-visible:outline-none">
-                <span>{item.q}</span>
-              </AccordionTrigger>
-              <AccordionContent className="pb-5 pt-1 text-xs sm:text-sm text-[#9CA3AF] leading-relaxed border-t border-[#26262E]/50">
-                {item.a}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+          <div className="md:col-span-7">
+            <Accordion type="single" collapsible defaultValue="faq-1" className="space-y-3">
+              {FAQ_ITEMS.map((item) => (
+                <AccordionItem
+                  key={item.id}
+                  value={item.id}
+                  className="rounded-2xl border border-[#26262E] bg-[#111117] px-6 transition-all overflow-hidden"
+                >
+                  <AccordionTrigger className="text-left text-sm sm:text-base font-bold text-[#F5F5F7] hover:no-underline py-5 focus-visible:outline-none">
+                    <span>{item.q}</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-5 pt-1 text-xs sm:text-sm text-[#9CA3AF] leading-relaxed border-t border-[#26262E]/50">
+                    {item.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </div>
       </section>
 
       {/* ========================================================================= */}
-      {/* 11. FINAL CTA BANNER & FOOTER */}
+      {/* 12. FINAL CTA BANNER */}
       {/* ========================================================================= */}
       <section className="gsap-reveal container mx-auto px-6 py-20 max-w-5xl">
         <div className="p-10 md:p-16 rounded-3xl bg-[#111614] border border-[#ABDAC8]/40 shadow-[0_30px_90px_rgba(0,0,0,0.8),0_0_40px_rgba(171,218,200,0.1)] text-center relative overflow-hidden">
-          <div className="absolute top-8 left-8 hidden sm:block opacity-40">
-            <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
-              <path
-                d="M18 0L20.5 13.5L34 16L20.5 18.5L18 32L15.5 18.5L2 16L15.5 13.5L18 0Z"
-                fill="#ABDAC8"
-              />
-            </svg>
-          </div>
+          <DecorIcon position="top-left" className="text-[#ABDAC8]/40" />
+          <DecorIcon position="bottom-right" className="text-[#ABDAC8]/40" />
 
           <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#F5F5F7] mb-4 max-w-2xl mx-auto leading-tight">
             Ready to prove your frontend{" "}
@@ -1934,60 +2122,10 @@ toggleBtn.addEventListener('click', () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-[#26262E]/70 py-12 bg-[#0E0E14]/70 text-xs font-mono text-[#9CA3AF]">
-        <div className="container mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded bg-[#ABDAC8]/20 border border-[#ABDAC8]/40 flex items-center justify-center">
-              <Terminal className="w-3 h-3 text-[#ABDAC8]" />
-            </div>
-            <span className="font-bold text-[#F5F5F7]">STAQOR</span>
-            <span>• In-Browser IDE & AI Rubric Platform</span>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-6">
-            <a
-              href="#how-it-works"
-              onClick={(e) => handleScrollTo(e, "#how-it-works")}
-              className="hover:text-[#F5F5F7] transition-colors"
-            >
-              Workflow
-            </a>
-            <a
-              href="#tracks"
-              onClick={(e) => handleScrollTo(e, "#tracks")}
-              className="hover:text-[#F5F5F7] transition-colors"
-            >
-              Tracks
-            </a>
-            <a
-              href="#features"
-              onClick={(e) => handleScrollTo(e, "#features")}
-              className="hover:text-[#F5F5F7] transition-colors"
-            >
-              Architecture
-            </a>
-            <a
-              href="#pricing"
-              onClick={(e) => handleScrollTo(e, "#pricing")}
-              className="hover:text-[#F5F5F7] transition-colors"
-            >
-              Pricing
-            </a>
-            <a
-              href="#faq"
-              onClick={(e) => handleScrollTo(e, "#faq")}
-              className="hover:text-[#F5F5F7] transition-colors"
-            >
-              FAQ
-            </a>
-            <span className="inline-flex items-center gap-1.5 text-[#4ADE80]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-pulse" />
-              All Systems Operational
-            </span>
-          </div>
-        </div>
-      </footer>
+      {/* ========================================================================= */}
+      {/* 13. COMPREHENSIVE FOOTER (Efferd Footer-3) */}
+      {/* ========================================================================= */}
+      <Footer />
     </div>
   );
 }

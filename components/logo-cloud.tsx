@@ -1,56 +1,32 @@
+import React from "react";
+
 export function LogoCloud() {
-	return (
-		<div className="grid grid-cols-2 rounded-lg bg-border shadow md:grid-cols-4">
-			{logos.map((logo) => (
-				<div
-					className="flex items-center justify-center rounded-lg border bg-background p-8"
-					key={logo.alt}
-				>
-					<img
-						alt={logo.alt}
-						className="pointer-events-none block h-4 select-none md:h-5 dark:brightness-0 dark:invert"
-						height="auto"
-						loading="lazy"
-						src={logo.src}
-						width="auto"
-					/>
-				</div>
-			))}
-		</div>
-	);
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 rounded-2xl bg-[#0E0E14] p-2 border border-[#26262E]">
+      {logos.map((logo) => (
+        <div
+          className="flex flex-col items-center justify-center rounded-xl border border-[#26262E]/70 bg-[#111117] py-4 px-3 hover:border-[#ABDAC8]/40 hover:bg-[#16161F] transition-all group"
+          key={logo.name}
+        >
+          <span className="text-xs font-mono font-bold tracking-wider text-[#9CA3AF] group-hover:text-[#ABDAC8] transition-colors">
+            {logo.name}
+          </span>
+          <span className="text-[9px] font-mono text-[#6B7280] uppercase mt-0.5">
+            {logo.role}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 const logos = [
-	{
-		src: "https://storage.efferd.com/logo/nvidia-wordmark.svg",
-		alt: "Nvidia Logo",
-	},
-	{
-		src: "https://storage.efferd.com/logo/supabase-wordmark.svg",
-		alt: "Supabase Logo",
-	},
-	{
-		src: "https://storage.efferd.com/logo/openai-wordmark.svg",
-		alt: "OpenAI Logo",
-	},
-	{
-		src: "https://storage.efferd.com/logo/turso-wordmark.svg",
-		alt: "Turso Logo",
-	},
-	{
-		src: "https://storage.efferd.com/logo/vercel-wordmark.svg",
-		alt: "Vercel Logo",
-	},
-	{
-		src: "https://storage.efferd.com/logo/github-wordmark.svg",
-		alt: "GitHub Logo",
-	},
-	{
-		src: "https://storage.efferd.com/logo/claude-wordmark.svg",
-		alt: "Claude AI Logo",
-	},
-	{
-		src: "https://storage.efferd.com/logo/clerk-wordmark.svg",
-		alt: "Clerk Logo",
-	},
+  { name: "VERCEL", role: "Edge Hosting" },
+  { name: "SUPABASE", role: "Auth & DB" },
+  { name: "GROQ LPU", role: "AI Judge" },
+  { name: "MONACO", role: "Code Editor" },
+  { name: "TYPESCRIPT", role: "Type Safety" },
+  { name: "REACT 18", role: "Component UI" },
+  { name: "TAILWIND", role: "Design Tokens" },
+  { name: "GITHUB", role: "OAuth & Sync" },
 ];

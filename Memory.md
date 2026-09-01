@@ -16,24 +16,25 @@
 
 ---
 
-### [2026-09-01] — Landing Page: ScrollTrigger Dead-Space Fix, Scroll-Linked Glow Line & Grid Texture
+### [2026-09-01] — Landing Page: Hero Polish, Efferd Blocks Integration & Scroll-Linked Glow Line
 - **What was built:**
-  - **ScrollTrigger Dead-Space Bug Fix (`app/(marketing)/page.tsx`):**
-    - Reduced `y` translation offsets on section reveals and card grids to subtle values (`y: 20` and `y: 16`), preventing large empty offsets.
-    - Adjusted ScrollTrigger trigger thresholds to `start: "top 94%"` and `start: "top 92%"` with `once: true`, ensuring content becomes visible the moment it enters the viewport without dead scroll gaps.
-    - Added automated trigger refreshes on mount and resize (`ScrollTrigger.refresh()`).
-  - **Scroll-Responsive Glowing Accent Line (`app/(marketing)/page.tsx`):**
-    - Rendered an SVG glowing path spanning the entire landing page behind content, styled in Staqor's mint/aqua palette (`#ABDAC8`, `#7BC4A8`, `#D4EDE3`) with SVG blur glow filter.
-    - Linked `strokeDashoffset` dynamically with scroll position using GSAP ScrollTrigger `scrub: 0.6`.
-  - **Background Grid & Particle Texture (`app/(marketing)/page.tsx`):**
-    - Added subtle low-opacity CSS grid texture (`#26262E` on `#0A0A0F`) with radial center mask.
-    - Added multi-stop ambient aqua/mint background glow gradients and scattered floating particle dots with gentle pulse animations.
-  - **Installed @efferd UI blocks & Integrated Radix UI Accordion (`components/ui/accordion.tsx`, `components/decor-icon.tsx`):**
-    - Fixed duplicate tailwind config animation/keyframe keys.
-    - Styled FAQ section with Radix UI accordion.
+  - **Enhanced Hero Section (`app/(marketing)/page.tsx`):**
+    - Multi-Challenge Interactive Switcher inside the Hero IDE Mockup (*Pricing Switcher*, *Kanban Task Board*, *Virtual Grid*) with dynamic spec, code snippet, and rubric criteria updates.
+    - Added Key Metrics Strip highlighting `<2.5s` Inference Time, `8 Tracks`, `100% Client-Side`, and `35/35/30%` Weighted Multi-Rubric.
+    - Corner cross decoration motifs (`DecorIcon` from `@efferd/features-4`) and responsive floating AI verdict badge.
+  - **Integrated `@efferd` UI Blocks:**
+    - `<LogoCloud />` ([`components/logo-cloud.tsx`](file:///D:/Staqor/components/logo-cloud.tsx)): Tech ecosystem trust row with Vercel, Supabase, Groq LPU, Monaco, TypeScript, React 18, Tailwind, and GitHub.
+    - `<Integrations />` ([`components/integrations.tsx`](file:///D:/Staqor/components/integrations.tsx)): Developer tooling ecosystem cards highlighting Monaco Editor, Groq LPU, Sandbox security, and Supabase.
+    - `<FeatureCard />` with `<DecorIcon />`: Enhanced Architecture section with corner accents and extended borders.
+    - `<Accordion />` ([`components/ui/accordion.tsx`](file:///D:/Staqor/components/ui/accordion.tsx)): Radix UI accordion in 2-column FAQ layout with engineering contact link.
+    - `<Footer />` ([`components/footer.tsx`](file:///D:/Staqor/components/footer.tsx)): 3-column navigation, operational status badge, and legal notices.
+  - **ScrollTrigger Dead-Space Fix & Scroll-Linked Glow Line:**
+    - Corrected trigger start thresholds (`start: "top 94%"` and `start: "top 92%"` with `once: true`).
+    - Added continuous SVG mint/aqua glowing accent line synced to scroll position via GSAP scrub.
+    - Added subtle background grid pattern and ambient multi-stop radial glows.
 - **Known gaps / notes:**
   - Production build compiled successfully (`next build`).
-- **Next recommended action:** Ready for git commit and review.
+- **Next recommended action:** Ready for deployment or user testing.
 
 ### [2026-09-01] — Phase 2 & Groq: Locked Code Regions & Structural Correctness Pre-Filter Gate
 - **What was built:**
