@@ -16,6 +16,15 @@
 
 ---
 
+### [2026-09-01] — Phase 2 & Workspace: Stacked IDE/Console & 4-Tab Problem/Live Preview Split
+- **What was built:**
+  - **Left Panel (40%):** Added 4th tab "Live Preview" alongside "Problem Spec", "Rubric Criteria", and "AI Feedback". Houses the sandboxed iframe runtime (`sandbox="allow-scripts allow-modals"`), status badges ("LIVE SANDBOX" / "Isolated Runtime"), viewport device toggles (Desktop/Tablet/Mobile), and "Re-run" action.
+  - **Right Panel (60%):** Expanded Monaco Code Editor (`index.html`, `style.css`, `script.js`) to full panel width. Stacked the full-width Sandbox Console vertically beneath it (LeetCode-style Code / Test Result split) with draggable resize divider (`#26262E`), collapse toggle, timestamped logs, and log counter badge.
+  - **Styling:** Adheres strictly to `Design.md` App Shell Mode (near-black `#0A0A0F` canvas, `#111117` panels, `#26262E` separators, mint `#ABDAC8` active tab underlines and buttons, zero GSAP).
+- **Known gaps / notes:**
+  - Code hot-reloading and evaluation synchronization verified across all 4 left panel tabs and right console drawer.
+- **Next recommended action:** Proceed with challenge test-case expansions and rubric tuning.
+
 ### [2026-09-01] — Phase 3 & Auth: LeetCode-Style Challenges Catalog + OAuth Redirect Bugfix
 - **What was built:**
   - **Auth OAuth Redirect Bugfix (`lib/auth/url.ts`, `app/auth/callback/route.ts`, `lib/supabase/middleware.ts`, `app/(auth)/login/page.tsx`, `app/(auth)/signup/page.tsx`):**
