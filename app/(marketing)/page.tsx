@@ -1,596 +1,213 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
-  Terminal,
-  ArrowRight,
-  Code2,
-  Sparkles,
-  ShieldCheck,
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  Zap,
-  Play,
-  Layers,
-  Cpu,
-  Eye,
-  ExternalLink,
-  Award,
-  RotateCcw,
-  Monitor,
-  Smartphone,
-  Tablet,
-  Lock,
-  Server,
-  Bug,
-  Layout,
-  CheckCircle2,
-  Star,
-  Menu,
-  X,
-  Database,
-  ArrowUpRight,
-} from "lucide-react";
-import Lenis from "lenis";
-import { gsap } from "gsap";
+import { motion, AnimatePresence } from "framer-motion";
+import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+  ArrowRight,
+  ChevronRight,
+  Users,
+  Sparkles,
+  CheckCircle2,
+  ShieldCheck,
+  Flame,
+  GitCommitHorizontal,
+  Code2,
+  Rocket,
+  Layers,
+  Terminal,
+  Trophy,
+  Briefcase,
+  HelpCircle,
+  ChevronDown,
+  X,
+  Star,
+  Quote,
+  Mail,
+  MessageSquare,
+  Menu,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CardContent } from "@/components/ui/card";
+import { SpotlightCard } from "@/components/SpotlightCard";
 import { UserNav } from "@/components/navigation/UserNav";
-import { DecorIcon } from "@/components/decor-icon";
-import { LogoCloud } from "@/components/logo-cloud";
-import { Integrations } from "@/components/integrations";
-import { Footer } from "@/components/footer";
 
 // ---------------------------------------------------------------------------
-// 8 Tracks Data (Matches App Catalog)
+// Dynamic Hero Live Proof Submissions
 // ---------------------------------------------------------------------------
-const TRACKS_DATA = [
+const PROOF_SUBMISSIONS = [
   {
-    id: "html-css",
-    title: "HTML & CSS Layouts",
-    tag: "UI & STYLING",
-    icon: Code2,
-    desc: "Master Flexbox, CSS Grid, animations, fluid typography, and responsive micro-interactions.",
-    challengesCount: 14,
-    sample: {
-      name: "Responsive Pricing Matrix with Annual Switch",
-      difficulty: "EASY",
-      estTime: "25m",
-      rubricFocus: "CSS Flex/Grid alignment & responsive breakpoint shifts",
-    },
-  },
-  {
-    id: "javascript",
-    title: "JavaScript & DOM",
-    tag: "LOGIC & EVENTS",
-    icon: Terminal,
-    desc: "Build interactive widgets, stateful DOM mutations, event delegations, and client-side storage.",
-    challengesCount: 18,
-    sample: {
-      name: "Drag-and-Drop Kanban Task Board",
-      difficulty: "MEDIUM",
-      estTime: "40m",
-      rubricFocus: "HTML5 Drag & Drop API, column re-ordering, state persistence",
-    },
-  },
-  {
-    id: "react",
-    title: "React Components",
-    tag: "MODERN SPA",
-    icon: Zap,
-    desc: "Author custom hooks, compound components, virtualized lists, and accessible modal dialogs.",
-    challengesCount: 16,
-    sample: {
-      name: "Virtualized Infinite Scroll Product Grid",
-      difficulty: "HARD",
-      estTime: "50m",
-      rubricFocus: "Intersection Observer hook, windowing, memory recycling",
-    },
-  },
-  {
-    id: "vue",
-    title: "Vue.js Reactive UI",
-    tag: "COMPOSITION API",
-    icon: Sparkles,
-    desc: "Leverage Vue 3 Composition API, custom directives, computed watchers, and reactive store patterns.",
-    challengesCount: 10,
-    sample: {
-      name: "Dynamic Multi-Step Form with Schema Validation",
-      difficulty: "MEDIUM",
-      estTime: "35m",
-      rubricFocus: "Reactivity transform, custom v-model modifiers, validation errors",
-    },
-  },
-  {
-    id: "node-api",
-    title: "Node.js & Mock APIs",
-    tag: "DATA & REST",
-    icon: Server,
-    desc: "Build RESTful route handlers, request payload validation, pagination algorithms, and rate limiters.",
-    challengesCount: 8,
-    sample: {
-      name: "In-Memory Rate Limiter Token Bucket",
-      difficulty: "MEDIUM",
-      estTime: "30m",
-      rubricFocus: "Sliding window rate algorithm, header serialization",
-    },
-  },
-  {
-    id: "bug-fix",
-    title: "Real-World Bug Fixes",
-    tag: "DIAGNOSTICS",
-    icon: Bug,
-    desc: "Inspect broken codebases, identify layout glitches, patch event memory leaks, and fix race conditions.",
-    challengesCount: 12,
-    sample: {
-      name: "Patching Async Race Conditions in Autocomplete",
-      difficulty: "HARD",
-      estTime: "35m",
-      rubricFocus: "AbortController signal cancellation & stale promise drops",
-    },
-  },
-  {
-    id: "full-stack",
-    title: "Full-Stack Scenarios",
-    tag: "END-TO-END",
-    icon: Layout,
-    desc: "Connect frontend components with mock API backends, handling loading, optimistic updates, and errors.",
-    challengesCount: 7,
-    sample: {
-      name: "Optimistic Comment Thread with Offline Queue",
-      difficulty: "HARD",
-      estTime: "60m",
-      rubricFocus: "Optimistic UI rendering, rollback on 500 error, queue sync",
-    },
-  },
-];
-
-// ---------------------------------------------------------------------------
-// How It Works Steps
-// ---------------------------------------------------------------------------
-const HOW_IT_WORKS_STEPS = [
-  {
-    num: "01",
-    tag: "DISCOVER",
-    title: "Choose a Real-World Challenge",
-    desc: "Filter across 8 tracks (HTML/CSS, JS/DOM, React, Vue, Node.js, Bug-Fix, Full-Stack) and difficulty levels. Study comprehensive Figma-aligned specs and rubrics.",
-    preview: {
-      track: "HTML & CSS",
-      title: "Responsive Pricing Table with Annual Toggle",
-      difficulty: "EASY",
-      time: "25 MINS",
-    },
-  },
-  {
-    num: "02",
-    tag: "IN-BROWSER IDE",
-    title: "Code in Split Monaco + Live Preview",
-    desc: "Write HTML, CSS, and JS across dedicated tabs with locked scaffolding enforcement. Watch real-time component updates inside an isolated sandbox with loop protection.",
-    preview: {
-      track: "LIVE WORKSPACE",
-      title: "Monaco v0.46 + Debounced Sandboxed Iframe",
-      difficulty: "CLIENT-SIDE",
-      time: "ZERO LAG",
-    },
-  },
-  {
-    num: "03",
-    tag: "PRE-FILTER & AI RUBRIC",
-    title: "Sub-2.5s Groq AI Evaluation",
-    desc: "Instant syntax pre-filter gate prevents quota waste on typos. Groq LPU evaluates visual fidelity, DOM events, and semantic cleanliness against weighted rubrics in <2.5s.",
-    preview: {
-      track: "GROQ LPU CLOUD",
-      title: "Weighted JSON Rubric (Design 35% • Logic 35% • Quality 30%)",
-      difficulty: ">= 80% TO PASS",
-      time: "< 2.5 SECONDS",
-    },
-  },
-  {
-    num: "04",
-    tag: "RECRUITER PROOF",
-    title: "Build Verified Public Portfolios",
-    desc: "Passed solutions generate interactive read-only sandboxes. Hiring managers and recruiters test your live components with one click without cloning repositories.",
-    preview: {
-      track: "LIVE PORTFOLIO",
-      title: "Verified Candidate Sandbox + Read-Only Replay",
-      difficulty: "PROVABLE CRAFT",
-      time: "ONE-CLICK DEMO",
-    },
-  },
-];
-
-// ---------------------------------------------------------------------------
-// FAQ Data
-// ---------------------------------------------------------------------------
-const FAQ_ITEMS = [
-  {
-    id: "faq-1",
-    q: "How is Staqor different from LeetCode or HackerRank?",
-    a: "LeetCode tests abstract algorithmic puzzle solving (trees, dynamic programming) through stdout return values. Staqor tests actual frontend engineering: responsive layout fidelity, CSS Grid/Flexbox architecture, DOM event handling, component state management, and code cleanliness—graded by Groq AI in real time.",
-  },
-  {
-    id: "faq-2",
-    q: "How does Groq AI evaluate frontend UI without a headless browser?",
-    a: "Staqor utilizes high-throughput Groq LPU models conditioned on exact UI specifications, design guidelines, and weighted multi-criteria rubrics (35% Visual Design, 35% DOM/State Logic, 30% Semantic Code Quality). It analyzes your structural HTML, CSS rules, and JavaScript logic to provide actionable, line-specific feedback in under 2.5 seconds.",
-  },
-  {
-    id: "faq-3",
-    q: "What is the Structural Correctness Pre-Filter Gate?",
-    a: "Before spending a Groq AI call, Staqor's client-side pre-filter analyzes JavaScript syntax, unclosed HTML tags, and track-specific code presence. If a syntax error or empty submission is detected, you get instant diagnosis with zero quota deduction.",
-  },
-  {
-    id: "faq-4",
-    q: "Why is there a limit of 5 Runs and 3 Submits on the Free plan?",
-    a: "The free lifetime quota (5 Runs & 3 Submits per challenge) encourages disciplined, thoughtful coding while keeping high-speed Groq AI infrastructure free for everyone. Pro members receive unlimited AI runs, submissions, and instant model solution unlocks.",
-  },
-  {
-    id: "faq-5",
-    q: "Is my code executed on a backend server?",
-    a: "No. Staqor uses 100% client-side execution. Your code runs inside an isolated iframe sandbox with `allow-scripts allow-modals` and an automatic 2000ms loop-killer wrapper. There is zero server spin-up latency and zero remote attack surface.",
-  },
-  {
-    id: "faq-6",
-    q: "How do hiring managers and recruiters view my portfolio?",
-    a: "When you pass a challenge, it generates a verified public showcase on your profile. Recruiters receive a shareable link where they can inspect your read-only Monaco code tabs and interactively test your live component in a sandbox without installing dependencies or cloning repos.",
-  },
-];
-
-// ---------------------------------------------------------------------------
-// Testimonials Data
-// ---------------------------------------------------------------------------
-const TESTIMONIALS = [
-  {
-    name: "Elena Rostova",
-    role: "Senior Frontend Engineer",
-    company: "FinTech Scaleup",
-    content:
-      "Traditional coding interviews never felt representative of building production design systems. Staqor's rubric feedback on CSS specificity and accessibility caught habits that algorithmic platforms completely ignore.",
-    avatar: "ER",
-  },
-  {
-    name: "Marcus Vance",
-    role: "Bootcamp Graduate",
-    company: "Hired at SaaS Platform",
-    content:
-      "Instead of sending static screenshots on my resume, I sent my Staqor profile link. The hiring manager told me in the interview that playing with my interactive sandboxes gave them instant confidence in my UI craft.",
-    avatar: "MV",
-  },
-  {
-    name: "Priya Sharma",
-    role: "Technical Recruiter",
-    company: "Global Talent Partner",
-    content:
-      "Staqor solves our biggest headache: verifying whether a candidate actually writes clean frontend code or just copied boilerplate. The verified badges and read-only replays save our engineering team hours of initial screening.",
-    avatar: "PS",
-  },
-];
-
-// ---------------------------------------------------------------------------
-// Hero Interactive Challenges
-// ---------------------------------------------------------------------------
-const HERO_CHALLENGES = [
-  {
-    id: "pricing",
-    label: "Pricing Switcher",
-    track: "HTML & CSS",
-    difficulty: "EASY",
-    score: 94,
-    time: "1.8s",
-    title: "Interactive Pricing Table with Monthly/Annual Switch",
-    desc: "Build a responsive 3-tier card layout with an annual billing toggle that updates prices dynamically with zero layout shifts.",
-    rubricDesign: "35/35%",
-    rubricLogic: "34/35%",
-    rubricQuality: "25/30%",
-    code: {
-      html: `<!-- 3-Tier Responsive Pricing Matrix -->
-<div class="pricing-container">
-  <div class="billing-toggle">
-    <span>Monthly</span>
-    <button id="toggleBtn" class="switch active" aria-label="Toggle annual billing"></button>
-    <span>Annual <span class="badge">Save 20%</span></span>
-  </div>
-
-  <div class="pricing-grid">
-    <div class="card card-popular">
-      <div class="tag">MOST POPULAR</div>
-      <h3 class="tier-title">Pro Candidate</h3>
-      <p class="desc">Unlimited Groq AI evaluations & verified portfolio.</p>
-      <div class="price-wrap">
-        <span class="currency">$</span>
-        <span id="priceVal" class="amount">15</span>
-        <span class="period">/month</span>
-      </div>
-      <button class="cta-btn">Start 14-Day Trial</button>
-    </div>
-  </div>
-</div>`,
-      css: `/* Responsive Grid & 3D Tactile Buttons */
-.pricing-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
-}
-
-.card-popular {
-  background: #111614;
-  border: 2px solid #ABDAC8;
-  border-radius: 1.25rem;
-  padding: 1.5rem;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(171,218,200,0.15);
-}
-
-.cta-btn {
-  width: 100%;
-  padding: 0.75rem;
-  background: #ABDAC8;
-  color: #0A0A0F;
-  font-weight: 700;
-  border-radius: 0.75rem;
-  box-shadow: 3px 3px 0px #26262E;
-  cursor: pointer;
-}`,
-      js: `// Annual Billing Toggle State Handler
-const toggleBtn = document.getElementById('toggleBtn');
-const priceVal = document.getElementById('priceVal');
-
-let isAnnual = true;
-
-toggleBtn.addEventListener('click', () => {
-  isAnnual = !isAnnual;
-  toggleBtn.classList.toggle('active', isAnnual);
-  priceVal.textContent = isAnnual ? '15' : '19';
-  console.log('[Event] Switched billing cycle to:', isAnnual ? 'Annual' : 'Monthly');
-});`,
-    },
-  },
-  {
-    id: "kanban",
-    label: "Kanban Task Board",
-    track: "JS / DOM",
-    difficulty: "MEDIUM",
-    score: 96,
-    time: "2.1s",
-    title: "Drag-and-Drop Task Board with State Persistence",
-    desc: "Implement HTML5 Drag and Drop event delegation to reorder sprint tasks across To Do, In Progress, and Done columns.",
-    rubricDesign: "34/35%",
-    rubricLogic: "35/35%",
-    rubricQuality: "27/30%",
-    code: {
-      html: `<!-- Kanban Column Layout -->
-<div class="kanban-board">
-  <div class="column" id="col-todo" data-status="todo">
-    <h3>To Do</h3>
-    <div class="card" draggable="true" id="task-1">
-      <span class="badge">UI Design</span>
-      <p>Build accessible modal dialog</p>
-    </div>
-  </div>
-  <div class="column" id="col-done" data-status="done">
-    <h3>Done</h3>
-  </div>
-</div>`,
-      css: `.kanban-board {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-}
-.column {
-  background: #111117;
-  border: 1px solid #26262E;
-  border-radius: 0.75rem;
-  padding: 1rem;
-  min-height: 180px;
-}
-.card {
-  background: #16161F;
-  border: 1px solid #ABDAC8/40;
-  border-radius: 0.5rem;
-  padding: 0.75rem;
-  cursor: grab;
-}`,
-      js: `// Drag and Drop Event Listeners
-const cards = document.querySelectorAll('.card');
-const columns = document.querySelectorAll('.column');
-
-cards.forEach(card => {
-  card.addEventListener('dragstart', (e) => {
-    e.dataTransfer.setData('text/plain', card.id);
-    console.log('[Drag] Started dragging:', card.id);
-  });
-});`,
-    },
-  },
-  {
-    id: "virtual-scroll",
-    label: "Virtual Grid",
+    id: 1,
+    tag: "// Daily Challenge #48 — React & State Cohort",
+    command: '$ staqor submit --challenge="virtualized-infinite-scroll"',
+    streak: 48,
+    name: "Aarav Sharma",
+    role: "Frontend Engineer '25",
     track: "React Components",
-    difficulty: "HARD",
-    score: 98,
-    time: "2.3s",
-    title: "Virtualized Infinite Scroll Product Grid",
-    desc: "Build a windowed product list that recycles DOM elements using IntersectionObserver to maintain 60 FPS under 10,000 items.",
-    rubricDesign: "35/35%",
-    rubricLogic: "35/35%",
-    rubricQuality: "28/30%",
-    code: {
-      html: `<!-- React Windowing Scaffolding -->
-<div id="root">
-  <div class="virtual-viewport" style="height: 320px; overflow-y: auto;">
-    <div class="virtual-spacer" style="height: 12000px; position: relative;">
-      <!-- Recycled DOM Item Tiles Rendered Here -->
-    </div>
-  </div>
-</div>`,
-      css: `.virtual-viewport {
-  position: relative;
-  border: 1px solid #26262E;
-  border-radius: 0.75rem;
-  background: #0B0B10;
-}
-.virtual-item {
-  position: absolute;
-  left: 0; right: 0;
-  height: 60px;
-  border-bottom: 1px solid #26262E;
-  padding: 0.75rem 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}`,
-      js: `// Custom Virtual List Hook
-function useVirtualList(itemCount, itemHeight, viewportHeight) {
-  const [scrollTop, setScrollTop] = useState(0);
-  const startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - 2);
-  const endIndex = Math.min(itemCount, Math.ceil((scrollTop + viewportHeight) / itemHeight) + 2);
-  return { startIndex, endIndex };
-}`,
-    },
+    score: "96/100",
+    avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=120&h=120&q=80",
+  },
+  {
+    id: 2,
+    tag: "// Daily Challenge #23 — JavaScript & DOM Events",
+    command: '$ staqor submit --challenge="drag-and-drop-kanban-board"',
+    streak: 23,
+    name: "Priya Patel",
+    role: "UI Engineer '26",
+    track: "JS / DOM Logic",
+    score: "94/100",
+    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&h=120&q=80",
+  },
+  {
+    id: 3,
+    tag: "// Daily Challenge #60 — HTML & CSS Layouts",
+    command: '$ staqor submit --challenge="responsive-pricing-matrix"',
+    streak: 60,
+    name: "Rohan Gupta",
+    role: "Full-Stack Dev '25",
+    track: "CSS Architecture",
+    score: "98/100",
+    avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=120&h=120&q=80",
+  },
+  {
+    id: 4,
+    tag: "// Daily Challenge #34 — Vue.js Composition API",
+    command: '$ staqor submit --challenge="multi-step-form-validation"',
+    streak: 34,
+    name: "Ananya Iyer",
+    role: "Frontend Specialist '26",
+    track: "Vue 3 Reactive UI",
+    score: "92/100",
+    avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&h=120&q=80",
+  },
+  {
+    id: 5,
+    tag: "// Daily Challenge #14 — Node.js & Mock APIs",
+    command: '$ staqor submit --challenge="in-memory-rate-limiter"',
+    streak: 14,
+    name: "Vikram Verma",
+    role: "API Engineer '25",
+    track: "Node.js & APIs",
+    score: "95/100",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80",
   },
 ];
 
-export default function LandingPage() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const heroRef = useRef<HTMLDivElement>(null);
-  const heroMockupRef = useRef<HTMLDivElement>(null);
-  const floatingBadgeRef = useRef<HTMLDivElement>(null);
-  const glowPathRef = useRef<SVGPathElement>(null);
-  const lenisRef = useRef<Lenis | null>(null);
+// ---------------------------------------------------------------------------
+// FAQ List
+// ---------------------------------------------------------------------------
+const FAQS = [
+  {
+    q: "What is Staqor and how does it work?",
+    a: "Staqor is the in-browser IDE for modern frontend engineering. Instead of testing abstract math algorithms, Staqor tests real frontend skills: responsive CSS Grid/Flexbox layouts, DOM event handling, and React component state—graded by Groq AI against multi-criteria rubrics in under 2.5 seconds.",
+  },
+  {
+    q: "Is Staqor free for developers and students?",
+    a: "Yes! Every challenge comes with a generous lifetime free quota (5 Runs & 3 Submits per challenge). You get instant client-side execution, live Groq AI rubric feedback, and verified public portfolio replays at $0.",
+  },
+  {
+    q: "How does Groq AI evaluate frontend code without server lag?",
+    a: "Staqor compiles code 100% in the client browser inside an isolated iframe with a 2000ms loop-killer wrapper. Submissions pass through a zero-cost syntax pre-filter gate before Groq LPU models evaluate visual design (35%), DOM/state logic (35%), and semantic cleanliness (30%) in <2.5 seconds.",
+  },
+  {
+    q: "How are submissions verified for hiring teams?",
+    a: "When you pass a challenge, Staqor publishes a verified candidate showcase on your profile. Recruiters and engineering leads test your live component in an interactive sandbox and inspect your Monaco code tabs with one click—no repository cloning required.",
+  },
+  {
+    q: "What practice formats and tracks are available?",
+    a: "Staqor offers 8 specialized tracks spanning HTML & CSS Layouts, JavaScript & DOM Events, React Components, Vue.js, Node.js Mock APIs, Real-World Bug Fixes, and Full-Stack Scenarios across self-paced daily tasks and weekend hackathons.",
+  },
+];
 
-  // State
+export default function HomePage() {
+  const [activeEntryIndex, setActiveEntryIndex] = useState(0);
+  const [typedText, setTypedText] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
-  const [selectedTrack, setSelectedTrack] = useState(0);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
-  // Interactive IDE Mockup State
-  const [heroChallengeIdx, setHeroChallengeIdx] = useState(0);
-  const currentHeroChallenge = HERO_CHALLENGES[heroChallengeIdx];
-  const [mockupEditorTab, setMockupEditorTab] = useState<"html" | "css" | "js">("html");
-  const [mockupLeftTab, setMockupLeftTab] = useState<"spec" | "rubric" | "preview" | "feedback">("spec");
-  const [mockupViewport, setMockupViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
-  const [isEvaluating, setIsEvaluating] = useState(false);
-  const [evalTimer, setEvalTimer] = useState(currentHeroChallenge.time);
-  const [mockupAnnualBilling, setMockupAnnualBilling] = useState(true);
-  const [mockupScore, setMockupScore] = useState(currentHeroChallenge.score);
-  const [mockupLogs, setMockupLogs] = useState<string[]>([
-    "[Sandbox Engine] Isolated iframe sandbox mounted with 2000ms loop-killer.",
-    "[Pre-Filter Gate] Checking syntax & locked scaffolding: PASSED (0.02s).",
-    "[Groq LPU] Ready for diagnostic Run or official Submit.",
-  ]);
+  const currentEntry = PROOF_SUBMISSIONS[activeEntryIndex];
 
-  // Simulate IDE Evaluation
-  const handleRunEvaluation = (type: "run" | "submit") => {
-    if (isEvaluating) return;
-    setIsEvaluating(true);
-    setMockupLogs((prev) => [
-      ...prev,
-      `[Trigger] ${type.toUpperCase()} initiated on challenge: ${currentHeroChallenge.title.slice(0, 30)}...`,
-      `[Pre-Filter] Structural syntax check: PASSED (0.02s)`,
-      `[Groq LPU] Dispatching weighted prompt to LPU inference stream...`,
-    ]);
+  // GSAP Animation Refs
+  const pageContainerRef = useRef<HTMLDivElement>(null);
+  const glowPathRef = useRef<SVGPathElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const terminalRef = useRef<HTMLDivElement>(null);
+  const badge1Ref = useRef<HTMLDivElement>(null);
+  const badge2Ref = useRef<HTMLDivElement>(null);
+  const badge3Ref = useRef<HTMLDivElement>(null);
+  const badge4Ref = useRef<HTMLDivElement>(null);
 
-    setTimeout(() => {
-      setIsEvaluating(false);
-      const newScore = type === "submit" ? currentHeroChallenge.score : currentHeroChallenge.score - 2;
-      setMockupScore(newScore);
-      setEvalTimer(type === "submit" ? "2.1s" : "1.8s");
-      setMockupLeftTab("feedback");
-      setMockupLogs((prev) => [
-        ...prev,
-        `[Groq LPU] Response received (200 OK) in ${type === "submit" ? "2.1s" : "1.8s"}. Score: ${newScore}/100 PASSED.`,
-      ]);
-    }, 1800);
-  };
+  const trustHeaderRef = useRef<HTMLDivElement>(null);
+  const trustGridRef = useRef<HTMLDivElement>(null);
+  const progHeaderRef = useRef<HTMLDivElement>(null);
+  const progGridRef = useRef<HTMLDivElement>(null);
+  const howHeaderRef = useRef<HTMLDivElement>(null);
+  const howCardsRef = useRef<HTMLDivElement>(null);
+  const path1Ref = useRef<SVGPathElement>(null);
+  const path2Ref = useRef<SVGPathElement>(null);
+  const dot1Ref = useRef<SVGCircleElement>(null);
+  const dot2Ref = useRef<SVGCircleElement>(null);
+  const dot3Ref = useRef<SVGCircleElement>(null);
+  const whyHeaderRef = useRef<HTMLDivElement>(null);
+  const whyGridRef = useRef<HTMLDivElement>(null);
+  const testHeaderRef = useRef<HTMLDivElement>(null);
+  const testGridRef = useRef<HTMLDivElement>(null);
+  const faqHeaderRef = useRef<HTMLDivElement>(null);
+  const faqListRef = useRef<HTMLDivElement>(null);
 
-  // Smooth scroll handler for anchor links
-  const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
-    e.preventDefault();
-    setMobileMenuOpen(false);
-    if (lenisRef.current) {
-      const el = document.querySelector(targetId);
-      if (el) {
-        lenisRef.current.scrollTo(el as HTMLElement, { offset: -70 });
-      }
-    } else {
-      const el = document.querySelector(targetId);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  };
-
-  // Initialize Lenis + GSAP ScrollTrigger
+  // GSAP Setup
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const lenis = new Lenis({
-      duration: 1.1,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-    });
-    lenisRef.current = lenis;
-
-    lenis.on("scroll", ScrollTrigger.update);
-
-    const updateTicker = (time: number) => {
-      lenis.raf(time * 1000);
-    };
-
-    gsap.ticker.add(updateTicker);
-    gsap.ticker.lagSmoothing(0);
-
     const ctx = gsap.context(() => {
-      // 1. Hero Entrance Timeline
-      const heroTl = gsap.timeline({ defaults: { ease: "power2.out" } });
-
-      heroTl
-        .from(".hero-badge", { y: -16, opacity: 0, duration: 0.5 })
-        .from(".hero-title", { y: 20, opacity: 0, duration: 0.7 }, "-=0.2")
-        .from(".hero-doodle", { scale: 0.8, opacity: 0, duration: 0.4, stagger: 0.08 }, "-=0.3")
-        .from(".hero-subhead", { y: 16, opacity: 0, duration: 0.6 }, "-=0.3")
-        .from(".hero-cta", { y: 16, opacity: 0, duration: 0.5, stagger: 0.1 }, "-=0.3")
-        .from(".hero-metric-bar", { y: 20, opacity: 0, duration: 0.6 }, "-=0.2")
-        .from(heroMockupRef.current, { y: 25, opacity: 0, duration: 0.8 }, "-=0.2")
-        .from(floatingBadgeRef.current, { scale: 0.9, opacity: 0, duration: 0.5 }, "-=0.3")
-        .from(".hero-connector", { opacity: 0, duration: 0.6 }, "-=0.2");
-
-      // 2. Floating Badge & Mockup Parallax (Desktop Only)
-      if (window.innerWidth > 768 && heroMockupRef.current && floatingBadgeRef.current) {
-        gsap.to(heroMockupRef.current, {
-          yPercent: -4,
-          ease: "none",
-          scrollTrigger: {
-            trigger: heroRef.current,
-            start: "top top",
-            end: "bottom top",
-            scrub: 1.2,
-          },
-        });
-
-        gsap.to(floatingBadgeRef.current, {
-          yPercent: -10,
-          ease: "none",
-          scrollTrigger: {
-            trigger: heroRef.current,
-            start: "top top",
-            end: "bottom top",
-            scrub: 1.5,
-          },
+      // 1. Hero Content Entrance
+      if (heroRef.current) {
+        gsap.from(heroRef.current.children, {
+          opacity: 0,
+          y: 35,
+          duration: 0.8,
+          stagger: 0.12,
+          ease: "power3.out",
         });
       }
 
-      // 3. Scroll-Responsive Glowing Accent Line Scrub (Multi-Layer Wide Neon Beam)
-      const glowPaths = containerRef.current?.querySelectorAll<SVGPathElement>(".glow-scroll-path");
-      if (glowPaths && glowPaths.length > 0 && containerRef.current) {
+      // 2. Terminal Entrance
+      if (terminalRef.current) {
+        gsap.from(terminalRef.current, {
+          opacity: 0,
+          y: 45,
+          duration: 0.9,
+          delay: 0.3,
+          ease: "power3.out",
+        });
+      }
+
+      // 3. Infinite Floating Loops for 4 Badges
+      const badges = [
+        { ref: badge1Ref, duration: 4.2, delay: 0 },
+        { ref: badge2Ref, duration: 3.8, delay: 0.6 },
+        { ref: badge3Ref, duration: 4.6, delay: 1.2 },
+        { ref: badge4Ref, duration: 4.0, delay: 1.8 },
+      ];
+
+      badges.forEach(({ ref, duration, delay }) => {
+        if (ref.current) {
+          gsap.to(ref.current, {
+            y: -8,
+            duration: duration / 2,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+            delay,
+          });
+        }
+      });
+
+      // 4. Scroll-Responsive Glowing Accent Line Scrub
+      const glowPaths = pageContainerRef.current?.querySelectorAll<SVGPathElement>(".glow-scroll-path");
+      if (glowPaths && glowPaths.length > 0 && pageContainerRef.current) {
         glowPaths.forEach((path) => {
           const length = path.getTotalLength ? path.getTotalLength() : 6000;
           gsap.set(path, {
@@ -602,7 +219,7 @@ export default function LandingPage() {
             strokeDashoffset: 0,
             ease: "none",
             scrollTrigger: {
-              trigger: containerRef.current,
+              trigger: pageContainerRef.current,
               start: "top top",
               end: "bottom bottom",
               scrub: 0.6,
@@ -611,76 +228,119 @@ export default function LandingPage() {
         });
       }
 
-      // 4. Section Reveals (Fixed Dead-Space: start "top 94%", subtle y: 20, once: true)
-      const revealSections = gsap.utils.toArray<HTMLElement>(".gsap-reveal");
-      revealSections.forEach((section) => {
-        gsap.fromTo(
-          section,
-          { y: 20, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.6,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: section,
-              start: "top 94%",
-              toggleActions: "play none none none",
-              once: true,
-            },
-          }
-        );
-      });
+      // 5. How It Works SVG Connectors
+      const p1 = path1Ref.current;
+      const p2 = path2Ref.current;
+      if (p1 && p2) {
+        const len1 = p1.getTotalLength();
+        const len2 = p2.getTotalLength();
 
-      // 5. Staggered Cards Reveal (Fixed Dead-Space: start "top 92%", subtle y: 16)
-      const cardGrids = gsap.utils.toArray<HTMLElement>(".gsap-stagger-grid");
-      cardGrids.forEach((grid) => {
-        const cards = grid.querySelectorAll(".gsap-card");
-        gsap.fromTo(
-          cards,
-          { y: 16, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.5,
-            stagger: 0.08,
-            ease: "power2.out",
+        gsap.set(p1, { strokeDasharray: len1, strokeDashoffset: len1 });
+        gsap.set(p2, { strokeDasharray: len2, strokeDashoffset: len2 });
+
+        if (dot1Ref.current) gsap.set(dot1Ref.current, { scale: 0, opacity: 0, transformOrigin: "center" });
+        if (dot2Ref.current) gsap.set(dot2Ref.current, { scale: 0, opacity: 0, transformOrigin: "center" });
+        if (dot3Ref.current) gsap.set(dot3Ref.current, { scale: 0, opacity: 0, transformOrigin: "center" });
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: "#how-it-works",
+            start: "top 70%",
+            toggleActions: "play none none reverse",
+          },
+        });
+
+        tl.to(dot1Ref.current, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2)" })
+          .to(p1, { strokeDashoffset: 0, duration: 1.0, ease: "power2.inOut" })
+          .to(dot2Ref.current, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2)" }, "-=0.2")
+          .to(p2, { strokeDashoffset: 0, duration: 1.0, ease: "power2.inOut" }, "-=0.2")
+          .to(dot3Ref.current, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2)" }, "-=0.2");
+      }
+
+      // 6. Section Entrance ScrollTriggers
+      const animateSection = (header: React.RefObject<HTMLDivElement>, grid: React.RefObject<HTMLDivElement>) => {
+        if (header.current) {
+          gsap.from(header.current.children, {
+            opacity: 0,
+            y: 35,
+            duration: 0.8,
+            stagger: 0.12,
+            ease: "power3.out",
             scrollTrigger: {
-              trigger: grid,
-              start: "top 92%",
-              toggleActions: "play none none none",
+              trigger: header.current,
+              start: "top 88%",
               once: true,
             },
-          }
-        );
-      });
+          });
+        }
+        if (grid.current) {
+          gsap.from(grid.current.children, {
+            opacity: 0,
+            y: 40,
+            duration: 0.8,
+            stagger: 0.12,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: grid.current,
+              start: "top 85%",
+              once: true,
+            },
+          });
+        }
+      };
+
+      animateSection(trustHeaderRef, trustGridRef);
+      animateSection(progHeaderRef, progGridRef);
+      animateSection(howHeaderRef, howCardsRef);
+      animateSection(whyHeaderRef, whyGridRef);
+      animateSection(testHeaderRef, testGridRef);
+      animateSection(faqHeaderRef, faqListRef);
 
       ScrollTrigger.refresh();
-      setTimeout(() => {
-        ScrollTrigger.refresh();
-      }, 300);
-    }, containerRef);
+    }, pageContainerRef);
 
-    return () => {
-      ctx.revert();
-      gsap.ticker.remove(updateTicker);
-      lenis.destroy();
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-    };
+    return () => ctx.revert();
+  }, []);
+
+  // GSAP Typewriter Effect for Terminal
+  useEffect(() => {
+    setTypedText("");
+    const fullCommand = currentEntry.command;
+    let charIndex = 0;
+
+    const interval = setInterval(() => {
+      if (charIndex < fullCommand.length) {
+        setTypedText(fullCommand.slice(0, charIndex + 1));
+        charIndex++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 30);
+
+    return () => clearInterval(interval);
+  }, [activeEntryIndex]);
+
+  // Auto-cycle Terminal entries every 5.5s
+  useEffect(() => {
+    const cycleInterval = setInterval(() => {
+      setActiveEntryIndex((prev) => (prev + 1) % PROOF_SUBMISSIONS.length);
+    }, 5500);
+
+    return () => clearInterval(cycleInterval);
   }, []);
 
   return (
     <div
-      ref={containerRef}
-      className="mode-landing min-h-screen bg-[#0A0A0F] text-[#F5F5F7] selection:bg-[#ABDAC8] selection:text-[#0A0A0F] relative overflow-x-hidden font-sans"
+      ref={pageContainerRef}
+      className="min-h-screen bg-[#0A0A0F] text-[#F5F5F7] selection:bg-[#ABDAC8] selection:text-[#0A0A0F] font-sans relative overflow-x-hidden"
     >
       {/* ========================================================================= */}
       {/* BACKGROUND TEXTURE & AMBIENT AQUA/MINT GLOW LAYERS */}
       {/* ========================================================================= */}
 
-      {/* 1. Subtle Background Grid Texture */}
+      {/* 1. Subtle Background Grid Overlay */}
       <div
-        className="absolute inset-0 pointer-events-none -z-10 opacity-30"
+        className="fixed inset-0 pointer-events-none z-0 opacity-30"
         style={{
           backgroundImage: `
             linear-gradient(to right, #26262E 1px, transparent 1px),
@@ -692,1476 +352,1104 @@ export default function LandingPage() {
         }}
       />
 
-      {/* 2. Background Multi-Stop Ambient Aqua/Mint Glow Gradients */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[550px] bg-[#ABDAC8]/10 blur-[160px] rounded-full pointer-events-none -z-10" />
-      <div className="absolute top-[1800px] left-1/4 -translate-x-1/2 w-[750px] h-[450px] bg-[#7BC4A8]/6 blur-[150px] rounded-full pointer-events-none -z-10" />
-      <div className="absolute top-[3400px] right-1/4 translate-x-1/2 w-[850px] h-[500px] bg-[#ABDAC8]/7 blur-[160px] rounded-full pointer-events-none -z-10" />
-      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-[#ABDAC8]/12 blur-[160px] rounded-full pointer-events-none -z-10" />
+      {/* 2. Multi-Stop Ambient Background Aqua Glows */}
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[550px] bg-gradient-to-b from-[#ABDAC8]/18 via-[#ABDAC8]/6 to-transparent blur-[160px] pointer-events-none z-0" />
+      <div className="fixed bottom-0 right-0 w-[600px] h-[600px] bg-[#ABDAC8]/8 blur-[180px] pointer-events-none z-0" />
+      <div className="absolute top-24 left-1/2 -translate-x-1/2 w-[850px] h-[400px] bg-[radial-gradient(ellipse_60%_50%_at_50%_35%,#ABDAC826_0%,#ABDAC808_60%,transparent_100%)] blur-[110px] pointer-events-none z-0" />
 
-      {/* 3. Scattered Low-Opacity Particle Dots */}
-      <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden">
-        {[
-          { top: "6%", left: "12%", size: 4, color: "#ABDAC8", opacity: 0.35 },
-          { top: "14%", left: "86%", size: 3, color: "#D4EDE3", opacity: 0.25 },
-          { top: "24%", left: "7%", size: 5, color: "#7BC4A8", opacity: 0.2 },
-          { top: "34%", left: "93%", size: 4, color: "#ABDAC8", opacity: 0.3 },
-          { top: "46%", left: "16%", size: 3, color: "#6B7280", opacity: 0.25 },
-          { top: "58%", left: "84%", size: 5, color: "#ABDAC8", opacity: 0.2 },
-          { top: "70%", left: "9%", size: 4, color: "#D4EDE3", opacity: 0.3 },
-          { top: "82%", left: "90%", size: 3, color: "#7BC4A8", opacity: 0.25 },
-          { top: "92%", left: "18%", size: 5, color: "#ABDAC8", opacity: 0.35 },
-        ].map((dot, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full animate-pulse"
-            style={{
-              top: dot.top,
-              left: dot.left,
-              width: `${dot.size}px`,
-              height: `${dot.size}px`,
-              backgroundColor: dot.color,
-              opacity: dot.opacity,
-              boxShadow: `0 0 8px ${dot.color}`,
-              animationDuration: `${3.5 + (i % 3)}s`,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* ========================================================================= */}
-      {/* 4. SCROLL-RESPONSIVE GLOWING ACCENT LINE (Wider, Curvier Multi-Layer Beam) */}
-      {/* ========================================================================= */}
-      <div className="absolute inset-0 pointer-events-none -z-5 overflow-hidden">
+      {/* 3. SCROLL-RESPONSIVE GLOWING ACCENT LINE (SVG Scrubbed with GSAP) */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
         <svg
           className="w-full h-full"
-          viewBox="0 0 1200 5600"
           preserveAspectRatio="none"
+          viewBox="0 0 100 1000"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
-            <linearGradient id="mintGlowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#ABDAC8" stopOpacity="0.9" />
-              <stop offset="20%" stopColor="#7BC4A8" stopOpacity="1" />
-              <stop offset="45%" stopColor="#D4EDE3" stopOpacity="0.95" />
-              <stop offset="70%" stopColor="#ABDAC8" stopOpacity="1" />
-              <stop offset="90%" stopColor="#7BC4A8" stopOpacity="0.95" />
-              <stop offset="100%" stopColor="#D4EDE3" stopOpacity="0.9" />
+            <filter id="thickLaserGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur1" />
+              <feGaussianBlur in="SourceGraphic" stdDeviation="5.0" result="blur2" />
+              <feMerge>
+                <feMergeNode in="blur2" />
+                <feMergeNode in="blur1" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+
+            <linearGradient id="thickNeonGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#ABDAC8" stopOpacity="0.8" />
+              <stop offset="35%" stopColor="#D4EDE3" stopOpacity="0.95" />
+              <stop offset="70%" stopColor="#ABDAC8" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="#7BC4A8" stopOpacity="0.75" />
             </linearGradient>
 
-            {/* Tight crisp neon bloom */}
-            <filter id="mintGlowFilter" x="-30%" y="-30%" width="160%" height="160%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-
-            {/* Deep wide ambient aura */}
-            <filter id="mintGlowWide" x="-40%" y="-40%" width="180%" height="180%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="14" result="wideBlur" />
-              <feGaussianBlur in="SourceGraphic" stdDeviation="26" result="deepBlur" />
-              <feMerge>
-                <feMergeNode in="deepBlur" />
-                <feMergeNode in="wideBlur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
+            <linearGradient id="thickTrackGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#26262E" stopOpacity="0.3" />
+              <stop offset="50%" stopColor="#ABDAC8" stopOpacity="0.2" />
+              <stop offset="100%" stopColor="#26262E" stopOpacity="0.3" />
+            </linearGradient>
           </defs>
 
-          {/* 1. Base faint guide trail with dots */}
+          {/* Background Inactive Curvy Guide Track */}
           <path
-            d="M 680 80 C 1050 320, 1160 720, 960 1150 C 780 1520, 100 1680, 120 2150 C 140 2620, 1100 2820, 1040 3350 C 980 3880, 80 4050, 140 4550 C 200 4980, 1020 5150, 620 5550"
-            stroke="#26262E"
-            strokeWidth="2.5"
-            strokeDasharray="10 14"
-            strokeOpacity="0.45"
+            d="M 50,0 C 12,90 88,180 50,270 C 12,360 8,450 15,540 C 24,630 48,700 68,780 C 84,850 70,930 50,1000"
+            stroke="url(#thickTrackGradient)"
+            strokeWidth="0.8"
+            strokeDasharray="1.5 1.5"
+            fill="none"
           />
 
-          {/* 2. Layer 1: Wide Ambient Aura Beam (16px wide glow) */}
+          {/* Active Thick Curvy Glowing Laser Line */}
           <path
             className="glow-scroll-path"
-            d="M 680 80 C 1050 320, 1160 720, 960 1150 C 780 1520, 100 1680, 120 2150 C 140 2620, 1100 2820, 1040 3350 C 980 3880, 80 4050, 140 4550 C 200 4980, 1020 5150, 620 5550"
-            stroke="url(#mintGlowGrad)"
-            strokeWidth="18"
+            d="M 50,0 C 12,90 88,180 50,270 C 12,360 8,450 15,540 C 24,630 48,700 68,780 C 84,850 70,930 50,1000"
+            stroke="url(#thickNeonGradient)"
+            strokeWidth="1.4"
             strokeLinecap="round"
-            filter="url(#mintGlowWide)"
-            opacity="0.25"
+            fill="none"
+            filter="url(#thickLaserGlow)"
           />
 
-          {/* 3. Layer 2: Mid Neon Bloom Stroke (7px wide) */}
+          {/* Outer Atmospheric Light Aura Trace */}
           <path
             className="glow-scroll-path"
-            d="M 680 80 C 1050 320, 1160 720, 960 1150 C 780 1520, 100 1680, 120 2150 C 140 2620, 1100 2820, 1040 3350 C 980 3880, 80 4050, 140 4550 C 200 4980, 1020 5150, 620 5550"
-            stroke="url(#mintGlowGrad)"
-            strokeWidth="7"
-            strokeLinecap="round"
-            filter="url(#mintGlowFilter)"
-            opacity="0.65"
-          />
-
-          {/* 4. Layer 3: Vivid Core Mint Laser Line (3.5px wide) */}
-          <path
-            className="glow-scroll-path"
-            d="M 680 80 C 1050 320, 1160 720, 960 1150 C 780 1520, 100 1680, 120 2150 C 140 2620, 1100 2820, 1040 3350 C 980 3880, 80 4050, 140 4550 C 200 4980, 1020 5150, 620 5550"
+            d="M 50,0 C 12,90 88,180 50,270 C 12,360 8,450 15,540 C 24,630 48,700 68,780 C 84,850 70,930 50,1000"
             stroke="#ABDAC8"
-            strokeWidth="3.5"
+            strokeWidth="4.5"
+            strokeOpacity="0.25"
             strokeLinecap="round"
-            opacity="0.95"
+            fill="none"
+            filter="blur(8px)"
           />
         </svg>
       </div>
 
       {/* ========================================================================= */}
-      {/* 1. NAVBAR */}
+      {/* NAVBAR */}
       {/* ========================================================================= */}
-      <header className="border-b border-[#26262E]/80 bg-[#0A0A0F]/85 backdrop-blur-xl sticky top-0 z-50 transition-all">
-        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-          {/* Logo & Brand */}
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#0A0A0F]/90 border-b border-[#26262E] transition-all">
+        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+          {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-8 h-8 rounded-lg bg-[#ABDAC8]/15 border border-[#ABDAC8]/30 flex items-center justify-center shadow-[0_0_15px_rgba(171,218,200,0.15)] group-hover:border-[#ABDAC8] transition-colors">
+            <div className="w-8 h-8 rounded-lg bg-[#ABDAC8]/15 border border-[#ABDAC8]/30 flex items-center justify-center shadow-[0_0_15px_rgba(171,218,200,0.15)] group-hover:scale-105 transition-transform">
               <Terminal className="w-4 h-4 text-[#ABDAC8]" />
             </div>
             <span className="font-bold text-lg tracking-tight text-[#F5F5F7]">Staqor</span>
-            <Badge
-              variant="outline"
-              className="text-[10px] uppercase font-mono text-[#ABDAC8] border-[#ABDAC8]/30 ml-1 py-0 px-2 bg-[#111614]"
-            >
-              v1.0 MVP
-            </Badge>
           </Link>
 
-          {/* Desktop Nav Links */}
-          <nav className="hidden lg:flex items-center gap-7 text-xs font-mono tracking-wide text-[#9CA3AF]">
+          {/* Navigation Links */}
+          <nav className="hidden md:flex items-center gap-7 text-sm font-semibold text-zinc-300">
+            <a
+              href="#challenges"
+              className="text-zinc-300 hover:text-white transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#ABDAC8] hover:after:w-full after:transition-all after:duration-200"
+            >
+              Programs
+            </a>
             <a
               href="#how-it-works"
-              onClick={(e) => handleScrollTo(e, "#how-it-works")}
-              className="hover:text-[#F5F5F7] transition-colors"
+              className="text-zinc-300 hover:text-white transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#ABDAC8] hover:after:w-full after:transition-all after:duration-200"
             >
-              HOW IT WORKS
+              How It Works
             </a>
             <a
-              href="#workspace-demo"
-              onClick={(e) => handleScrollTo(e, "#workspace-demo")}
-              className="hover:text-[#F5F5F7] transition-colors"
+              href="#why-staqor"
+              className="text-zinc-300 hover:text-white transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#ABDAC8] hover:after:w-full after:transition-all after:duration-200"
             >
-              IDE DEMO
+              Why Staqor
             </a>
             <a
-              href="#tracks"
-              onClick={(e) => handleScrollTo(e, "#tracks")}
-              className="hover:text-[#F5F5F7] transition-colors"
+              href="#testimonials"
+              className="text-zinc-300 hover:text-white transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#ABDAC8] hover:after:w-full after:transition-all after:duration-200"
             >
-              8 TRACKS
-            </a>
-            <a
-              href="#features"
-              onClick={(e) => handleScrollTo(e, "#features")}
-              className="hover:text-[#F5F5F7] transition-colors"
-            >
-              ARCHITECTURE
-            </a>
-            <a
-              href="#ecosystem"
-              onClick={(e) => handleScrollTo(e, "#ecosystem")}
-              className="hover:text-[#F5F5F7] transition-colors"
-            >
-              ECOSYSTEM
-            </a>
-            <a
-              href="#comparison"
-              onClick={(e) => handleScrollTo(e, "#comparison")}
-              className="hover:text-[#F5F5F7] transition-colors"
-            >
-              COMPARISON
-            </a>
-            <a
-              href="#pricing"
-              onClick={(e) => handleScrollTo(e, "#pricing")}
-              className="hover:text-[#F5F5F7] transition-colors"
-            >
-              PRICING
+              Wall of Proof
             </a>
             <a
               href="#faq"
-              onClick={(e) => handleScrollTo(e, "#faq")}
-              className="hover:text-[#F5F5F7] transition-colors"
+              className="text-zinc-300 hover:text-white transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#ABDAC8] hover:after:w-full after:transition-all after:duration-200"
             >
               FAQ
             </a>
           </nav>
 
-          {/* Action CTAs & User Nav */}
+          {/* Right Action & User Nav */}
           <div className="flex items-center gap-3">
-            <Link href="/challenges" className="hidden sm:inline-flex">
+            <Link href="/challenges" className="hidden sm:block">
               <Button
-                variant="outline"
                 size="sm"
-                className="h-9 px-4 text-xs font-mono border-[#26262E] text-[#ABDAC8] bg-[#111117] hover:border-[#ABDAC8]/50 hover:bg-[#16161F]"
+                className="bg-gradient-to-b from-[#ABDAC8] via-[#ABDAC8] to-[#7BC4A8] hover:from-[#c2e8dc] hover:to-[#8cd4b9] text-[#0A0A0F] font-bold rounded-xl px-5 py-2.5 text-sm shadow-lg shadow-[#ABDAC8]/25 hover:shadow-xl hover:shadow-[#ABDAC8]/40 border border-[#ABDAC8]/40 transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
               >
-                Catalog
+                <span>Join Challenge</span>
+                <ChevronRight className="w-4 h-4 ml-0.5" />
               </Button>
             </Link>
 
             <UserNav />
 
-            {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg text-[#9CA3AF] hover:text-[#F5F5F7] border border-[#26262E] bg-[#111117]"
-              aria-label="Toggle Menu"
+              className="md:hidden p-2.5 rounded-xl bg-[#111117] border border-[#26262E] text-zinc-300 hover:text-white transition-all active:scale-95"
+              aria-label="Toggle Navigation Menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation Drawer */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden border-b border-[#26262E] bg-[#0E0E14] px-6 py-4 space-y-3 text-sm font-mono">
-            <a
-              href="#how-it-works"
-              onClick={(e) => handleScrollTo(e, "#how-it-works")}
-              className="block py-1.5 text-[#9CA3AF] hover:text-[#ABDAC8]"
+        {/* Mobile Navigation Dropdown */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="md:hidden border-t border-[#26262E] bg-[#0A0A0F] px-6 py-5 flex flex-col gap-4 text-sm font-semibold text-zinc-300"
             >
-              01 // HOW IT WORKS
-            </a>
-            <a
-              href="#workspace-demo"
-              onClick={(e) => handleScrollTo(e, "#workspace-demo")}
-              className="block py-1.5 text-[#9CA3AF] hover:text-[#ABDAC8]"
-            >
-              02 // IDE WORKSPACE DEMO
-            </a>
-            <a
-              href="#tracks"
-              onClick={(e) => handleScrollTo(e, "#tracks")}
-              className="block py-1.5 text-[#9CA3AF] hover:text-[#ABDAC8]"
-            >
-              03 // 8 TRACKS CATALOG
-            </a>
-            <a
-              href="#features"
-              onClick={(e) => handleScrollTo(e, "#features")}
-              className="block py-1.5 text-[#9CA3AF] hover:text-[#ABDAC8]"
-            >
-              04 // CORE ARCHITECTURE
-            </a>
-            <a
-              href="#ecosystem"
-              onClick={(e) => handleScrollTo(e, "#ecosystem")}
-              className="block py-1.5 text-[#9CA3AF] hover:text-[#ABDAC8]"
-            >
-              05 // TOOLING ECOSYSTEM
-            </a>
-            <a
-              href="#comparison"
-              onClick={(e) => handleScrollTo(e, "#comparison")}
-              className="block py-1.5 text-[#9CA3AF] hover:text-[#ABDAC8]"
-            >
-              06 // WHY STAQOR
-            </a>
-            <a
-              href="#pricing"
-              onClick={(e) => handleScrollTo(e, "#pricing")}
-              className="block py-1.5 text-[#9CA3AF] hover:text-[#ABDAC8]"
-            >
-              07 // PRICING
-            </a>
-            <a
-              href="#faq"
-              onClick={(e) => handleScrollTo(e, "#faq")}
-              className="block py-1.5 text-[#9CA3AF] hover:text-[#ABDAC8]"
-            >
-              08 // FAQ
-            </a>
-            <div className="pt-2 border-t border-[#26262E] flex gap-2">
-              <Link href="/challenges" className="flex-1">
-                <Button variant="outline" className="w-full text-xs font-mono border-[#26262E]">
-                  Browse Challenges
+              <a
+                href="#challenges"
+                onClick={() => setMobileMenuOpen(false)}
+                className="hover:text-[#ABDAC8] transition-colors py-1"
+              >
+                Programs
+              </a>
+              <a
+                href="#how-it-works"
+                onClick={() => setMobileMenuOpen(false)}
+                className="hover:text-[#ABDAC8] transition-colors py-1"
+              >
+                How It Works
+              </a>
+              <a
+                href="#why-staqor"
+                onClick={() => setMobileMenuOpen(false)}
+                className="hover:text-[#ABDAC8] transition-colors py-1"
+              >
+                Why Staqor
+              </a>
+              <a
+                href="#testimonials"
+                onClick={() => setMobileMenuOpen(false)}
+                className="hover:text-[#ABDAC8] transition-colors py-1"
+              >
+                Wall of Proof
+              </a>
+              <a
+                href="#faq"
+                onClick={() => setMobileMenuOpen(false)}
+                className="hover:text-[#ABDAC8] transition-colors py-1"
+              >
+                FAQ
+              </a>
+              <Link href="/challenges" onClick={() => setMobileMenuOpen(false)} className="pt-2">
+                <Button size="sm" className="w-full bg-gradient-to-b from-[#ABDAC8] to-[#7BC4A8] text-[#0A0A0F] font-bold rounded-xl py-2.5">
+                  Join Challenge
                 </Button>
               </Link>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* ========================================================================= */}
-      {/* 2. HERO SECTION */}
+      {/* 1. HERO SECTION */}
       {/* ========================================================================= */}
-      <section ref={heroRef} className="container mx-auto px-6 pt-16 sm:pt-20 pb-20 text-center relative z-10">
-        {/* Eyebrow Badge */}
-        <div className="hero-badge inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#111614] border border-[#26352E] text-xs font-mono text-[#ABDAC8] mb-8 shadow-sm">
-          <span className="w-2 h-2 rounded-full bg-[#4ADE80] animate-pulse" />
-          <span>GROQ LPU AI GRADING • SUB-2.5S • 100% IN-BROWSER WORKSPACE</span>
-        </div>
-
-        {/* Editorial Headline + Hand-Drawn Squiggle Accent */}
-        <div className="relative max-w-5xl mx-auto mb-6">
-          <div className="hero-doodle absolute -top-8 right-8 hidden md:block pointer-events-none">
-            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-              <path
-                d="M18 0L20.5 13.5L34 16L20.5 18.5L18 32L15.5 18.5L2 16L15.5 13.5L18 0Z"
-                fill="#ABDAC8"
-                fillOpacity="0.8"
-              />
-            </svg>
-          </div>
-
-          <h1 className="hero-title text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.08] text-[#F5F5F7]">
-            The in-browser IDE for modern frontend{" "}
-            <span className="relative inline-block">
-              <span className="font-serif italic font-normal text-[#ABDAC8]">craftsmanship.</span>
-              <svg
-                className="hero-doodle absolute -bottom-3 left-0 w-full h-3 text-[#ABDAC8] opacity-80"
-                viewBox="0 0 250 12"
-                fill="none"
-              >
-                <path
-                  d="M3 8.5C45 2.5 85 11 125 7C165 3 205 10 247 4.5"
-                  stroke="#ABDAC8"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </span>
-          </h1>
-        </div>
-
-        {/* Subhead */}
-        <p className="hero-subhead text-base sm:text-lg md:text-xl text-[#9CA3AF] max-w-3xl mx-auto mb-8 leading-relaxed">
-          Solve real HTML/CSS, JS DOM, and React component challenges inside a split Monaco IDE. Graded against
-          multi-criteria rubrics in &lt;2.5s by Groq AI with zero server latency, and proven with live recruiter replay
-          sandboxes.
-        </p>
-
-        {/* Hero CTA Button Group */}
-        <div className="hero-cta relative inline-flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
-          <Link href="/signup">
-            <button className="px-8 py-4 text-sm font-bold rounded-xl bg-[#ABDAC8] text-[#0A0A0F] border-2 border-[#ABDAC8] shadow-[5px_5px_0px_#26262E] hover:shadow-[2px_2px_0px_#26262E] hover:translate-x-[3px] hover:translate-y-[3px] active:translate-x-[5px] active:translate-y-[5px] transition-all flex items-center gap-2 cursor-pointer">
-              <span>Start Practicing Free</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </Link>
-
-          <Link href="/challenges">
-            <Button
-              size="lg"
-              variant="outline"
-              className="h-[52px] px-8 text-sm font-semibold rounded-xl bg-[#111117] border-[#26262E] text-[#F5F5F7] hover:border-[#ABDAC8]/50 hover:bg-[#16161F] transition-all"
-            >
-              Explore 8 Tracks Catalog
-            </Button>
-          </Link>
-        </div>
-
-        {/* Key Metrics Strip (Hero Feature Bar) */}
-        <div className="hero-metric-bar max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 mb-14">
-          <div className="p-3.5 rounded-xl bg-[#111117]/80 border border-[#26262E] text-left">
-            <span className="text-xl font-bold font-mono text-[#ABDAC8] block">&lt; 2.5s</span>
-            <span className="text-[11px] font-mono text-[#9CA3AF]">Groq AI Inference Time</span>
-          </div>
-          <div className="p-3.5 rounded-xl bg-[#111117]/80 border border-[#26262E] text-left">
-            <span className="text-xl font-bold font-mono text-[#ABDAC8] block">8 Tracks</span>
-            <span className="text-[11px] font-mono text-[#9CA3AF]">HTML/CSS to React & APIs</span>
-          </div>
-          <div className="p-3.5 rounded-xl bg-[#111117]/80 border border-[#26262E] text-left">
-            <span className="text-xl font-bold font-mono text-[#4ADE80] block">100% Client</span>
-            <span className="text-[11px] font-mono text-[#9CA3AF]">Zero Docker Cold Starts</span>
-          </div>
-          <div className="p-3.5 rounded-xl bg-[#111117]/80 border border-[#26262E] text-left">
-            <span className="text-xl font-bold font-mono text-[#ABDAC8] block">35/35/30%</span>
-            <span className="text-[11px] font-mono text-[#9CA3AF]">Weighted Multi-Rubric</span>
-          </div>
-        </div>
-
-        {/* ===================================================================== */}
-        {/* INTERACTIVE HERO WORKSPACE SIMULATION */}
-        {/* ===================================================================== */}
-        <div id="workspace-demo" className="relative max-w-5xl mx-auto pt-4">
-          {/* Dotted Connector Line */}
-          <svg
-            className="hero-connector absolute -top-10 right-24 w-48 h-32 hidden lg:block pointer-events-none z-20"
-            viewBox="0 0 200 120"
-            fill="none"
-          >
-            <path
-              d="M10 10 C 80 10, 150 50, 180 110"
-              stroke="#ABDAC8"
-              strokeWidth="1.5"
-              strokeDasharray="4 4"
-              strokeOpacity="0.4"
-            />
-          </svg>
-
-          {/* Floating AI Verdict Card */}
+      <main className="relative z-10 max-w-6xl mx-auto px-4">
+        <section className="pt-16 pb-20 md:pt-24 md:pb-28 text-center flex flex-col items-center relative">
+          {/* Floating Badge 1 (Mid-Left) */}
           <div
-            ref={floatingBadgeRef}
-            className="mb-4 lg:mb-0 lg:absolute lg:-top-8 lg:-right-4 z-30 w-full lg:w-80 p-4 rounded-2xl bg-[#16161F]/95 backdrop-blur-md border border-[#ABDAC8]/40 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_20px_rgba(171,218,200,0.15)] text-left transition-all"
+            ref={badge1Ref}
+            className="hidden lg:flex flex-col items-start gap-1 p-3 rounded-2xl bg-[#111117]/95 backdrop-blur-xl border border-[#ABDAC8]/40 hover:border-[#ABDAC8] shadow-xl text-xs font-bold text-white absolute -left-6 xl:-left-16 top-72 xl:top-[22rem] z-20 group cursor-pointer transition-all duration-300 hover:shadow-2xl hover:shadow-[#ABDAC8]/30 hover:scale-105 max-w-[210px] text-left"
           >
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <span className="flex h-2 w-2 rounded-full bg-[#4ADE80] animate-pulse" />
-                <span className="text-[11px] font-mono font-bold text-[#4ADE80]">
-                  SCORE {mockupScore}/100 • PASSED
-                </span>
-              </div>
-              <Badge variant="outline" className="text-[9px] font-mono text-[#ABDAC8] border-[#ABDAC8]/30 py-0 px-1.5">
-                {evalTimer} INFERENCE
-              </Badge>
-            </div>
-            <h4 className="text-xs font-bold text-[#F5F5F7] mb-2 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-[#ABDAC8]" />
-              <span>Groq AI Multi-Criteria Rubric</span>
-            </h4>
-            <div className="space-y-1.5 text-[11px] font-mono text-[#9CA3AF]">
-              <div className="flex justify-between items-center">
-                <span>Layout & Visual Fidelity:</span>
-                <span className="text-[#ABDAC8] font-semibold">{currentHeroChallenge.rubricDesign}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span>DOM & State Logic:</span>
-                <span className="text-[#ABDAC8] font-semibold">{currentHeroChallenge.rubricLogic}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span>Semantic Cleanliness:</span>
-                <span className="text-[#ABDAC8] font-semibold">{currentHeroChallenge.rubricQuality}</span>
-              </div>
-            </div>
-            <div className="mt-3 pt-2.5 border-t border-[#26262E] flex items-center justify-between text-[10px] font-mono text-[#9CA3AF]">
-              <span className="text-[#4ADE80]">⚡ Pre-Filter Gate: PASSED</span>
-              <span>🔒 Scaffolding Valid</span>
-            </div>
-          </div>
-
-          {/* Main Interactive IDE Window with Efferd Corner Decor */}
-          <div
-            ref={heroMockupRef}
-            className="rounded-2xl border border-[#26262E] bg-[#111117] shadow-[0_30px_90px_rgba(0,0,0,0.9),0_0_30px_rgba(171,218,200,0.06)] overflow-hidden text-left relative"
-          >
-            <DecorIcon position="top-left" className="text-[#ABDAC8]/40" />
-            <DecorIcon position="top-right" className="text-[#ABDAC8]/40" />
-
-            {/* Top Workspace Bar with Challenge Switcher */}
-            <div className="border-b border-[#26262E] bg-[#0E0E14] px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-[#F87171]/80" />
-                <div className="w-3 h-3 rounded-full bg-[#FBBF24]/80" />
-                <div className="w-3 h-3 rounded-full bg-[#4ADE80]/80" />
-                
-                {/* Challenge Switcher Pills inside Hero */}
-                <div className="ml-2 flex items-center gap-1.5 bg-[#16161F] p-1 rounded-lg border border-[#26262E]">
-                  {HERO_CHALLENGES.map((ch, idx) => (
-                    <button
-                      key={ch.id}
-                      onClick={() => {
-                        setHeroChallengeIdx(idx);
-                        setMockupScore(ch.score);
-                        setEvalTimer(ch.time);
-                        setMockupLogs((prev) => [
-                          ...prev,
-                          `[Workspace] Switched challenge to: ${ch.title}`,
-                        ]);
-                      }}
-                      className={`px-2.5 py-1 text-[10px] font-mono rounded transition-all cursor-pointer ${
-                        heroChallengeIdx === idx
-                          ? "bg-[#ABDAC8] text-[#0A0A0F] font-bold"
-                          : "text-[#9CA3AF] hover:text-[#F5F5F7]"
-                      }`}
-                    >
-                      {ch.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Badge
-                  variant="outline"
-                  className="text-[10px] font-mono text-[#ABDAC8] border-[#ABDAC8]/30 bg-[#111614] flex items-center gap-1"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80]" />
-                  CLIENT SANDBOX ACTIVE
-                </Badge>
-                <Badge variant="outline" className="text-[10px] font-mono border-[#26262E] text-[#9CA3AF]">
-                  2000MS LOOP-KILLER
-                </Badge>
-              </div>
-            </div>
-
-            {/* Split Layout: 40% Left Spec/Rubric/Feedback / 60% Right Monaco + Console */}
-            <div className="grid md:grid-cols-12 min-h-[460px]">
-              {/* 40% Left Panel (4 Tabs: Spec, Rubric, Preview, Feedback) */}
-              <div className="md:col-span-5 p-4 sm:p-5 border-r border-[#26262E] bg-[#0F0F16]/70 flex flex-col justify-between">
-                <div>
-                  {/* Left Tabs Bar */}
-                  <div className="grid grid-cols-4 gap-1 p-1 bg-[#111117] border border-[#26262E] rounded-lg mb-4 text-[11px] font-mono">
-                    <button
-                      onClick={() => setMockupLeftTab("spec")}
-                      className={`py-1.5 rounded text-center transition-all ${
-                        mockupLeftTab === "spec"
-                          ? "bg-[#16161F] text-[#ABDAC8] font-bold border border-[#26262E]"
-                          : "text-[#9CA3AF] hover:text-[#F5F5F7]"
-                      }`}
-                    >
-                      Spec
-                    </button>
-                    <button
-                      onClick={() => setMockupLeftTab("rubric")}
-                      className={`py-1.5 rounded text-center transition-all ${
-                        mockupLeftTab === "rubric"
-                          ? "bg-[#16161F] text-[#ABDAC8] font-bold border border-[#26262E]"
-                          : "text-[#9CA3AF] hover:text-[#F5F5F7]"
-                      }`}
-                    >
-                      Rubric
-                    </button>
-                    <button
-                      onClick={() => setMockupLeftTab("preview")}
-                      className={`py-1.5 rounded text-center transition-all ${
-                        mockupLeftTab === "preview"
-                          ? "bg-[#16161F] text-[#ABDAC8] font-bold border border-[#26262E]"
-                          : "text-[#9CA3AF] hover:text-[#F5F5F7]"
-                      }`}
-                    >
-                      Preview
-                    </button>
-                    <button
-                      onClick={() => setMockupLeftTab("feedback")}
-                      className={`py-1.5 rounded text-center transition-all ${
-                        mockupLeftTab === "feedback"
-                          ? "bg-[#16161F] text-[#ABDAC8] font-bold border border-[#26262E]"
-                          : "text-[#9CA3AF] hover:text-[#F5F5F7]"
-                      }`}
-                    >
-                      Feedback
-                    </button>
-                  </div>
-
-                  {/* Left Tab Content */}
-                  {mockupLeftTab === "spec" && (
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-[10px] font-mono text-[#4ADE80] border-[#4ADE80]/30">
-                          {currentHeroChallenge.difficulty}
-                        </Badge>
-                        <Badge variant="outline" className="text-[10px] font-mono border-[#26262E]">
-                          {currentHeroChallenge.track}
-                        </Badge>
-                        <span className="text-[11px] font-mono text-[#9CA3AF]">Runs: 1/5 • Submits: 1/3</span>
-                      </div>
-
-                      <h3 className="text-sm sm:text-base font-bold text-[#F5F5F7]">
-                        {currentHeroChallenge.title}
-                      </h3>
-                      <p className="text-xs text-[#9CA3AF] leading-relaxed">
-                        {currentHeroChallenge.desc}
-                      </p>
-
-                      <div className="p-3 rounded-lg bg-[#16161F] border border-[#26262E] space-y-1.5 text-xs">
-                        <span className="text-[10px] font-mono font-bold text-[#ABDAC8] uppercase tracking-wider block">
-                          Requirement Checklist
-                        </span>
-                        <p className="text-[11px] text-[#9CA3AF] flex items-center gap-1.5">
-                          <Check className="w-3.5 h-3.5 text-[#4ADE80]" /> Verified responsive layout & grid alignment
-                        </p>
-                        <p className="text-[11px] text-[#9CA3AF] flex items-center gap-1.5">
-                          <Check className="w-3.5 h-3.5 text-[#4ADE80]" /> Event delegation & dynamic state transitions
-                        </p>
-                        <p className="text-[11px] text-[#9CA3AF] flex items-center gap-1.5">
-                          <Check className="w-3.5 h-3.5 text-[#4ADE80]" /> Clean semantic HTML & accessibility ARIA
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {mockupLeftTab === "rubric" && (
-                    <div className="space-y-3">
-                      <h4 className="text-xs font-mono font-bold text-[#ABDAC8] uppercase tracking-wider">
-                        Official Evaluation Rubric (100 pts)
-                      </h4>
-                      <div className="space-y-2 text-xs">
-                        <div className="p-2.5 rounded-md bg-[#16161F] border border-[#26262E]">
-                          <div className="flex justify-between font-mono font-bold text-[#F5F5F7] mb-1">
-                            <span>1. Visual Layout Fidelity</span>
-                            <span className="text-[#ABDAC8]">35%</span>
-                          </div>
-                          <p className="text-[11px] text-[#9CA3AF]">
-                            Clean grid spacing, mobile breakpoints, and consistent theme contrast.
-                          </p>
-                        </div>
-
-                        <div className="p-2.5 rounded-md bg-[#16161F] border border-[#26262E]">
-                          <div className="flex justify-between font-mono font-bold text-[#F5F5F7] mb-1">
-                            <span>2. DOM State & Event Logic</span>
-                            <span className="text-[#ABDAC8]">35%</span>
-                          </div>
-                          <p className="text-[11px] text-[#9CA3AF]">
-                            Event listener toggles price values smoothly and handles keyboard access.
-                          </p>
-                        </div>
-
-                        <div className="p-2.5 rounded-md bg-[#16161F] border border-[#26262E]">
-                          <div className="flex justify-between font-mono font-bold text-[#F5F5F7] mb-1">
-                            <span>3. Semantic Code Quality</span>
-                            <span className="text-[#ABDAC8]">30%</span>
-                          </div>
-                          <p className="text-[11px] text-[#9CA3AF]">
-                            No redundant styles, proper HTML landmarks, clean variable naming.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {mockupLeftTab === "preview" && (
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between pb-2 border-b border-[#26262E]">
-                        <span className="text-xs font-mono text-[#9CA3AF]">Viewport Mode</span>
-                        <div className="flex items-center gap-1">
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            onClick={() => setMockupViewport("desktop")}
-                            className={`w-7 h-7 ${
-                              mockupViewport === "desktop" ? "text-[#ABDAC8] bg-[#16161F]" : "text-[#9CA3AF]"
-                            }`}
-                          >
-                            <Monitor className="w-3.5 h-3.5" />
-                          </Button>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            onClick={() => setMockupViewport("tablet")}
-                            className={`w-7 h-7 ${
-                              mockupViewport === "tablet" ? "text-[#ABDAC8] bg-[#16161F]" : "text-[#9CA3AF]"
-                            }`}
-                          >
-                            <Tablet className="w-3.5 h-3.5" />
-                          </Button>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            onClick={() => setMockupViewport("mobile")}
-                            className={`w-7 h-7 ${
-                              mockupViewport === "mobile" ? "text-[#ABDAC8] bg-[#16161F]" : "text-[#9CA3AF]"
-                            }`}
-                          >
-                            <Smartphone className="w-3.5 h-3.5" />
-                          </Button>
-                        </div>
-                      </div>
-
-                      {/* Interactive Simulated Component Render */}
-                      <div className="p-4 rounded-xl bg-[#0A0A0F] border border-[#26262E] text-center">
-                        <div className="inline-flex items-center gap-2 mb-3 px-2 py-1 rounded bg-[#16161F] border border-[#26262E] text-[10px] font-mono">
-                          <span>Billing:</span>
-                          <button
-                            onClick={() => {
-                              setMockupAnnualBilling(!mockupAnnualBilling);
-                              setMockupLogs((prev) => [
-                                ...prev,
-                                `[Preview Event] Toggle switched: ${!mockupAnnualBilling ? "Annual ($15)" : "Monthly ($19)"}`,
-                              ]);
-                            }}
-                            className="px-2 py-0.5 rounded bg-[#ABDAC8] text-[#0A0A0F] font-bold cursor-pointer hover:opacity-90"
-                          >
-                            {mockupAnnualBilling ? "Annual (Save 20%)" : "Monthly"}
-                          </button>
-                        </div>
-
-                        <div className="p-4 rounded-lg bg-[#111614] border border-[#ABDAC8]/40">
-                          <span className="text-[10px] font-mono font-bold text-[#ABDAC8] uppercase tracking-wider block mb-1">
-                            PRO CANDIDATE
-                          </span>
-                          <div className="text-2xl font-extrabold text-[#F5F5F7] mb-1">
-                            ${mockupAnnualBilling ? "15" : "19"}
-                            <span className="text-xs text-[#9CA3AF] font-normal"> / mo</span>
-                          </div>
-                          <p className="text-[10px] text-[#9CA3AF] mb-3">Unlimited AI runs + recruiter portfolio</p>
-                          <button className="w-full py-1.5 text-xs font-bold rounded bg-[#ABDAC8] text-[#0A0A0F] shadow-[2px_2px_0px_#26262E]">
-                            Get Started
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {mockupLeftTab === "feedback" && (
-                    <div className="space-y-3">
-                      <div className="p-3 rounded-lg bg-[#111614] border border-[#4ADE80]/30 space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-mono font-bold text-[#4ADE80] flex items-center gap-1.5">
-                            <CheckCircle2 className="w-4 h-4" /> SUBMISSION PASSED
-                          </span>
-                          <span className="text-xs font-mono text-[#ABDAC8] font-bold">{mockupScore}/100</span>
-                        </div>
-                        <p className="text-[11px] text-[#9CA3AF] leading-relaxed">
-                          Exceptional craft! The solution passes all criteria with zero token waste on syntax errors and complete responsive fidelity.
-                        </p>
-                      </div>
-
-                      <div className="text-[11px] font-mono space-y-1 text-[#9CA3AF]">
-                        <p className="text-[#ABDAC8]">💡 Recommendation for production:</p>
-                        <p>Consider adding `aria-pressed=&quot;true&quot;` to the interactive toggle element for enhanced screen reader feedback.</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Bottom Left Status */}
-                <div className="pt-3 border-t border-[#26262E]/70 flex items-center justify-between text-[11px] font-mono text-[#9CA3AF]">
-                  <span className="flex items-center gap-1">
-                    <Lock className="w-3 h-3 text-[#ABDAC8]" /> Scaffolding Locked
-                  </span>
-                  <span className="text-[#ABDAC8]">Ready for Run / Submit</span>
-                </div>
-              </div>
-
-              {/* 60% Right Monaco Editor + Interactive Console */}
-              <div className="md:col-span-7 flex flex-col bg-[#0A0A0F]">
-                {/* Monaco Tab Bar */}
-                <div className="h-10 border-b border-[#26262E] bg-[#111117] flex items-center justify-between px-3">
-                  <div className="flex items-center gap-1 text-xs font-mono">
-                    <button
-                      onClick={() => setMockupEditorTab("html")}
-                      className={`px-3 py-1.5 rounded-t font-semibold transition-all ${
-                        mockupEditorTab === "html"
-                          ? "bg-[#0B0B10] text-[#ABDAC8] border-t border-x border-[#26262E]"
-                          : "text-[#9CA3AF] hover:text-[#F5F5F7]"
-                      }`}
-                    >
-                      index.html
-                    </button>
-                    <button
-                      onClick={() => setMockupEditorTab("css")}
-                      className={`px-3 py-1.5 rounded-t font-semibold transition-all ${
-                        mockupEditorTab === "css"
-                          ? "bg-[#0B0B10] text-[#ABDAC8] border-t border-x border-[#26262E]"
-                          : "text-[#9CA3AF] hover:text-[#F5F5F7]"
-                      }`}
-                    >
-                      styles.css
-                    </button>
-                    <button
-                      onClick={() => setMockupEditorTab("js")}
-                      className={`px-3 py-1.5 rounded-t font-semibold transition-all ${
-                        mockupEditorTab === "js"
-                          ? "bg-[#0B0B10] text-[#ABDAC8] border-t border-x border-[#26262E]"
-                          : "text-[#9CA3AF] hover:text-[#F5F5F7]"
-                      }`}
-                    >
-                      script.js
-                    </button>
-                  </div>
-                  <span className="text-[10px] font-mono text-[#9CA3AF]">Monaco Editor v0.46</span>
-                </div>
-
-                {/* Monaco Code Pane */}
-                <div className="p-4 font-mono text-[11px] text-[#9CA3AF] bg-[#0B0B10] flex-1 overflow-x-auto leading-relaxed border-b border-[#26262E]">
-                  <pre className="text-[#F5F5F7]/90">{currentHeroChallenge.code[mockupEditorTab]}</pre>
-                </div>
-
-                {/* Stacked LeetCode-Style Interactive Console Drawer */}
-                <div className="p-3 bg-[#0E0E14] border-b border-[#26262E] flex flex-col justify-between max-h-32 overflow-y-auto font-mono text-[10px]">
-                  <div className="flex items-center justify-between pb-1 border-b border-[#26262E]/60 text-[#9CA3AF] mb-1.5">
-                    <span className="flex items-center gap-1.5">
-                      <Terminal className="w-3 h-3 text-[#ABDAC8]" /> Interactive Output & Runtime Logs
-                    </span>
-                    <button
-                      onClick={() =>
-                        setMockupLogs(["[Sandbox] Logs cleared.", "[Groq LPU] Ready for diagnostic Run or Submit."])
-                      }
-                      className="hover:text-[#F5F5F7]"
-                    >
-                      Clear
-                    </button>
-                  </div>
-                  <div className="space-y-0.5 text-[#9CA3AF]">
-                    {mockupLogs.slice(-3).map((log, i) => (
-                      <div key={i} className="truncate">
-                        <span className="text-[#6B7280]">{new Date().toLocaleTimeString()} </span>
-                        <span className={log.includes("PASSED") ? "text-[#4ADE80]" : "text-[#ABDAC8]"}>{log}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Action Bar (RUN / SUBMIT) */}
-                <div className="p-3 bg-[#111117] flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#4ADE80]" />
-                    <span className="text-xs font-mono text-[#9CA3AF]">Isolated Sandbox Engine</span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      disabled={isEvaluating}
-                      onClick={() => handleRunEvaluation("run")}
-                      className="h-8 text-xs font-mono border-[#ABDAC8]/50 text-[#ABDAC8] hover:bg-[#ABDAC8]/10"
-                    >
-                      {isEvaluating ? (
-                        <span className="flex items-center gap-1">
-                          <Sparkles className="w-3 h-3 animate-spin" /> GRADING...
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-1">
-                          <Play className="w-3 h-3" /> RUN (DIAGNOSTIC)
-                        </span>
-                      )}
-                    </Button>
-
-                    <button
-                      disabled={isEvaluating}
-                      onClick={() => handleRunEvaluation("submit")}
-                      className="px-4 py-1.5 text-xs font-mono font-bold rounded-lg bg-[#ABDAC8] text-[#0A0A0F] shadow-[3px_3px_0px_#26262E] hover:shadow-[1px_1px_0px_#26262E] hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[3px] active:translate-y-[3px] transition-all cursor-pointer disabled:opacity-50"
-                    >
-                      SUBMIT
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* 3. TRUST STRIP & EFFRED LOGO CLOUD */}
-      {/* ========================================================================= */}
-      <section className="gsap-reveal border-y border-[#26262E]/70 py-10 bg-[#0E0E14]/50">
-        <div className="container mx-auto px-6 text-center max-w-6xl">
-          <p className="text-xs font-mono uppercase tracking-widest text-[#9CA3AF]/70 mb-6">
-            Supported by Modern Frontend Infrastructure & Industry Standards
-          </p>
-
-          <LogoCloud />
-        </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* 4. "HOW IT WORKS" — 4-STEP WORKFLOW */}
-      {/* ========================================================================= */}
-      <section id="how-it-works" className="gsap-reveal container mx-auto px-6 py-20 max-w-5xl">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
-          <div>
-            <Badge variant="outline" className="text-xs font-mono text-[#ABDAC8] border-[#ABDAC8]/30 mb-3 bg-[#111614]">
-              STEP-BY-STEP WORKFLOW
-            </Badge>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#F5F5F7]">
-              From Challenge Spec to <span className="font-serif italic font-normal text-[#ABDAC8]">Provable Proof.</span>
-            </h2>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setActiveStep((prev) => (prev > 0 ? prev - 1 : HOW_IT_WORKS_STEPS.length - 1))}
-              className="w-10 h-10 rounded-xl border-[#26262E] bg-[#111117] hover:border-[#ABDAC8] hover:text-[#ABDAC8]"
-              aria-label="Previous Step"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setActiveStep((prev) => (prev < HOW_IT_WORKS_STEPS.length - 1 ? prev + 1 : 0))}
-              className="w-10 h-10 rounded-xl border-[#26262E] bg-[#111117] hover:border-[#ABDAC8] hover:text-[#ABDAC8]"
-              aria-label="Next Step"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-
-        {/* Step Indicator Tabs */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-          {HOW_IT_WORKS_STEPS.map((st, idx) => (
-            <button
-              key={st.num}
-              onClick={() => setActiveStep(idx)}
-              className={`p-4 rounded-xl border text-left transition-all cursor-pointer ${
-                activeStep === idx
-                  ? "bg-[#16161F] border-[#ABDAC8] shadow-[0_0_20px_rgba(171,218,200,0.1)]"
-                  : "bg-[#111117] border-[#26262E] text-[#9CA3AF] hover:border-[#26262E]/90 hover:text-[#F5F5F7]"
-              }`}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className={`text-xs font-mono font-bold ${activeStep === idx ? "text-[#ABDAC8]" : "text-[#6B7280]"}`}>
-                  {st.num}
-                </span>
-                <span className="text-[10px] font-mono uppercase">{st.tag}</span>
-              </div>
-              <p className="text-xs font-semibold truncate text-[#F5F5F7]">{st.title}</p>
-            </button>
-          ))}
-        </div>
-
-        {/* Active Step Detailed Card */}
-        <div className="p-8 rounded-2xl bg-[#111117] border border-[#26262E] shadow-2xl grid md:grid-cols-12 gap-8 items-center relative overflow-hidden">
-          <DecorIcon position="top-right" className="text-[#ABDAC8]/30" />
-          <div className="md:col-span-7 space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#16161F] border border-[#26262E] text-xs font-mono text-[#ABDAC8]">
-              <span>PHASE {HOW_IT_WORKS_STEPS[activeStep].num} OF 04</span>
-            </div>
-            <h3 className="text-2xl font-bold text-[#F5F5F7]">{HOW_IT_WORKS_STEPS[activeStep].title}</h3>
-            <p className="text-sm text-[#9CA3AF] leading-relaxed">{HOW_IT_WORKS_STEPS[activeStep].desc}</p>
-          </div>
-
-          <div className="md:col-span-5 p-6 rounded-xl bg-[#0A0A0F] border border-[#26262E] space-y-4">
-            <div className="flex items-center justify-between border-b border-[#26262E] pb-3 text-xs font-mono">
-              <span className="text-[#9CA3AF]">TARGET TRACK</span>
-              <span className="text-[#ABDAC8] font-bold">{HOW_IT_WORKS_STEPS[activeStep].preview.track}</span>
-            </div>
-            <div>
-              <span className="text-[10px] font-mono uppercase text-[#6B7280] block mb-1">Focus Domain</span>
-              <p className="text-sm font-semibold text-[#F5F5F7]">{HOW_IT_WORKS_STEPS[activeStep].preview.title}</p>
-            </div>
-            <div className="flex items-center justify-between pt-2 text-xs font-mono">
-              <Badge variant="outline" className="text-[10px] text-[#4ADE80] border-[#4ADE80]/30">
-                {HOW_IT_WORKS_STEPS[activeStep].preview.difficulty}
-              </Badge>
-              <span className="text-[#9CA3AF]">{HOW_IT_WORKS_STEPS[activeStep].preview.time}</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* 5. INTERACTIVE 8-TRACK EXPLORER */}
-      {/* ========================================================================= */}
-      <section id="tracks" className="gsap-reveal container mx-auto px-6 py-20 max-w-6xl">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <Badge variant="outline" className="text-xs font-mono text-[#ABDAC8] border-[#ABDAC8]/30 mb-3 bg-[#111614]">
-            EXPANSIVE CURRICULUM
-          </Badge>
-          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#F5F5F7] mb-4">
-            Practice Across <span className="font-serif italic font-normal text-[#ABDAC8]">8 Specialized Tracks.</span>
-          </h2>
-          <p className="text-sm sm:text-base text-[#9CA3AF]">
-            From core HTML & CSS fundamentals to advanced React state machines and realistic bug-fixing scenarios.
-          </p>
-        </div>
-
-        {/* Track Selector Pills */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
-          {TRACKS_DATA.map((tr, idx) => {
-            const Icon = tr.icon;
-            return (
-              <button
-                key={tr.id}
-                onClick={() => setSelectedTrack(idx)}
-                className={`px-4 py-2 rounded-xl text-xs font-mono flex items-center gap-2 transition-all cursor-pointer ${
-                  selectedTrack === idx
-                    ? "bg-[#ABDAC8] text-[#0A0A0F] font-bold shadow-[3px_3px_0px_#26262E]"
-                    : "bg-[#111117] border border-[#26262E] text-[#9CA3AF] hover:text-[#F5F5F7] hover:border-[#ABDAC8]/40"
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5" />
-                <span>{tr.title}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Active Track Highlight Banner */}
-        <div className="p-8 rounded-3xl bg-[#111117] border border-[#26262E] shadow-2xl grid lg:grid-cols-12 gap-8 items-center relative overflow-hidden">
-          <DecorIcon position="bottom-right" className="text-[#ABDAC8]/30" />
-          <div className="lg:col-span-7 space-y-4">
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-[10px] font-mono text-[#ABDAC8] border-[#ABDAC8]/30">
-                {TRACKS_DATA[selectedTrack].tag}
-              </Badge>
-              <span className="text-xs font-mono text-[#9CA3AF]">
-                {TRACKS_DATA[selectedTrack].challengesCount} Challenges Available
+              <div className="w-6 h-6 rounded-full bg-[#ABDAC8]/20 text-[#ABDAC8] border border-[#ABDAC8]/40 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                <ShieldCheck className="w-3.5 h-3.5" />
+              </div>
+              <span className="font-extrabold text-white group-hover:text-[#ABDAC8] transition-colors">
+                Verified Proof of Work
               </span>
             </div>
-            <h3 className="text-2xl sm:text-3xl font-bold text-[#F5F5F7]">{TRACKS_DATA[selectedTrack].title}</h3>
-            <p className="text-sm text-[#9CA3AF] leading-relaxed">{TRACKS_DATA[selectedTrack].desc}</p>
+            <p className="text-[10px] text-zinc-400 font-normal pl-8 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 transition-all duration-300 overflow-hidden leading-tight">
+              Auto-validated candidate sandbox &amp; recruiter proof
+            </p>
+          </div>
 
-            <div className="pt-2">
-              <Link href="/challenges">
-                <Button className="bg-[#ABDAC8] text-[#0A0A0F] hover:bg-[#ABDAC8]/90 font-bold text-xs font-mono">
-                  <span>Browse {TRACKS_DATA[selectedTrack].title}</span>
-                  <ArrowRight className="w-3.5 h-3.5 ml-2" />
+          {/* Floating Badge 2 (Top-Right) */}
+          <div
+            ref={badge2Ref}
+            className="hidden lg:flex flex-col items-start gap-1 p-3 rounded-2xl bg-[#111117]/90 backdrop-blur-md border border-[#26262E] hover:border-[#ABDAC8] shadow-xl text-xs font-bold text-white absolute right-4 xl:right-8 top-8 z-20 group cursor-pointer transition-all duration-300 hover:shadow-2xl hover:shadow-[#ABDAC8]/20 hover:scale-105 max-w-[210px] text-left"
+          >
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-full bg-[#ABDAC8]/20 text-[#ABDAC8] flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Users className="w-3.5 h-3.5" />
+              </div>
+              <span className="group-hover:text-[#ABDAC8] transition-colors">10,000+ Active Builders</span>
+            </div>
+            <p className="text-[10px] text-zinc-400 font-normal pl-8 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 transition-all duration-300 overflow-hidden leading-tight">
+              Frontend engineers practicing real UI specs
+            </p>
+          </div>
+
+          {/* Floating Badge 3 (Bottom-Left) */}
+          <div
+            ref={badge3Ref}
+            className="hidden lg:flex flex-col items-start gap-1 p-3 rounded-2xl bg-[#111117]/90 backdrop-blur-md border border-emerald-500/40 hover:border-emerald-400 shadow-xl text-xs font-bold text-emerald-400 absolute left-4 xl:left-8 bottom-4 z-20 group cursor-pointer transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/20 hover:scale-105 max-w-[210px] text-left"
+          >
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 group-hover:scale-110 transition-transform" />
+              <span>100% Free for Students</span>
+            </div>
+            <p className="text-[10px] text-zinc-400 font-normal pl-6 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 transition-all duration-300 overflow-hidden leading-tight">
+              5 Runs &amp; 3 Submits lifetime per challenge
+            </p>
+          </div>
+
+          {/* Floating Badge 4 (Bottom-Right) */}
+          <div
+            ref={badge4Ref}
+            className="hidden lg:flex flex-col items-start gap-1 p-3 rounded-2xl bg-[#111117]/90 backdrop-blur-md border border-amber-500/40 hover:border-amber-400 shadow-xl text-xs font-bold text-amber-300 absolute right-4 xl:right-8 bottom-8 z-20 group cursor-pointer transition-all duration-300 hover:shadow-2xl hover:shadow-amber-500/20 hover:scale-105 max-w-[210px] text-left"
+          >
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-amber-400 shrink-0 group-hover:scale-110 transition-transform" />
+              <span>8 Practice Tracks</span>
+            </div>
+            <p className="text-[10px] text-zinc-400 font-normal pl-6 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 transition-all duration-300 overflow-hidden leading-tight">
+              HTML/CSS, JS DOM, React, Vue, APIs &amp; Bug Fixes
+            </p>
+          </div>
+
+          {/* Hero Content */}
+          <div ref={heroRef} className="flex flex-col items-center max-w-5xl">
+            {/* Eyebrow Tag */}
+            <h4 className="uppercase text-[#ABDAC8] text-sm sm:text-base md:text-lg font-bold tracking-widest mb-4">
+              PRACTICE. &nbsp;EVALUATE. &nbsp;GET PLACED.
+            </h4>
+
+            {/* Main Headline */}
+            <div className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-[5.2rem] font-black tracking-tight text-white max-w-5xl leading-[1.08] mb-6">
+              <h1 className="flex flex-col sm:block items-center">
+                <span>Become the Frontend Engineer that </span>
+                <span className="inline-block px-3 py-1 my-1 rounded-2xl bg-[#111614] border-2 border-[#ABDAC8] text-[#ABDAC8] shadow-[0_0_35px_rgba(171,218,200,0.35)]">
+                  Companies
+                </span>
+                <span> Want to Hire!</span>
+              </h1>
+            </div>
+
+            {/* Sub-headline */}
+            <p className="text-base sm:text-xl md:text-2xl text-zinc-300 max-w-3xl leading-relaxed mb-8 font-normal">
+              Join a growing community of developers mastering real UI components, passing sub-2.5s Groq AI rubrics, and building verified portfolios at Staqor.
+            </p>
+
+            {/* Dev Community Avatars & Proof Strip */}
+            <div className="flex flex-wrap justify-center items-center gap-3 text-sm text-zinc-300 font-medium mb-8">
+              <div className="flex -space-x-2.5 items-center">
+                <img
+                  src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&h=120&q=80"
+                  alt="Staqor Builder"
+                  className="w-9 h-9 rounded-full object-cover border-2 border-[#0A0A0F] shadow-md hover:scale-110 hover:z-10 transition-transform cursor-pointer"
+                />
+                <img
+                  src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=120&h=120&q=80"
+                  alt="Staqor Builder"
+                  className="w-9 h-9 rounded-full object-cover border-2 border-[#0A0A0F] shadow-md hover:scale-110 hover:z-10 transition-transform cursor-pointer"
+                />
+                <img
+                  src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&h=120&q=80"
+                  alt="Staqor Builder"
+                  className="w-9 h-9 rounded-full object-cover border-2 border-[#0A0A0F] shadow-md hover:scale-110 hover:z-10 transition-transform cursor-pointer"
+                />
+                <img
+                  src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=120&h=120&q=80"
+                  alt="Staqor Builder"
+                  className="w-9 h-9 rounded-full object-cover border-2 border-[#0A0A0F] shadow-md hover:scale-110 hover:z-10 transition-transform cursor-pointer"
+                />
+              </div>
+              <div className="flex items-center gap-1.5 text-zinc-200">
+                <div className="flex items-center gap-0.5 text-amber-400">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i}>★</span>
+                  ))}
+                </div>
+                <span className="font-bold text-white">10,000+</span>
+                <span>Engineers Enrolled</span>
+              </div>
+            </div>
+
+            {/* Primary CTA */}
+            <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+              <Link href="/challenges" className="w-full sm:w-auto">
+                <Button
+                  size="lg"
+                  className="w-full sm:w-auto bg-gradient-to-b from-[#ABDAC8] via-[#ABDAC8] to-[#7BC4A8] hover:from-[#c2e8dc] hover:to-[#8cd4b9] text-[#0A0A0F] font-extrabold px-10 py-7 text-lg rounded-xl shadow-2xl shadow-[#ABDAC8]/35 hover:shadow-2xl hover:shadow-[#ABDAC8]/50 border border-[#ABDAC8]/40 transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
+                >
+                  <span>Explore Challenges</span>
+                  <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
             </div>
           </div>
+        </section>
 
-          {/* Sample Challenge Card Preview */}
-          <div className="lg:col-span-5 p-6 rounded-2xl bg-[#0A0A0F] border border-[#26262E] space-y-4">
-            <div className="flex items-center justify-between border-b border-[#26262E] pb-3">
-              <span className="text-xs font-mono text-[#9CA3AF]">FEATURED CHALLENGE</span>
-              <Badge
-                variant="outline"
-                className={`text-[10px] font-mono ${
-                  TRACKS_DATA[selectedTrack].sample.difficulty === "EASY"
-                    ? "text-[#4ADE80] border-[#4ADE80]/30"
-                    : TRACKS_DATA[selectedTrack].sample.difficulty === "MEDIUM"
-                    ? "text-[#FBBF24] border-[#FBBF24]/30"
-                    : "text-[#F87171] border-[#F87171]/30"
-                }`}
-              >
-                {TRACKS_DATA[selectedTrack].sample.difficulty} • {TRACKS_DATA[selectedTrack].sample.estTime}
-              </Badge>
+        {/* DYNAMIC HERO PROOF-OF-WORK SHOWCASE TERMINAL */}
+        <section className="pb-16 md:pb-24">
+          <div
+            ref={terminalRef}
+            className="w-full max-w-4xl mx-auto rounded-2xl bg-[#111117] border border-[#26262E] p-4 sm:p-6 shadow-2xl shadow-[#ABDAC8]/10 relative overflow-hidden group"
+          >
+            {/* CRT Terminal Scanline Overlay */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.35)_50%)] bg-[size:100%_4px] pointer-events-none opacity-25 z-10" />
+
+            {/* Ambient Terminal Glow Auras */}
+            <div className="absolute -top-20 -right-20 w-60 h-60 bg-[#ABDAC8]/10 blur-[90px] pointer-events-none rounded-full" />
+            <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-emerald-500/10 blur-[90px] pointer-events-none rounded-full" />
+
+            {/* Terminal Header Bar */}
+            <div className="flex flex-wrap items-center justify-between pb-4 border-b border-[#26262E] mb-5 gap-3 relative z-20">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-500/80 shadow-sm" />
+                <div className="w-3 h-3 rounded-full bg-amber-500/80 shadow-sm" />
+                <div className="w-3 h-3 rounded-full bg-emerald-500/80 shadow-sm" />
+                <span className="text-xs font-mono text-zinc-400 ml-2 font-semibold flex items-center gap-1.5">
+                  <GitCommitHorizontal className="w-3.5 h-3.5 text-[#ABDAC8]" />
+                  <span>Staqor Proof-of-Work Terminal v2.4</span>
+                </span>
+              </div>
+
+              {/* Pulsing Live Commit Stream Indicator */}
+              <div className="flex items-center gap-2 text-xs text-[#ABDAC8] font-mono bg-[#111614] px-2.5 py-1 rounded-full border border-[#ABDAC8]/30">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ABDAC8] opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ABDAC8]" />
+                </span>
+                <span className="font-bold tracking-wide">Live Evaluation Stream</span>
+              </div>
             </div>
 
-            <h4 className="text-base font-bold text-[#F5F5F7]">{TRACKS_DATA[selectedTrack].sample.name}</h4>
+            {/* Terminal Main Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left font-mono text-xs relative z-20">
+              {/* Left Code Console Panel */}
+              <div className="md:col-span-2 bg-[#09090D] p-4 sm:p-5 rounded-xl border border-zinc-800/90 text-zinc-300 leading-relaxed min-h-[175px] flex flex-col justify-between shadow-inner">
+                <div className="flex flex-col justify-between h-full">
+                  <div>
+                    <div className="text-zinc-500 mb-2 font-mono flex items-center justify-between">
+                      <span>{currentEntry.tag}</span>
+                      <span className="text-[10px] text-zinc-500 font-sans uppercase tracking-wider">{currentEntry.track}</span>
+                    </div>
 
-            <div className="p-3 rounded-lg bg-[#16161F] border border-[#26262E] space-y-1">
-              <span className="text-[10px] font-mono font-bold text-[#ABDAC8] uppercase tracking-wider block">
-                Primary Rubric Weight
-              </span>
-              <p className="text-xs text-[#9CA3AF]">{TRACKS_DATA[selectedTrack].sample.rubricFocus}</p>
+                    {/* Animated GSAP Typewriter Command Line */}
+                    <div className="text-[#ABDAC8] font-mono font-bold min-h-[2.5rem] flex items-center flex-wrap">
+                      <span>{typedText}</span>
+                      <span className="inline-block w-2 h-4 bg-[#ABDAC8] ml-1 animate-pulse" />
+                    </div>
+
+                    <div className="text-zinc-400 mt-2 text-[11px] space-y-0.5">
+                      <div className="flex items-center gap-1.5 text-emerald-400/90">
+                        <span>✔</span>
+                        <span>Validating JavaScript syntax &amp; locked scaffolding... OK</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-[#ABDAC8]">
+                        <span>✔</span>
+                        <span>Groq LPU multi-criteria rubric evaluation... {currentEntry.score} PASSED</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-[#ABDAC8] font-bold mt-4 pt-3 border-t border-zinc-900/80 flex items-center justify-between text-xs">
+                    <span className="flex items-center gap-1.5">
+                      <Flame className="w-4 h-4 text-[#ABDAC8] animate-bounce" />
+                      <span>Streak updated: {currentEntry.streak} Days Active!</span>
+                    </span>
+                    <span className="text-[10px] text-zinc-500 font-sans">Verified Attempt #{48900 + currentEntry.id}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Active Builder Info Card */}
+              <div className="bg-[#09090D] p-4 sm:p-5 rounded-xl border border-zinc-800/90 flex flex-col justify-between min-h-[175px] shadow-inner">
+                <div className="flex flex-col justify-between h-full">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="text-zinc-500 text-[10px] uppercase tracking-wider mb-1 font-sans font-bold">
+                        Active Engineer
+                      </div>
+                      <div className="text-white font-extrabold text-base font-sans tracking-tight">
+                        {currentEntry.name}
+                      </div>
+                      <div className="text-xs text-[#ABDAC8] font-bold mt-0.5 font-sans">
+                        {currentEntry.role}
+                      </div>
+                    </div>
+
+                    <img
+                      src={currentEntry.avatar}
+                      alt={currentEntry.name}
+                      className="w-10 h-10 rounded-full object-cover border-2 border-[#ABDAC8]/60 shadow-lg"
+                    />
+                  </div>
+
+                  <div className="pt-4 border-t border-zinc-900/80 flex items-center justify-between">
+                    <span className="text-zinc-400 text-xs font-sans font-semibold">Verified Proof</span>
+                    <div className="flex items-center gap-1 text-emerald-400 text-xs font-mono font-bold bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-500/30">
+                      <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                      <span>Verified</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <Link href="/challenges" className="block pt-2">
+            {/* Bottom Pagination Dots */}
+            <div className="flex items-center justify-center gap-1.5 mt-5 relative z-20">
+              {PROOF_SUBMISSIONS.map((entry, index) => (
+                <button
+                  key={entry.id}
+                  onClick={() => setActiveEntryIndex(index)}
+                  aria-label={`View entry ${index + 1}`}
+                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    index === activeEntryIndex ? "w-6 bg-[#ABDAC8]" : "w-1.5 bg-zinc-800 hover:bg-zinc-600"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* 2. STATS TRUST STRIP */}
+        {/* ========================================================================= */}
+        <section className="py-10 border-y border-[#26262E]">
+          <div ref={trustGridRef} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Stat Card 1 */}
+            <div className="h-full">
+              <div className="p-6 rounded-2xl bg-[#111117] border border-[#26262E] flex items-center gap-5 hover:border-[#ABDAC8]/50 transition-all group relative overflow-hidden shadow-lg h-full">
+                <div className="absolute -top-10 -right-10 w-28 h-28 bg-[#ABDAC8]/10 rounded-full blur-xl group-hover:bg-[#ABDAC8]/20 transition-all pointer-events-none" />
+                <div className="w-14 h-14 rounded-xl bg-[#ABDAC8]/15 border border-[#ABDAC8]/30 flex items-center justify-center text-[#ABDAC8] group-hover:scale-110 transition-transform relative z-10">
+                  <Users className="w-7 h-7" />
+                </div>
+                <div className="relative z-10">
+                  <div className="text-2xl sm:text-3xl font-display font-black text-white tracking-tight font-mono">
+                    10,000+
+                  </div>
+                  <div className="text-xs text-zinc-400 font-medium">Active Frontend Engineers</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Stat Card 2 */}
+            <div className="h-full">
+              <div className="p-6 rounded-2xl bg-[#111117] border border-[#26262E] flex items-center gap-5 hover:border-[#ABDAC8]/50 transition-all group relative overflow-hidden shadow-lg h-full">
+                <div className="absolute -top-10 -right-10 w-28 h-28 bg-[#ABDAC8]/10 rounded-full blur-xl group-hover:bg-[#ABDAC8]/20 transition-all pointer-events-none" />
+                <div className="w-14 h-14 rounded-xl bg-[#ABDAC8]/15 border border-[#ABDAC8]/30 flex items-center justify-center text-[#ABDAC8] group-hover:scale-110 transition-transform relative z-10">
+                  <Code2 className="w-7 h-7" />
+                </div>
+                <div className="relative z-10">
+                  <div className="text-2xl sm:text-3xl font-display font-black text-white tracking-tight font-mono">
+                    250,000+
+                  </div>
+                  <div className="text-xs text-zinc-400 font-medium">Verified UI Runs &amp; Submissions</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Stat Card 3 */}
+            <div className="h-full">
+              <div className="p-6 rounded-2xl bg-[#111117] border border-[#26262E] flex items-center gap-5 hover:border-[#ABDAC8]/50 transition-all group relative overflow-hidden shadow-lg h-full">
+                <div className="absolute -top-10 -right-10 w-28 h-28 bg-[#ABDAC8]/10 rounded-full blur-xl group-hover:bg-[#ABDAC8]/20 transition-all pointer-events-none" />
+                <div className="w-14 h-14 rounded-xl bg-[#ABDAC8]/15 border border-[#ABDAC8]/30 flex items-center justify-center text-[#ABDAC8] group-hover:scale-110 transition-transform relative z-10">
+                  <Briefcase className="w-7 h-7" />
+                </div>
+                <div className="relative z-10">
+                  <div className="text-2xl sm:text-3xl font-display font-black text-white tracking-tight font-mono">
+                    50+
+                  </div>
+                  <div className="text-xs text-zinc-400 font-medium">Hiring Recruiter Partners</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* 3. FEATURED PROGRAMS & CHALLENGES */}
+        {/* ========================================================================= */}
+        <section id="challenges" className="py-16 md:py-24 border-t border-[#26262E]">
+          <div ref={progHeaderRef} className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+            <div>
+              <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2">Platform Programs</div>
+              <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight">
+                Active Challenges &amp; Cohorts
+              </h2>
+            </div>
+            <p className="text-base text-zinc-300 max-w-md font-normal">
+              Choose your format and level up through daily interactive proof of work.
+            </p>
+          </div>
+
+          <div
+            ref={progGridRef}
+            className="flex overflow-x-auto pb-4 gap-4 snap-x snap-mandatory scrollbar-none sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible sm:pb-0"
+          >
+            {/* Card 1: 60-Day Frontend Mastery */}
+            <div className="min-w-[280px] sm:min-w-0 snap-center h-full">
+              <SpotlightCard accentColor="aqua" watermark="60D">
+                <CardContent className="p-6 flex flex-col justify-between h-full">
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-[11px] font-bold tracking-wide px-3 py-1 rounded-full bg-[#ABDAC8]/15 text-[#ABDAC8] border border-[#ABDAC8]/30">
+                        Enrolling now
+                      </span>
+                      <Code2 className="w-5 h-5 text-zinc-400 group-hover:text-[#ABDAC8] transition-colors" />
+                    </div>
+                    <h3 className="font-display text-xl font-extrabold text-white mb-2 tracking-tight">
+                      60-Day Frontend Mastery
+                    </h3>
+                    <p className="text-xs text-zinc-300 leading-relaxed mb-5 font-normal">
+                      One real UI task every day across HTML/CSS, JS DOM, and React. Build a streak and a verified public portfolio.
+                    </p>
+                  </div>
+                  <div>
+                    <div className="mb-4">
+                      <span className="text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-full bg-[#16161F] text-zinc-200 border border-[#26262E]">
+                        60 days
+                      </span>
+                    </div>
+                    <Link href="/challenges" className="block">
+                      <Button
+                        size="sm"
+                        className="w-full bg-gradient-to-b from-[#ABDAC8] to-[#7BC4A8] hover:from-[#c2e8dc] hover:to-[#8cd4b9] text-[#0A0A0F] font-bold rounded-xl py-3 text-sm shadow-md shadow-[#ABDAC8]/25 hover:shadow-lg hover:shadow-[#ABDAC8]/40 border border-[#ABDAC8]/30 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                      >
+                        Start the challenge
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </SpotlightCard>
+            </div>
+
+            {/* Card 2: 48-Hour UI Hackathon */}
+            <div className="min-w-[280px] sm:min-w-0 snap-center h-full">
+              <SpotlightCard accentColor="amber" watermark="48H">
+                <CardContent className="p-6 flex flex-col justify-between h-full">
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-[11px] font-bold tracking-wide px-3 py-1 rounded-full bg-zinc-800 text-zinc-300 border border-zinc-700">
+                        Registration open
+                      </span>
+                      <Rocket className="w-5 h-5 text-zinc-400 group-hover:text-amber-400 transition-colors" />
+                    </div>
+                    <h3 className="font-display text-xl font-extrabold text-white mb-2 tracking-tight">
+                      48-Hour UI Hackathon
+                    </h3>
+                    <p className="text-xs text-zinc-300 leading-relaxed mb-5 font-normal">
+                      Build full-featured web applications in 48 hours. Compete solo or in teams of up to 3 and ship production UI.
+                    </p>
+                  </div>
+                  <div>
+                    <div className="mb-4 flex flex-wrap gap-1.5">
+                      <span className="text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-full bg-[#16161F] text-zinc-200 border border-[#26262E]">
+                        48 hours
+                      </span>
+                      <span className="text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-full bg-[#16161F] text-zinc-200 border border-[#26262E]">
+                        Teams 1–3
+                      </span>
+                    </div>
+                    <Link href="/challenges" className="block">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full border border-[#26262E] bg-[#16161F] hover:bg-zinc-800 hover:border-zinc-500 text-white font-bold rounded-xl py-3 text-sm transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                      >
+                        Explore Staqor
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </SpotlightCard>
+            </div>
+
+            {/* Card 3: 31 Days React & State */}
+            <div className="min-w-[280px] sm:min-w-0 snap-center h-full">
+              <SpotlightCard accentColor="emerald" watermark="31D">
+                <CardContent className="p-6 flex flex-col justify-between h-full">
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-[11px] font-bold tracking-wide px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                        Applications open
+                      </span>
+                      <Sparkles className="w-5 h-5 text-zinc-400 group-hover:text-emerald-400 transition-colors" />
+                    </div>
+                    <h3 className="font-display text-xl font-extrabold text-white mb-2 tracking-tight">
+                      31 Days React &amp; State
+                    </h3>
+                    <p className="text-xs text-zinc-300 leading-relaxed mb-5 font-normal">
+                      Build production React components in 31 days. Master custom hooks, virtualized windowing, and state machines.
+                    </p>
+                  </div>
+                  <div>
+                    <div className="mb-4">
+                      <span className="text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-full bg-[#16161F] text-zinc-200 border border-[#26262E]">
+                        31 days
+                      </span>
+                    </div>
+                    <Link href="/challenges" className="block">
+                      <Button
+                        size="sm"
+                        className="w-full bg-gradient-to-b from-[#ABDAC8] to-[#7BC4A8] hover:from-[#c2e8dc] hover:to-[#8cd4b9] text-[#0A0A0F] font-bold rounded-xl py-3 text-sm shadow-md shadow-[#ABDAC8]/25 hover:shadow-lg hover:shadow-[#ABDAC8]/40 border border-[#ABDAC8]/30 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                      >
+                        Apply for cohort
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </SpotlightCard>
+            </div>
+
+            {/* Card 4: Full-Stack Mock API Sprint */}
+            <div className="min-w-[280px] sm:min-w-0 snap-center h-full">
+              <SpotlightCard accentColor="blue" watermark="14D">
+                <CardContent className="p-6 flex flex-col justify-between h-full">
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-[11px] font-bold tracking-wide px-3 py-1 rounded-full bg-[#0a6df0]/15 text-[#60a5fa] border border-[#0a6df0]/30">
+                        Sprint format
+                      </span>
+                      <Layers className="w-5 h-5 text-zinc-400 group-hover:text-[#60a5fa] transition-colors" />
+                    </div>
+                    <h3 className="font-display text-xl font-extrabold text-white mb-2 tracking-tight">
+                      Full-Stack Mock API Sprint
+                    </h3>
+                    <p className="text-xs text-zinc-300 leading-relaxed mb-5 font-normal">
+                      Connect client-side components with mock backends, optimistic cache updates, and error rollback queues.
+                    </p>
+                  </div>
+                  <div>
+                    <div className="mb-4">
+                      <span className="text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-full bg-[#16161F] text-zinc-200 border border-[#26262E]">
+                        14 days
+                      </span>
+                    </div>
+                    <Link href="/challenges" className="block">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full border border-[#26262E] bg-[#16161F] hover:bg-zinc-800 hover:border-zinc-500 text-white font-bold rounded-xl py-3 text-sm transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                      >
+                        View sprint specs
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </SpotlightCard>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* 4. HOW STAQOR WORKS (With SVG Connector Curves) */}
+        {/* ========================================================================= */}
+        <section id="how-it-works" className="py-16 md:py-24 relative overflow-hidden">
+          <div ref={howHeaderRef} className="text-center max-w-2xl mx-auto mb-16">
+            <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2">Step-by-Step Blueprint</div>
+            <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-3">
+              How Staqor Works
+            </h2>
+            <p className="text-zinc-300 text-base sm:text-lg font-normal">
+              Turn consistent daily effort into career-defining proof of work.
+            </p>
+          </div>
+
+          <div className="relative max-w-6xl mx-auto">
+            {/* SVG Connector Overlay with Beziers & Drop-Shadow Glow Filters */}
+            <svg
+              className="hidden md:block absolute top-10 left-0 w-full h-24 pointer-events-none z-0 overflow-visible"
+              aria-hidden="true"
+            >
+              <defs>
+                <filter id="glow-aqua-path" x="-30%" y="-30%" width="160%" height="160%">
+                  <feGaussianBlur stdDeviation="5" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+                <linearGradient id="path1-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#ABDAC8" />
+                  <stop offset="100%" stopColor="#7BC4A8" />
+                </linearGradient>
+                <linearGradient id="path2-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#7BC4A8" />
+                  <stop offset="100%" stopColor="#4ADE80" />
+                </linearGradient>
+              </defs>
+
+              <path
+                ref={path1Ref}
+                d="M 220 20 C 300 -15, 380 -15, 460 20"
+                fill="none"
+                stroke="url(#path1-grad)"
+                strokeWidth="3"
+                strokeLinecap="round"
+                filter="url(#glow-aqua-path)"
+              />
+
+              <path
+                ref={path2Ref}
+                d="M 580 20 C 660 -15, 740 -15, 820 20"
+                fill="none"
+                stroke="url(#path2-grad)"
+                strokeWidth="3"
+                strokeLinecap="round"
+                filter="url(#glow-aqua-path)"
+              />
+
+              <circle ref={dot1Ref} cx="220" cy="20" r="5" fill="#ABDAC8" filter="url(#glow-aqua-path)" />
+              <circle ref={dot2Ref} cx="520" cy="20" r="5" fill="#7BC4A8" filter="url(#glow-aqua-path)" />
+              <circle ref={dot3Ref} cx="820" cy="20" r="5" fill="#4ADE80" filter="url(#glow-aqua-path)" />
+            </svg>
+
+            {/* 3 Step Cards */}
+            <div ref={howCardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+              {/* Step 1 */}
+              <SpotlightCard accentColor="aqua" watermark="01">
+                <div className="p-8 h-full flex flex-col justify-between">
+                  <div>
+                    <div className="w-12 h-12 rounded-xl bg-[#ABDAC8]/15 border border-[#ABDAC8]/30 flex items-center justify-center text-[#ABDAC8] mb-6 shadow-md shadow-[#ABDAC8]/20">
+                      <Layers className="w-6 h-6" />
+                    </div>
+                    <div className="text-xs font-bold text-[#ABDAC8] uppercase tracking-wider mb-2 font-mono">
+                      Step 01
+                    </div>
+                    <h3 className="font-display text-2xl font-bold text-white mb-3">Choose a Challenge</h3>
+                    <p className="text-sm text-zinc-300 leading-relaxed font-normal">
+                      Filter across 8 tracks (HTML/CSS, JS DOM, React, Vue, APIs) and study comprehensive Figma-aligned specs and rubrics.
+                    </p>
+                  </div>
+                </div>
+              </SpotlightCard>
+
+              {/* Step 2 */}
+              <SpotlightCard accentColor="aqua" watermark="02">
+                <div className="p-8 h-full flex flex-col justify-between">
+                  <div>
+                    <div className="w-12 h-12 rounded-xl bg-[#ABDAC8]/15 border border-[#ABDAC8]/30 flex items-center justify-center text-[#ABDAC8] mb-6 shadow-md shadow-[#ABDAC8]/20">
+                      <Terminal className="w-6 h-6" />
+                    </div>
+                    <div className="text-xs font-bold text-[#ABDAC8] uppercase tracking-wider mb-2 font-mono">
+                      Step 02
+                    </div>
+                    <h3 className="font-display text-2xl font-bold text-white mb-3">Code in Split Monaco</h3>
+                    <p className="text-sm text-zinc-300 leading-relaxed font-normal">
+                      Write HTML, CSS, and JS across dedicated tabs with locked scaffolding. Watch real-time component updates inside an isolated sandbox with loop protection.
+                    </p>
+                  </div>
+                </div>
+              </SpotlightCard>
+
+              {/* Step 3 */}
+              <SpotlightCard accentColor="emerald" watermark="03">
+                <div className="p-8 h-full flex flex-col justify-between">
+                  <div>
+                    <div className="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-6 shadow-md shadow-emerald-500/20">
+                      <Trophy className="w-6 h-6" />
+                    </div>
+                    <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2 font-mono">
+                      Step 03
+                    </div>
+                    <h3 className="font-display text-2xl font-bold text-white mb-3">AI Score &amp; Recruiter Proof</h3>
+                    <p className="text-sm text-zinc-300 leading-relaxed font-normal">
+                      Groq LPU evaluates visual fidelity, DOM events, and semantic cleanliness in &lt;2.5s. Passed solutions generate interactive recruiter replays.
+                    </p>
+                  </div>
+                </div>
+              </SpotlightCard>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* 5. WHY STAQOR COMPARISON */}
+        {/* ========================================================================= */}
+        <section id="why-staqor" className="py-16 md:py-24 border-t border-[#26262E]">
+          <div ref={whyHeaderRef} className="text-center max-w-3xl mx-auto mb-12">
+            <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2">The Proof of Work Loop</div>
+            <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-4">
+              Why Staqor Wins Over Traditional Platforms
+            </h2>
+            <p className="text-zinc-300 text-base sm:text-lg">
+              Stop solving abstract tree puzzles. Start building real, verified engineering portfolios that get you hired.
+            </p>
+          </div>
+
+          <div ref={whyGridRef} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Traditional LeetCode / Courses */}
+            <SpotlightCard accentColor="purple" watermark="OLD">
+              <div className="p-8 h-full">
+                <div className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-3">Traditional Platforms</div>
+                <h3 className="font-display text-2xl font-bold text-white mb-6">Algorithmic Math Puzzles</h3>
+                <div className="space-y-4 text-sm text-zinc-300">
+                  <div className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center shrink-0 mt-0.5 font-bold">
+                      <X className="w-3.5 h-3.5" />
+                    </div>
+                    <span>Abstract stdout tests that ignore responsive UI and CSS Grid</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center shrink-0 mt-0.5 font-bold">
+                      <X className="w-3.5 h-3.5" />
+                    </div>
+                    <span>Copy-pasted tutorial projects that recruiters instantly skip</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center shrink-0 mt-0.5 font-bold">
+                      <X className="w-3.5 h-3.5" />
+                    </div>
+                    <span>Static resume PDFs with zero provable interactive work</span>
+                  </div>
+                </div>
+              </div>
+            </SpotlightCard>
+
+            {/* The Staqor Way */}
+            <SpotlightCard accentColor="aqua" watermark="STAQ">
+              <div className="p-8 h-full bg-gradient-to-b from-[#ABDAC8]/10 to-transparent">
+                <div className="text-xs font-bold text-[#ABDAC8] uppercase tracking-wider mb-3">The Staqor Way</div>
+                <h3 className="font-display text-2xl font-bold text-white mb-6">Daily Frontend Proof of Work</h3>
+                <div className="space-y-4 text-sm text-zinc-200 font-medium">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-[#ABDAC8] shrink-0 mt-0.5" />
+                    <span>Real component code with sub-2.5s Groq AI multi-rubric feedback</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-[#ABDAC8] shrink-0 mt-0.5" />
+                    <span>One-click candidate sandboxes that recruiters can interact with</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-[#ABDAC8] shrink-0 mt-0.5" />
+                    <span>Direct visibility to tech recruiters and engineering leaders</span>
+                  </div>
+                </div>
+              </div>
+            </SpotlightCard>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* 6. COMMUNITY CTA BAND */}
+        {/* ========================================================================= */}
+        <section id="community" className="py-12">
+          <div className="p-10 md:p-16 rounded-3xl bg-gradient-to-br from-[#ABDAC8]/20 via-[#111117] to-[#0A0A0F] border border-[#ABDAC8]/40 text-center relative overflow-hidden shadow-2xl">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-[#ABDAC8]/10 rounded-full blur-3xl pointer-events-none" />
+
+            <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-4 max-w-3xl mx-auto leading-tight">
+              Join our community for instant updates &amp; cohort drops
+            </h2>
+            <p className="text-zinc-300 text-base sm:text-lg max-w-xl mx-auto mb-8 leading-relaxed font-normal">
+              Meet fellow frontend builders, receive challenge alerts, and stay accountable.
+            </p>
+
+            <Link href="/challenges" className="inline-block">
               <Button
-                variant="outline"
-                className="w-full text-xs font-mono border-[#26262E] hover:border-[#ABDAC8] hover:text-[#ABDAC8]"
+                size="lg"
+                className="bg-gradient-to-b from-[#ABDAC8] via-[#ABDAC8] to-[#7BC4A8] hover:from-[#c2e8dc] hover:to-[#8cd4b9] text-[#0A0A0F] font-extrabold px-10 py-7 text-lg rounded-xl shadow-2xl shadow-[#ABDAC8]/40 hover:shadow-2xl hover:shadow-[#ABDAC8]/60 border border-[#ABDAC8]/40 transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
               >
-                Open in Workspace
+                <span>Join Staqor Free</span>
+                <ArrowRight className="w-5 h-5 ml-2.5" />
               </Button>
             </Link>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ========================================================================= */}
-      {/* 6. CORE ARCHITECTURE PILLARS (Efferd Features-4 Style) */}
-      {/* ========================================================================= */}
-      <section id="features" className="container mx-auto px-6 py-20 max-w-6xl">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <Badge variant="outline" className="text-xs font-mono text-[#ABDAC8] border-[#ABDAC8]/30 mb-3 bg-[#111614]">
-            CORE ARCHITECTURE
-          </Badge>
-          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#F5F5F7] mb-4">
-            Engineered for Provable <span className="font-serif italic font-normal text-[#ABDAC8]">Product Craft.</span>
-          </h2>
-          <p className="text-sm sm:text-base text-[#9CA3AF]">
-            Three uncompromising pillars that set Staqor apart from traditional puzzle platforms.
-          </p>
-        </div>
+        {/* ========================================================================= */}
+        {/* 7. WALL OF PROOF TESTIMONIALS */}
+        {/* ========================================================================= */}
+        <section id="testimonials" className="py-16 md:py-24 border-t border-[#26262E]">
+          <div ref={testHeaderRef} className="text-center max-w-xl mx-auto mb-12">
+            <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2">Proof of Impact</div>
+            <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-3">
+              What Our Builders Say
+            </h2>
+            <p className="text-base text-zinc-300 font-normal">
+              Real feedback from developers, candidates, and engineering leaders in the Staqor network.
+            </p>
+          </div>
 
-        <div className="gsap-stagger-grid grid md:grid-cols-3 gap-8 relative">
-          {/* Feature Card 1 */}
-          <Card className="gsap-card bg-[#111117] border-[#26262E] hover:border-[#ABDAC8]/50 transition-all rounded-2xl shadow-xl flex flex-col justify-between relative overflow-hidden">
-            <DecorIcon position="top-left" className="text-[#ABDAC8]/30" />
-            <CardContent className="p-7 space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-[#ABDAC8]/10 border border-[#ABDAC8]/25 flex items-center justify-center">
-                <ShieldCheck className="w-6 h-6 text-[#ABDAC8]" />
-              </div>
-              <Badge variant="outline" className="text-[10px] font-mono text-[#ABDAC8] border-[#ABDAC8]/30">
-                ZERO-SERVER SANDBOX
-              </Badge>
-              <h3 className="text-xl font-bold text-[#F5F5F7]">100% Client-Side Iframe Execution</h3>
-              <p className="text-sm text-[#9CA3AF] leading-relaxed">
-                Code compiles and executes entirely in the client using an isolated iframe with a 2000ms loop-killer wrapper.
-                Zero Docker spin-up lag and zero server execution attack surface.
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Feature Card 2 */}
-          <Card className="gsap-card bg-[#111117] border-[#26262E] hover:border-[#ABDAC8]/50 transition-all rounded-2xl shadow-xl flex flex-col justify-between relative overflow-hidden">
-            <DecorIcon position="top-left" className="text-[#ABDAC8]/30" />
-            <CardContent className="p-7 space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-[#ABDAC8]/10 border border-[#ABDAC8]/25 flex items-center justify-center">
-                <Cpu className="w-6 h-6 text-[#ABDAC8]" />
-              </div>
-              <Badge variant="outline" className="text-[10px] font-mono text-[#ABDAC8] border-[#ABDAC8]/30">
-                GROQ LPU & PRE-FILTER GATE
-              </Badge>
-              <h3 className="text-xl font-bold text-[#F5F5F7]">Sub-2.5s Multi-Criteria AI Rubrics</h3>
-              <p className="text-sm text-[#9CA3AF] leading-relaxed">
-                Structural pre-filters eliminate token waste on typos before Groq LPU evaluates layout fidelity, DOM event
-                mutations, and semantic cleanliness against weighted JSON rubrics.
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Feature Card 3 */}
-          <Card className="gsap-card bg-[#111117] border-[#26262E] hover:border-[#ABDAC8]/50 transition-all rounded-2xl shadow-xl flex flex-col justify-between relative overflow-hidden">
-            <DecorIcon position="top-left" className="text-[#ABDAC8]/30" />
-            <CardContent className="p-7 space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-[#ABDAC8]/10 border border-[#ABDAC8]/25 flex items-center justify-center">
-                <Award className="w-6 h-6 text-[#ABDAC8]" />
-              </div>
-              <Badge variant="outline" className="text-[10px] font-mono text-[#ABDAC8] border-[#ABDAC8]/30">
-                LIVE PORTFOLIOS
-              </Badge>
-              <h3 className="text-xl font-bold text-[#F5F5F7]">Interactive Recruiter Replay Sandboxes</h3>
-              <p className="text-sm text-[#9CA3AF] leading-relaxed">
-                Passed solutions publish to your public portfolio with interactive read-only Monaco tabs and live iframe
-                replays for recruiters to test with one click—no repository cloning required.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* 7. INTEGRATIONS & DEVELOPER ECOSYSTEM (Efferd Integrations-1) */}
-      {/* ========================================================================= */}
-      <section id="ecosystem" className="gsap-reveal container mx-auto px-6 py-20 max-w-6xl">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <Badge variant="outline" className="text-xs font-mono text-[#ABDAC8] border-[#ABDAC8]/30 mb-3 bg-[#111614]">
-            DEVELOPER ECOSYSTEM
-          </Badge>
-          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#F5F5F7] mb-4">
-            Built on Cutting-Edge <span className="font-serif italic font-normal text-[#ABDAC8]">Platform Primitives.</span>
-          </h2>
-          <p className="text-sm sm:text-base text-[#9CA3AF]">
-            Zero-bloat architecture integrating industry-standard runtime engines and high-throughput inference pipelines.
-          </p>
-        </div>
-
-        <Integrations />
-      </section>
-
-      {/* ========================================================================= */}
-      {/* 8. FEATURE COMPARISON TABLE (Why Staqor) */}
-      {/* ========================================================================= */}
-      <section id="comparison" className="gsap-reveal container mx-auto px-6 py-20 max-w-5xl">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <Badge variant="outline" className="text-xs font-mono text-[#ABDAC8] border-[#ABDAC8]/30 mb-3 bg-[#111614]">
-            BENCHMARK
-          </Badge>
-          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#F5F5F7] mb-4">
-            Why Frontend Engineers <span className="font-serif italic font-normal text-[#ABDAC8]">Choose Staqor.</span>
-          </h2>
-          <p className="text-sm sm:text-base text-[#9CA3AF]">
-            Algorithmic platforms evaluate abstract math puzzles. Staqor evaluates what you actually build on the job.
-          </p>
-        </div>
-
-        <div className="overflow-x-auto rounded-2xl border border-[#26262E] bg-[#111117] shadow-2xl relative">
-          <table className="w-full text-left border-collapse text-xs sm:text-sm">
-            <thead>
-              <tr className="border-b border-[#26262E] bg-[#0E0E14] text-[#9CA3AF] font-mono text-[11px]">
-                <th className="p-4 sm:p-5">CAPABILITY</th>
-                <th className="p-4 sm:p-5 text-[#ABDAC8] font-bold">STAQOR</th>
-                <th className="p-4 sm:p-5">LEETCODE / HACKERRANK</th>
-                <th className="p-4 sm:p-5">GITHUB / PORTFOLIOS</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#26262E] text-[#9CA3AF]">
-              <tr>
-                <td className="p-4 sm:p-5 font-semibold text-[#F5F5F7]">Real UI & Design System Testing</td>
-                <td className="p-4 sm:p-5 text-[#4ADE80] font-bold flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#4ADE80]" /> Full Visual Evaluation
-                </td>
-                <td className="p-4 sm:p-5 text-[#6B7280]">❌ Algorithm / stdout only</td>
-                <td className="p-4 sm:p-5 text-[#6B7280]">❌ Static code only</td>
-              </tr>
-              <tr>
-                <td className="p-4 sm:p-5 font-semibold text-[#F5F5F7]">Sub-2.5s AI Multi-Criteria Rubric</td>
-                <td className="p-4 sm:p-5 text-[#4ADE80] font-bold flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#4ADE80]" /> Groq LPU (35/35/30%)
-                </td>
-                <td className="p-4 sm:p-5 text-[#6B7280]">❌ Unit test assertions</td>
-                <td className="p-4 sm:p-5 text-[#6B7280]">❌ No automated grading</td>
-              </tr>
-              <tr>
-                <td className="p-4 sm:p-5 font-semibold text-[#F5F5F7]">Zero Token-Waste Pre-Filter Gate</td>
-                <td className="p-4 sm:p-5 text-[#4ADE80] font-bold flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#4ADE80]" /> Instant Syntax Guard
-                </td>
-                <td className="p-4 sm:p-5 text-[#6B7280]">❌ Compiles on remote VM</td>
-                <td className="p-4 sm:p-5 text-[#6B7280]">❌ N/A</td>
-              </tr>
-              <tr>
-                <td className="p-4 sm:p-5 font-semibold text-[#F5F5F7]">One-Click Recruiter Replay Sandbox</td>
-                <td className="p-4 sm:p-5 text-[#4ADE80] font-bold flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#4ADE80]" /> Interactive Live Replay
-                </td>
-                <td className="p-4 sm:p-5 text-[#6B7280]">❌ Code snippet text</td>
-                <td className="p-4 sm:p-5 text-[#6B7280]">⚠️ Must clone & run `npm i`</td>
-              </tr>
-              <tr>
-                <td className="p-4 sm:p-5 font-semibold text-[#F5F5F7]">Scoped Scaffolding & Lock Enforcement</td>
-                <td className="p-4 sm:p-5 text-[#4ADE80] font-bold flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#4ADE80]" /> Read-Only Scaffolding
-                </td>
-                <td className="p-4 sm:p-5 text-[#6B7280]">⚠️ Single function stub</td>
-                <td className="p-4 sm:p-5 text-[#6B7280]">❌ Unstructured repository</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* 9. DEVELOPER & RECRUITER TESTIMONIALS */}
-      {/* ========================================================================= */}
-      <section className="gsap-reveal container mx-auto px-6 py-16 max-w-6xl">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <Badge variant="outline" className="text-xs font-mono text-[#ABDAC8] border-[#ABDAC8]/30 mb-3 bg-[#111614]">
-            COMMUNITY & PRAISE
-          </Badge>
-          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#F5F5F7] mb-4">
-            Trusted by Builders & <span className="font-serif italic font-normal text-[#ABDAC8]">Hiring Teams.</span>
-          </h2>
-        </div>
-
-        <div className="gsap-stagger-grid grid md:grid-cols-3 gap-6">
-          {TESTIMONIALS.map((t, idx) => (
-            <Card
-              key={idx}
-              className="gsap-card bg-[#111117] border-[#26262E] rounded-2xl p-6 flex flex-col justify-between shadow-lg relative overflow-hidden"
-            >
-              <DecorIcon position="top-right" className="text-[#ABDAC8]/25" />
-              <div className="space-y-4">
-                <div className="flex items-center gap-1 text-[#ABDAC8]">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-current" />
-                  ))}
-                </div>
-                <p className="text-xs sm:text-sm text-[#9CA3AF] leading-relaxed italic">&ldquo;{t.content}&rdquo;</p>
-              </div>
-
-              <div className="pt-6 border-t border-[#26262E] flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-[#16161F] border border-[#ABDAC8]/30 flex items-center justify-center font-mono font-bold text-xs text-[#ABDAC8]">
-                  {t.avatar}
-                </div>
+          <div ref={testGridRef} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Quote 1 */}
+            <SpotlightCard accentColor="aqua" watermark={<Quote className="w-16 h-16 opacity-30" />}>
+              <div className="p-6 h-full flex flex-col justify-between">
                 <div>
-                  <h4 className="text-xs font-bold text-[#F5F5F7]">{t.name}</h4>
-                  <p className="text-[10px] font-mono text-[#9CA3AF]">
-                    {t.role} • {t.company}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-[#ABDAC8] text-[#0A0A0F] flex items-center justify-center font-bold text-sm shadow-md shadow-[#ABDAC8]/30">
+                        SG
+                      </div>
+                      <div>
+                        <div className="text-sm font-bold text-white">Samridhi Gupta</div>
+                        <div className="text-xs text-zinc-400 font-medium">Frontend Engineer @ SaaS Startup</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 mb-3">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-[#ABDAC8] text-[#ABDAC8]" />
+                    ))}
+                  </div>
+                  <p className="text-sm text-zinc-300 leading-relaxed italic font-normal">
+                    &ldquo;Staqor gave me the structure and momentum I needed. Building interactive UI components with sub-2.5s Groq AI feedback transformed my confidence as a frontend engineer.&rdquo;
                   </p>
                 </div>
               </div>
-            </Card>
-          ))}
-        </div>
-      </section>
+            </SpotlightCard>
 
-      {/* ========================================================================= */}
-      {/* 10. PRICING PREVIEW SECTION */}
-      {/* ========================================================================= */}
-      <section id="pricing" className="gsap-reveal container mx-auto px-6 py-20 max-w-5xl">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <Badge variant="outline" className="text-xs font-mono text-[#ABDAC8] border-[#ABDAC8]/30 mb-3 bg-[#111614]">
-            TRANSPARENT TIERS
-          </Badge>
-          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#F5F5F7] mb-4">
-            Practice for Free. Upgrade for <span className="font-serif italic font-normal text-[#ABDAC8]">Pro Speed.</span>
-          </h2>
-          <p className="text-sm sm:text-base text-[#9CA3AF]">
-            Generous lifetime free quotas with instant Pro upgrades for active job seekers.
-          </p>
-        </div>
+            {/* Quote 2 */}
+            <SpotlightCard accentColor="amber" watermark={<Quote className="w-16 h-16 opacity-30" />}>
+              <div className="p-6 h-full flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-amber-500 text-[#0A0A0F] flex items-center justify-center font-bold text-sm shadow-md shadow-amber-500/30">
+                        V
+                      </div>
+                      <div>
+                        <div className="text-sm font-bold text-white">Vivek Nambiar</div>
+                        <div className="text-xs text-zinc-400 font-medium">Engineering Lead • 15+ years experience</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 mb-3">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                    ))}
+                  </div>
+                  <p className="text-sm text-zinc-300 leading-relaxed italic font-normal">
+                    &ldquo;When reviewing candidate profiles, playing with interactive Staqor sandboxes gives our hiring team instant certainty that the candidate writes accessible, production-grade UI.&rdquo;
+                  </p>
+                </div>
+              </div>
+            </SpotlightCard>
+          </div>
+        </section>
 
-        <div className="gsap-stagger-grid grid md:grid-cols-3 gap-8 items-stretch">
-          {/* Free Starter */}
-          <div className="gsap-card p-8 rounded-2xl bg-[#111117] border border-[#26262E] flex flex-col justify-between shadow-xl relative overflow-hidden">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-bold font-mono text-[#9CA3AF]">FREE STARTER</span>
-                <Badge variant="outline" className="text-[10px] border-[#26262E]">
-                  $0 / FOREVER
-                </Badge>
-              </div>
-              <div className="mb-6">
-                <span className="text-4xl font-extrabold text-[#F5F5F7]">$0</span>
-                <span className="text-xs text-[#9CA3AF]"> / month</span>
-              </div>
-              <ul className="space-y-3 text-xs text-[#9CA3AF] mb-8">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                  <span>Access all core free challenges</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                  <span>5 Runs & 3 Submits lifetime per challenge</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                  <span>Groq AI rubric scoring & feedback</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                  <span>Public recruiter portfolio replay</span>
-                </li>
-              </ul>
+        {/* ========================================================================= */}
+        {/* 8. FAQ ACCORDION */}
+        {/* ========================================================================= */}
+        <section id="faq" className="py-16 md:py-24 border-t border-[#26262E]">
+          <div ref={faqHeaderRef} className="text-center max-w-2xl mx-auto mb-12">
+            <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2 flex items-center justify-center gap-1.5">
+              <HelpCircle className="w-4 h-4" />
+              <span>Frequently Asked Questions</span>
             </div>
-
-            <Link href="/signup">
-              <Button variant="outline" className="w-full h-11 border-[#26262E] hover:bg-[#16161F] text-xs font-semibold">
-                Get Started Free
-              </Button>
-            </Link>
+            <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-3">
+              Got Questions? We Have Answers.
+            </h2>
+            <p className="text-zinc-300 text-base font-normal">
+              Everything you need to know about Staqor challenges, Groq AI rubric evaluation, and verified recruiter replays.
+            </p>
           </div>
 
-          {/* Staqor Pro (Highlighted) */}
-          <div className="gsap-card p-8 rounded-2xl bg-[#111614] border-2 border-[#ABDAC8] relative flex flex-col justify-between shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_30px_rgba(171,218,200,0.15)] overflow-hidden">
-            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-              <Badge className="bg-[#ABDAC8] text-[#0A0A0F] font-bold text-[10px] px-3 py-0.5">MOST POPULAR</Badge>
-            </div>
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-bold font-mono text-[#ABDAC8]">STAQOR PRO</span>
-                <Badge variant="outline" className="text-[10px] text-[#ABDAC8] border-[#ABDAC8]/30">
-                  ACTIVE DEV
-                </Badge>
-              </div>
-              <div className="mb-6">
-                <span className="text-4xl font-extrabold text-[#F5F5F7]">$15</span>
-                <span className="text-xs text-[#9CA3AF]"> / month</span>
-              </div>
-              <ul className="space-y-3 text-xs text-[#F5F5F7] mb-8">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                  <span className="font-semibold">Unlimited Runs & Submissions</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                  <span>Instant Model Solution Unlocking</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                  <span>Verified Candidate Recruiter Badge</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                  <span>All 8 Track Challenges Unlocked</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                  <span>Priority Groq LPU inference queue</span>
-                </li>
-              </ul>
-            </div>
+          <div ref={faqListRef} className="max-w-3xl mx-auto space-y-4">
+            {FAQS.map((faq, index) => (
+              <SpotlightCard key={index} accentColor="aqua">
+                <div className="overflow-hidden">
+                  <button
+                    onClick={() => setOpenFaq(openFaq === index ? null : index)}
+                    className="w-full p-6 text-left flex items-center justify-between gap-4 font-display text-lg font-bold text-white hover:text-[#ABDAC8] transition-colors group cursor-pointer"
+                  >
+                    <span>{faq.q}</span>
+                    <div className="w-8 h-8 rounded-full bg-[#16161F] group-hover:bg-[#ABDAC8]/20 flex items-center justify-center transition-colors shrink-0">
+                      <ChevronDown
+                        className={`w-4 h-4 text-zinc-400 group-hover:text-[#ABDAC8] transition-transform duration-300 ${
+                          openFaq === index ? "rotate-180 text-[#ABDAC8]" : ""
+                        }`}
+                      />
+                    </div>
+                  </button>
 
-            <Link href="/signup?plan=pro">
-              <button className="w-full py-3 text-xs font-bold rounded-xl bg-[#ABDAC8] text-[#0A0A0F] border border-[#ABDAC8] shadow-[4px_4px_0px_#26262E] hover:shadow-[1px_1px_0px_#26262E] hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[4px] active:translate-y-[4px] transition-all cursor-pointer">
-                Upgrade to Pro
-              </button>
-            </Link>
+                  {openFaq === index && (
+                    <div className="px-6 pb-6 text-sm text-zinc-300 leading-relaxed border-t border-zinc-800/60 pt-4 animate-in fade-in duration-300">
+                      {faq.a}
+                    </div>
+                  )}
+                </div>
+              </SpotlightCard>
+            ))}
           </div>
+        </section>
+      </main>
 
-          {/* Enterprise / Team */}
-          <div className="gsap-card p-8 rounded-2xl bg-[#111117] border border-[#26262E] flex flex-col justify-between shadow-xl relative overflow-hidden">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-bold font-mono text-[#9CA3AF]">ENTERPRISE</span>
-                <Badge variant="outline" className="text-[10px] border-[#26262E]">
-                  HIRING TEAMS
-                </Badge>
-              </div>
-              <div className="mb-6">
-                <span className="text-4xl font-extrabold text-[#F5F5F7]">Custom</span>
-              </div>
-              <ul className="space-y-3 text-xs text-[#9CA3AF] mb-8">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                  <span>Custom company interview rubrics</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                  <span>Dedicated candidate assessment portals</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                  <span>Team grading analytics & audit logs</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                  <span>Dedicated Slack & SLA support</span>
-                </li>
-              </ul>
+      {/* ========================================================================= */}
+      {/* 9. FOOTER */}
+      {/* ========================================================================= */}
+      <footer className="border-t border-[#26262E] bg-[#0A0A0F] py-12 text-xs text-zinc-400 relative z-10 font-medium">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="w-7 h-7 rounded-lg bg-[#ABDAC8]/15 border border-[#ABDAC8]/30 flex items-center justify-center">
+              <Terminal className="w-3.5 h-3.5 text-[#ABDAC8]" />
             </div>
+            <span className="font-bold text-base text-white">Staqor</span>
+          </Link>
 
-            <a href="mailto:sales@staqor.dev?subject=Staqor%20Enterprise%20Inquiry">
-              <Button variant="outline" className="w-full h-11 border-[#26262E] hover:bg-[#16161F] text-xs font-semibold">
-                Contact Sales
-              </Button>
+          {/* Social Icons */}
+          <div className="flex items-center gap-3 text-zinc-400">
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-9 h-9 rounded-full bg-[#111117] border border-[#26262E] text-zinc-400 hover:text-white hover:bg-zinc-800 hover:border-zinc-600 transition-all duration-200 hover:scale-110 active:scale-95 flex items-center justify-center shadow-sm"
+              aria-label="Instagram"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+            </a>
+            <a
+              href="https://linkedin.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-9 h-9 rounded-full bg-[#111117] border border-[#26262E] text-zinc-400 hover:text-white hover:bg-zinc-800 hover:border-zinc-600 transition-all duration-200 hover:scale-110 active:scale-95 flex items-center justify-center shadow-sm"
+              aria-label="LinkedIn"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+            <a
+              href="https://youtube.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-9 h-9 rounded-full bg-[#111117] border border-[#26262E] text-zinc-400 hover:text-white hover:bg-zinc-800 hover:border-zinc-600 transition-all duration-200 hover:scale-110 active:scale-95 flex items-center justify-center shadow-sm"
+              aria-label="YouTube"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1 1.4-1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17z"/><path d="m10 15 5-3-5-3v6z"/></svg>
+            </a>
+            <a
+              href="https://x.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-9 h-9 rounded-full bg-[#111117] border border-[#26262E] text-zinc-400 hover:text-white hover:bg-zinc-800 hover:border-zinc-600 transition-all duration-200 hover:scale-110 active:scale-95 flex items-center justify-center shadow-sm"
+              aria-label="X"
+            >
+              <span className="font-bold text-xs font-sans">X</span>
+            </a>
+            <a
+              href="https://discord.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-9 h-9 rounded-full bg-[#111117] border border-[#26262E] text-zinc-400 hover:text-white hover:bg-zinc-800 hover:border-zinc-600 transition-all duration-200 hover:scale-110 active:scale-95 flex items-center justify-center shadow-sm"
+              aria-label="Discord"
+            >
+              <MessageSquare className="w-4 h-4" />
             </a>
           </div>
-        </div>
-      </section>
 
-      {/* ========================================================================= */}
-      {/* 11. FREQUENTLY ASKED QUESTIONS (FAQ) — Efferd Faqs-2 Radix Accordion */}
-      {/* ========================================================================= */}
-      <section id="faq" className="gsap-reveal container mx-auto px-6 py-20 max-w-5xl">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-          <div className="md:col-span-5 space-y-4">
-            <Badge variant="outline" className="text-xs font-mono text-[#ABDAC8] border-[#ABDAC8]/30 mb-1 bg-[#111614]">
-              GOT QUESTIONS?
-            </Badge>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#F5F5F7]">
-              Frequently Asked <span className="font-serif italic font-normal text-[#ABDAC8]">Questions.</span>
-            </h2>
-            <p className="text-xs sm:text-sm text-[#9CA3AF] leading-relaxed">
-              Everything you need to know about our Groq LPU evaluation engine, client-side sandbox execution, and lifetime quotas.
-            </p>
-            <div className="pt-2">
-              <a
-                href="mailto:support@staqor.dev?subject=Question%20about%20Staqor"
-                className="text-xs font-mono text-[#ABDAC8] hover:underline inline-flex items-center gap-1"
-              >
-                <span>Have a custom question? Email our engineering team</span>
-                <ArrowUpRight className="w-3.5 h-3.5" />
+          {/* Contact Line */}
+          <div className="flex items-center gap-2 text-zinc-400">
+            <Mail className="w-3.5 h-3.5 text-[#ABDAC8]" />
+            <span>
+              For any enquiry:{" "}
+              <a href="mailto:team@staqor.dev" className="text-white hover:underline font-semibold">
+                team@staqor.dev
               </a>
-            </div>
-          </div>
-
-          <div className="md:col-span-7">
-            <Accordion type="single" collapsible defaultValue="faq-1" className="space-y-3">
-              {FAQ_ITEMS.map((item) => (
-                <AccordionItem
-                  key={item.id}
-                  value={item.id}
-                  className="rounded-2xl border border-[#26262E] bg-[#111117] px-6 transition-all overflow-hidden"
-                >
-                  <AccordionTrigger className="text-left text-sm sm:text-base font-bold text-[#F5F5F7] hover:no-underline py-5 focus-visible:outline-none">
-                    <span>{item.q}</span>
-                  </AccordionTrigger>
-                  <AccordionContent className="pb-5 pt-1 text-xs sm:text-sm text-[#9CA3AF] leading-relaxed border-t border-[#26262E]/50">
-                    {item.a}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
+            </span>
           </div>
         </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* 12. FINAL CTA BANNER */}
-      {/* ========================================================================= */}
-      <section className="gsap-reveal container mx-auto px-6 py-20 max-w-5xl">
-        <div className="p-10 md:p-16 rounded-3xl bg-[#111614] border border-[#ABDAC8]/40 shadow-[0_30px_90px_rgba(0,0,0,0.8),0_0_40px_rgba(171,218,200,0.1)] text-center relative overflow-hidden">
-          <DecorIcon position="top-left" className="text-[#ABDAC8]/40" />
-          <DecorIcon position="bottom-right" className="text-[#ABDAC8]/40" />
-
-          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#F5F5F7] mb-4 max-w-2xl mx-auto leading-tight">
-            Ready to prove your frontend{" "}
-            <span className="font-serif italic font-normal text-[#ABDAC8]">craftsmanship?</span>
-          </h2>
-          <p className="text-sm sm:text-base text-[#9CA3AF] max-w-xl mx-auto mb-8 leading-relaxed">
-            Join developers practicing real UI components, receiving sub-2.5s Groq AI feedback, and landing offers with live recruiter portfolios.
-          </p>
-
-          <Link href="/signup">
-            <button className="px-8 py-4 text-sm font-bold rounded-xl bg-[#ABDAC8] text-[#0A0A0F] border border-[#ABDAC8] shadow-[5px_5px_0px_#26262E] hover:shadow-[2px_2px_0px_#26262E] hover:translate-x-[3px] hover:translate-y-[3px] active:translate-x-[5px] active:translate-y-[5px] transition-all inline-flex items-center gap-2 cursor-pointer">
-              <span>Start Free Practice Now</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </Link>
-        </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* 13. COMPREHENSIVE FOOTER (Efferd Footer-3) */}
-      {/* ========================================================================= */}
-      <Footer />
+      </footer>
     </div>
   );
 }

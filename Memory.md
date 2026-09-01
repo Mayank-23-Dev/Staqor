@@ -16,25 +16,35 @@
 
 ---
 
-### [2026-09-01] — Landing Page: Hero Polish, Efferd Blocks Integration & Scroll-Linked Glow Line
+### [2026-09-01] — Landing Page: Complete AB Talk Layout Alignment with Staqor Aqua/Mint Theme
 - **What was built:**
-  - **Enhanced Hero Section (`app/(marketing)/page.tsx`):**
-    - Multi-Challenge Interactive Switcher inside the Hero IDE Mockup (*Pricing Switcher*, *Kanban Task Board*, *Virtual Grid*) with dynamic spec, code snippet, and rubric criteria updates.
-    - Added Key Metrics Strip highlighting `<2.5s` Inference Time, `8 Tracks`, `100% Client-Side`, and `35/35/30%` Weighted Multi-Rubric.
-    - Corner cross decoration motifs (`DecorIcon` from `@efferd/features-4`) and responsive floating AI verdict badge.
-  - **Integrated `@efferd` UI Blocks:**
-    - `<LogoCloud />` ([`components/logo-cloud.tsx`](file:///D:/Staqor/components/logo-cloud.tsx)): Tech ecosystem trust row with Vercel, Supabase, Groq LPU, Monaco, TypeScript, React 18, Tailwind, and GitHub.
-    - `<Integrations />` ([`components/integrations.tsx`](file:///D:/Staqor/components/integrations.tsx)): Developer tooling ecosystem cards highlighting Monaco Editor, Groq LPU, Sandbox security, and Supabase.
-    - `<FeatureCard />` with `<DecorIcon />`: Enhanced Architecture section with corner accents and extended borders.
-    - `<Accordion />` ([`components/ui/accordion.tsx`](file:///D:/Staqor/components/ui/accordion.tsx)): Radix UI accordion in 2-column FAQ layout with engineering contact link.
-    - `<Footer />` ([`components/footer.tsx`](file:///D:/Staqor/components/footer.tsx)): 3-column navigation, operational status badge, and legal notices.
-  - **ScrollTrigger Dead-Space Fix & Scroll-Linked Glow Line:**
-    - Corrected trigger start thresholds (`start: "top 94%"` and `start: "top 92%"` with `once: true`).
-    - Added continuous SVG mint/aqua glowing accent line synced to scroll position via GSAP scrub.
-    - Added subtle background grid pattern and ambient multi-stop radial glows.
+  - **Full AB Talk Landing Page Architecture Adopted for Staqor:**
+    - **Hero Section:**
+      - 4 Parallax Floating Badges with infinite GSAP sine loops (*Verified Proof of Work*, *10,000+ Active Builders*, *100% Free for Students*, *8 Practice Tracks*).
+      - Headline: *"Become the Frontend Engineer that Companies Want to Hire!"* with glowing aqua box on *Companies*.
+      - Student & Developer Community Avatars + 5-star rating strip (`10,000+ Engineers Enrolled`).
+      - Primary CTA: *Explore Challenges* with glowing aqua gradient, hover scale, and drop-shadows.
+    - **Dynamic Proof-of-Work Terminal Window:**
+      - CRT scanline overlay, ambient aqua/mint glow auras, control dots, and pulsing `Live Evaluation Stream`.
+      - Animated GSAP typewriter command line with pre-filter validation checks and Groq AI 94/100 score reveal.
+      - Active Engineer profile card + streak counter (`Flame` animation) + bottom pagination dots.
+    - **Stats Trust Strip (`TrustStrip`):**
+      - Grid of 3 metric cards (`10,000+` Active Frontend Engineers, `250,000+` Verified UI Runs, `50+` Recruiter Partners).
+    - **Active Challenges & Cohorts (`ProgramCards` with `SpotlightCard`):**
+      - Responsive cards with GSAP mouse-tracking radial spotlights (*60-Day Frontend Mastery*, *48-Hour UI Hackathon*, *31 Days React & State*, *Full-Stack Mock API Sprint*).
+    - **How Staqor Works (`HowItWorks`):**
+      - Animated SVG cubic bezier connector curves linking the 3 step cards on scroll.
+    - **Why Staqor Wins (`WhyStaqor`):**
+      - Comparison matrix: Traditional Platforms vs. The Staqor Way (Daily Frontend Proof of Work).
+    - **Community CTA Band & Wall of Proof (`Testimonials`):**
+      - High-impact gradient CTA box and 2-column verified quote cards.
+    - **FAQ Accordion & Clean Footer:**
+      - Expandable FAQ cards and Staqor footer with social links and contact info.
+    - **Scroll-Responsive Glowing Accent Line:**
+      - Continuous SVG laser line in Staqor aqua/mint gradient (`#ABDAC8`, `#D4EDE3`, `#7BC4A8`) with GSAP scrub.
 - **Known gaps / notes:**
   - Production build compiled successfully (`next build`).
-- **Next recommended action:** Ready for deployment or user testing.
+- **Next recommended action:** Ready for review and deployment.
 
 ### [2026-09-01] — Phase 2 & Groq: Locked Code Regions & Structural Correctness Pre-Filter Gate
 - **What was built:**
