@@ -1,15 +1,27 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
+import React, { useState, Suspense, useRef } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
+import gsap from "gsap";
 import { createClient } from "@/lib/supabase/client";
 import { getAppUrl } from "@/lib/auth/url";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { Terminal, ArrowRight, Loader2, AlertCircle } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Logo } from "@/components/logo";
+import {
+  ArrowRight,
+  Loader2,
+  AlertCircle,
+  ShieldCheck,
+  Zap,
+  Sparkles,
+  Lock,
+  Check,
+} from "lucide-react";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -22,6 +34,60 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") || "/challenges";
   const supabase = createClient();
+
+  // 3D GSAP Tilt Ref
+  const cardRef = useRef<HTMLDivElement>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = ((y - centerY) / centerY) * -5;
+    const rotateY = ((x - centerX) / centerX) * 6;
+
+    gsap.to(cardRef.current, {
+      rotateX,
+      rotateY,
+      transformPerspective: 1000,
+      scale: 1.01,
+      duration: 0.3,
+      ease: "power2.out",
+    });
+
+    if (glowRef.current) {
+      gsap.to(glowRef.current, {
+        opacity: 0.8,
+        x: x - rect.width / 2,
+        y: y - rect.height / 2,
+        duration: 0.2,
+        ease: "power2.out",
+      });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (!cardRef.current) return;
+    gsap.to(cardRef.current, {
+      rotateX: 0,
+      rotateY: 0,
+      scale: 1,
+      duration: 0.6,
+      ease: "elastic.out(1, 0.7)",
+    });
+
+    if (glowRef.current) {
+      gsap.to(glowRef.current, {
+        opacity: 0,
+        duration: 0.4,
+      });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,38 +134,63 @@ function LoginForm() {
   };
 
   return (
-    <Card className="w-full max-w-md bg-[#0C0C12] border-border relative z-10 shadow-2xl">
-      <CardHeader className="space-y-2 text-center">
-        <Link href="/" className="inline-block">
-          <div className="w-10 h-10 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center mx-auto mb-2 transition-transform hover:scale-105">
-            <Terminal className="w-5 h-5 text-primary" />
+    <div style={{ perspective: "1000px" }} className="w-full max-w-md mx-auto">
+      <Card
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="w-full bg-[#111117] border-[#26262E] relative z-10 shadow-[0_30px_90px_rgba(0,0,0,0.9),0_0_40px_rgba(171,218,200,0.06)] rounded-3xl p-6 sm:p-8 overflow-hidden will-change-transform transition-colors hover:border-[#ABDAC8]/50"
+        style={{ transformStyle: "preserve-3d" }}
+      >
+        {/* Dynamic Specular Light Glow */}
+        <div
+          ref={glowRef}
+          className="absolute w-72 h-72 rounded-full pointer-events-none opacity-0 blur-3xl -translate-x-1/2 -translate-y-1/2 z-0"
+          style={{
+            background: "radial-gradient(circle, rgba(171,218,200,0.2) 0%, transparent 70%)",
+            left: "50%",
+            top: "50%",
+          }}
+        />
+
+        {/* Ambient Top Glow */}
+        <div className="absolute top-0 left-0 right-0 h-32 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(171,218,200,0.22),transparent_100%)] pointer-events-none z-0" />
+
+        <div className="relative z-10 space-y-6">
+          {/* Logo & Header */}
+          <div className="text-center space-y-2">
+            <Link href="/" className="inline-block transition-transform hover:scale-105">
+              <Logo />
+            </Link>
+            <h1 className="text-2xl font-bold font-sans text-white tracking-tight pt-2">
+              Welcome Back
+            </h1>
+            <p className="text-xs text-zinc-400 font-sans">
+              Sign in to continue your frontend proof of work streak.
+            </p>
           </div>
-        </Link>
-        <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
-        <CardDescription className="text-muted-foreground text-xs">
-          Sign in to continue practicing and building your frontend portfolio
-        </CardDescription>
-      </CardHeader>
 
-      {error && (
-        <div className="mx-6 mb-2 p-3 rounded-lg bg-rose-950/30 border border-rose-500/40 text-rose-400 text-xs flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 shrink-0" />
-          <span>{error}</span>
-        </div>
-      )}
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-3 rounded-xl bg-rose-950/30 border border-rose-500/40 text-rose-400 text-xs flex items-center gap-2"
+            >
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{error}</span>
+            </motion.div>
+          )}
 
-      <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4 pt-2">
           {/* Google OAuth Button */}
           <Button
             type="button"
             variant="outline"
             onClick={handleGoogleLogin}
             disabled={googleLoading || loading}
-            className="w-full bg-[#11111A] border-border hover:bg-secondary text-xs font-medium h-10 gap-2 shadow-sm"
+            className="w-full bg-[#16161F] border-[#26262E] hover:bg-[#1E1E2A] text-white hover:border-[#ABDAC8]/40 text-xs font-semibold h-11 rounded-xl gap-2.5 shadow-sm transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
           >
             {googleLoading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 className="w-4 h-4 animate-spin text-[#ABDAC8]" />
             ) : (
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path
@@ -123,76 +214,123 @@ function LoginForm() {
             <span>{googleLoading ? "Connecting to Google..." : "Continue with Google"}</span>
           </Button>
 
-          <div className="relative my-3">
+          <div className="relative my-4">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border" />
+              <div className="w-full border-t border-[#26262E]" />
             </div>
             <div className="relative flex justify-center text-[10px] uppercase">
-              <span className="bg-[#0C0C12] px-2 text-muted-foreground font-mono">or continue with email</span>
+              <span className="bg-[#111117] px-3 text-zinc-500 font-mono tracking-wider">
+                or email &amp; password
+              </span>
             </div>
           </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-xs">Email address</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="alex@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="bg-[#111118] border-border text-xs h-9"
-              required
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password" className="text-xs">Password</Label>
-              <Link href="#" className="text-[11px] text-primary hover:underline">
-                Forgot password?
-              </Link>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5 text-left">
+              <Label htmlFor="email" className="text-xs text-zinc-300 font-medium">
+                Email Address
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="alex@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-[#0B0B10] border-[#26262E] focus-visible:border-[#ABDAC8] focus-visible:ring-[#ABDAC8]/30 text-white text-xs h-10 rounded-xl transition-all"
+                required
+              />
             </div>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="bg-[#111118] border-border text-xs h-9"
-              required
-            />
-          </div>
-        </CardContent>
 
-        <CardFooter className="flex flex-col gap-3 pt-2">
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium text-xs h-9"
-          >
-            {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" /> : null}
-            <span>{loading ? "Signing in..." : "Sign In with Email"}</span>
-            {!loading && <ArrowRight className="w-3.5 h-3.5 ml-1.5" />}
-          </Button>
-          <p className="text-xs text-center text-muted-foreground">
+            <div className="space-y-1.5 text-left">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password" className="text-xs text-zinc-300 font-medium">
+                  Password
+                </Label>
+                <Link href="#" className="text-[11px] text-[#ABDAC8] hover:underline font-mono">
+                  Forgot?
+                </Link>
+              </div>
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-[#0B0B10] border-[#26262E] focus-visible:border-[#ABDAC8] focus-visible:ring-[#ABDAC8]/30 text-white text-xs h-10 rounded-xl transition-all"
+                required
+              />
+            </div>
+
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gradient-to-b from-[#ABDAC8] via-[#ABDAC8] to-[#7BC4A8] hover:from-[#c2e8dc] hover:to-[#8cd4b9] text-[#0A0A0F] font-extrabold text-xs h-11 rounded-xl shadow-lg shadow-[#ABDAC8]/25 hover:shadow-xl hover:shadow-[#ABDAC8]/35 border border-[#ABDAC8]/40 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              ) : null}
+              <span>{loading ? "Signing in..." : "Sign In with Email"}</span>
+              {!loading && <ArrowRight className="w-3.5 h-3.5 ml-2" />}
+            </Button>
+          </form>
+
+          {/* Footer Link */}
+          <div className="pt-2 text-center text-xs text-zinc-400">
             Don&apos;t have an account?{" "}
-            <Link href="/signup" className="text-primary font-medium hover:underline">
-              Create one
+            <Link href="/signup" className="text-[#ABDAC8] font-bold hover:underline">
+              Create one free
             </Link>
-          </p>
-        </CardFooter>
-      </form>
-    </Card>
+          </div>
+        </div>
+      </Card>
+    </div>
   );
 }
 
 export default function LoginPage() {
   return (
-    <main className="mode-auth min-h-screen bg-[#07070A] text-foreground flex items-center justify-center p-6 relative">
-      <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-[500px] h-[250px] bg-primary/10 blur-[100px] rounded-full pointer-events-none" />
-      <Suspense fallback={<div className="text-muted-foreground text-xs">Loading login...</div>}>
+    <main className="min-h-screen bg-[#0A0A0F] text-[#F5F5F7] flex flex-col items-center justify-center p-6 relative overflow-hidden">
+      {/* Background Grid & Ambient Blur */}
+      <div
+        className="fixed inset-0 pointer-events-none z-0 opacity-25"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, #26262E 1px, transparent 1px),
+            linear-gradient(to bottom, #26262E 1px, transparent 1px)
+          `,
+          backgroundSize: "48px 48px",
+          maskImage: "radial-gradient(ellipse at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0.1) 100%)",
+          WebkitMaskImage: "radial-gradient(ellipse at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0.1) 100%)",
+        }}
+      />
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-[#ABDAC8]/15 via-[#ABDAC8]/5 to-transparent blur-[140px] pointer-events-none z-0" />
+
+      {/* Top Left Home Back Link */}
+      <div className="absolute top-6 left-6 z-20">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-xs font-mono text-zinc-400 hover:text-white px-3 py-1.5 rounded-full bg-[#111117] border border-[#26262E] hover:border-[#ABDAC8]/40 transition-all"
+        >
+          <span>← Back to Staqor</span>
+        </Link>
+      </div>
+
+      <Suspense fallback={<div className="text-zinc-500 text-xs font-mono">Loading authentication...</div>}>
         <LoginForm />
       </Suspense>
+
+      {/* Bottom Proof Strip */}
+      <div className="mt-8 flex items-center justify-center gap-6 text-[11px] font-mono text-zinc-500 z-10">
+        <span className="flex items-center gap-1.5">
+          <ShieldCheck className="w-3.5 h-3.5 text-[#ABDAC8]" /> Sub-2.5s Groq AI
+        </span>
+        <span className="hidden sm:flex items-center gap-1.5">
+          <Lock className="w-3.5 h-3.5 text-[#ABDAC8]" /> 100% Client Sandbox
+        </span>
+        <span className="flex items-center gap-1.5">
+          <Sparkles className="w-3.5 h-3.5 text-[#ABDAC8]" /> 8 Practice Tracks
+        </span>
+      </div>
     </main>
   );
 }
