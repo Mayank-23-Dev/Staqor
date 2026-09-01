@@ -9,13 +9,14 @@ import { Loader2, Play, Send } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function IDEClient({ problem, user }: { problem: any; user: any }) {
-  const defaultHtml = problem.starter_code?.html || "<!-- Write HTML here -->\n";
-  const defaultCss = problem.starter_code?.css || "/* Write CSS here */\n";
-  const defaultJs = problem.starter_code?.js || "// Write JavaScript here\n";
+  const boilerplateHtml = problem.boilerplate_html || "";
+  const boilerplateCss = problem.boilerplate_css || "";
+  const jsPrefix = problem.boilerplate_js_prefix || "";
+  const jsSuffix = problem.boilerplate_js_suffix || "";
+  const starterJs = problem.editable_js_starter || "";
+  const testCases = problem.test_cases || []; // Array of { code: string, expected: any, description: string }
 
-  const [htmlCode, setHtmlCode] = useState(defaultHtml);
-  const [cssCode, setCssCode] = useState(defaultCss);
-  const [jsCode, setJsCode] = useState(defaultJs);
+  const [jsCode, setJsCode] = useState(starterJs);
   
   const [activeTab, setActiveTab] = useState<"html" | "css" | "js">("js");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -25,32 +26,158 @@ export default function IDEClient({ problem, user }: { problem: any; user: any }
   const router = useRouter();
   const supabase = createClient();
 
-  const activeCode = 
-    activeTab === "html" ? htmlCode : 
-    activeTab === "css" ? cssCode : jsCode;
+  const handleMessage = (event: MessageEvent) => {
+    if (event.data?.type === 'TEST_RESULTS') {
+      const results = event.data.results;
+      const passed = event.data.passed;
+      
+      setEvaluationResult({
+        score: passed ? 100 : 0,
+        passed,
+        overall_feedback: passed ? "All tests passed!" : "Some tests failed.",
+        breakdown: results.map((r: any, idx: number) => ({
+          rubric_id: `test-${idx}`,
+          name: r.description || `Test ${idx + 1}`,
+          score: r.passed ? 100 : 0,
+          feedback: r.passed ? "Passed" : `Expected ${JSON.stringify(r.expected)}, but got ${JSON.stringify(r.actual)}`
+        }))
+      });
+      
+      setIsSubmitting(false);
 
-  const handleEditorChange = (val: string | undefined) => {
-    if (!val) return;
-    if (activeTab === "html") setHtmlCode(val);
-    else if (activeTab === "css") setCssCode(val);
-    else setJsCode(val);
+      if (event.data.attemptType === "submit" && passed) {
+        saveSubmission();
+      } else if (event.data.attemptType === "submit") {
+        toast.error("Solution failed tests. See feedback below.");
+      } else {
+        toast.info("Run evaluation complete");
+      }
+    }
   };
 
-  const updatePreview = () => {
+  useEffect(() => {
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [jsCode]); // rebind if needed, but jsCode is captured in saveSubmission via closure, wait, saveSubmission needs current jsCode.
+  // Actually, better to move saveSubmission outside or use a ref.
+
+  const jsCodeRef = useRef(jsCode);
+  jsCodeRef.current = jsCode;
+
+  const saveSubmission = async () => {
+    try {
+      const fullJs = `${jsPrefix}\n${jsCodeRef.current}\n${jsSuffix}`;
+      const { error: subError } = await supabase.from("submissions").insert({
+        user_id: user.id,
+        problem_id: problem.id,
+        status: "solved",
+        // Save both the full and the editable portions
+        submitted_code: JSON.stringify({ 
+          html: boilerplateHtml, 
+          css: boilerplateCss, 
+          full_js: fullJs,
+          editable_js: jsCodeRef.current 
+        }),
+      });
+
+      if (subError) throw subError;
+
+      // Update stats
+      const { data: statsData, error: statsError } = await supabase
+        .from("user_stats")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
+
+      const today = new Date().toISOString().split('T')[0];
+
+      if (statsError && statsError.code === "PGRST116") {
+        await supabase.from("user_stats").insert({
+          user_id: user.id,
+          current_streak: 1,
+          total_solved: 1,
+          coins: 10,
+          last_active_date: today,
+        });
+      } else if (statsData) {
+        let newStreak = statsData.current_streak;
+        if (statsData.last_active_date !== today) {
+          const lastActive = new Date(statsData.last_active_date);
+          const yesterday = new Date();
+          yesterday.setDate(yesterday.getDate() - 1);
+          
+          if (lastActive.toISOString().split('T')[0] === yesterday.toISOString().split('T')[0]) {
+            newStreak += 1;
+          } else {
+            newStreak = 1;
+          }
+        }
+        await supabase
+          .from("user_stats")
+          .update({
+            current_streak: newStreak,
+            total_solved: statsData.total_solved + 1,
+            coins: statsData.coins + 10,
+            last_active_date: today,
+          })
+          .eq("user_id", user.id);
+      }
+
+      toast.success("Solution accepted! +10 Coins");
+      router.refresh();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to process code.");
+    }
+  };
+
+  const updatePreviewAndRunTests = (attemptType: "run" | "submit") => {
     if (!iframeRef.current) return;
     
     const doc = iframeRef.current.contentDocument || iframeRef.current.contentWindow?.document;
     if (!doc) return;
 
+    const fullJs = `${jsPrefix}\n${jsCode}\n${jsSuffix}`;
+    
+    // Inject test runner code
+    const testRunner = `
+      try {
+        const testCases = ${JSON.stringify(testCases)};
+        const results = testCases.map(tc => {
+          try {
+            // Using a simple eval for the test execution. The test case 'code' should evaluate to a value that matches 'expected'.
+            const actual = eval(tc.code);
+            // Simple deep equality for basic types (objects/arrays/primitives)
+            const passed = JSON.stringify(actual) === JSON.stringify(tc.expected);
+            return { ...tc, actual, passed };
+          } catch (e) {
+            return { ...tc, actual: e.toString(), passed: false };
+          }
+        });
+        const allPassed = results.every(r => r.passed);
+        window.parent.postMessage({ type: 'TEST_RESULTS', results, passed: allPassed, attemptType: '${attemptType}' }, '*');
+      } catch (e) {
+        window.parent.postMessage({ type: 'TEST_RESULTS', results: [{ description: 'Execution Error', passed: false, expected: 'No errors', actual: e.toString() }], passed: false, attemptType: '${attemptType}' }, '*');
+      }
+    `;
+
     const source = `
       <!DOCTYPE html>
       <html>
         <head>
-          <style>${cssCode}</style>
+          <style>${boilerplateCss}</style>
         </head>
         <body>
-          ${htmlCode}
-          <script>${jsCode}<\/script>
+          ${boilerplateHtml}
+          <script>
+            try {
+              ${fullJs}
+            } catch (err) {
+              window.parent.postMessage({ type: 'TEST_RESULTS', results: [{ description: 'Syntax/Runtime Error', passed: false, expected: 'No errors', actual: err.toString() }], passed: false, attemptType: '${attemptType}' }, '*');
+            }
+          </script>
+          <script>
+            ${testRunner}
+          </script>
         </body>
       </html>
     `;
@@ -60,13 +187,30 @@ export default function IDEClient({ problem, user }: { problem: any; user: any }
     doc.close();
   };
 
-  // Update preview automatically on load or when code changes (debounced if preferred, but for now manual or on tab switch is okay. Let's do it on run click)
-
   useEffect(() => {
-    updatePreview();
+    // Initial preview without running tests (just visual)
+    if (!iframeRef.current) return;
+    const doc = iframeRef.current.contentDocument || iframeRef.current.contentWindow?.document;
+    if (!doc) return;
+    const fullJs = `${jsPrefix}\n${jsCode}\n${jsSuffix}`;
+    const source = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>${boilerplateCss}</style>
+        </head>
+        <body>
+          ${boilerplateHtml}
+          <script>${fullJs}</script>
+        </body>
+      </html>
+    `;
+    doc.open();
+    doc.write(source);
+    doc.close();
   }, []);
 
-  const handleSubmit = async (attemptType: "run" | "submit") => {
+  const handleSubmit = (attemptType: "run" | "submit") => {
     if (!user && attemptType === "submit") {
       toast.error("You must be logged in to submit.");
       return;
@@ -74,94 +218,7 @@ export default function IDEClient({ problem, user }: { problem: any; user: any }
     
     setIsSubmitting(true);
     setEvaluationResult(null);
-    updatePreview();
-
-    try {
-      // Call Groq API
-      const res = await fetch("/api/evaluate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user?.id || "guest",
-          challengeSlug: problem.slug,
-          code: { html: htmlCode, css: cssCode, js: jsCode },
-          attemptType
-        })
-      });
-
-      const data = await res.json();
-      
-      if (!res.ok) {
-        throw new Error(data.error || "Evaluation failed");
-      }
-
-      setEvaluationResult(data.evaluation);
-
-      if (attemptType === "submit" && data.passed) {
-        // Save to Supabase
-        const { error: subError } = await supabase.from("submissions").insert({
-          user_id: user.id,
-          problem_id: problem.id,
-          status: "solved",
-          submitted_code: JSON.stringify({ html: htmlCode, css: cssCode, js: jsCode }),
-        });
-
-        if (subError) throw subError;
-
-        // Update stats
-        const { data: statsData, error: statsError } = await supabase
-          .from("user_stats")
-          .select("*")
-          .eq("user_id", user.id)
-          .single();
-
-        const today = new Date().toISOString().split('T')[0];
-
-        if (statsError && statsError.code === "PGRST116") {
-          await supabase.from("user_stats").insert({
-            user_id: user.id,
-            current_streak: 1,
-            total_solved: 1,
-            coins: 10,
-            last_active_date: today,
-          });
-        } else if (statsData) {
-          let newStreak = statsData.current_streak;
-          if (statsData.last_active_date !== today) {
-            const lastActive = new Date(statsData.last_active_date);
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-            
-            if (lastActive.toISOString().split('T')[0] === yesterday.toISOString().split('T')[0]) {
-              newStreak += 1;
-            } else {
-              newStreak = 1;
-            }
-          }
-          await supabase
-            .from("user_stats")
-            .update({
-              current_streak: newStreak,
-              total_solved: statsData.total_solved + 1,
-              coins: statsData.coins + 10,
-              last_active_date: today,
-            })
-            .eq("user_id", user.id);
-        }
-
-        toast.success("Solution accepted! +10 Coins");
-        router.refresh();
-      } else if (attemptType === "submit") {
-        toast.error("Solution failed tests. See feedback below.");
-      } else {
-        toast.info("Run evaluation complete");
-      }
-
-    } catch (err: any) {
-      toast.error(err.message || "Failed to process code.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    updatePreviewAndRunTests(attemptType);
   };
 
   return (
@@ -169,19 +226,19 @@ export default function IDEClient({ problem, user }: { problem: any; user: any }
       <div className="flex items-center gap-2 p-2 bg-[#2D2D2D] border-b border-white/10">
         <button
           onClick={() => setActiveTab("html")}
-          className={`px-3 py-1 rounded text-sm \${activeTab === "html" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-white/5"}`}
+          className={`px-3 py-1 rounded text-sm ${activeTab === "html" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-white/5"}`}
         >
-          HTML
+          HTML (Read Only)
         </button>
         <button
           onClick={() => setActiveTab("css")}
-          className={`px-3 py-1 rounded text-sm \${activeTab === "css" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-white/5"}`}
+          className={`px-3 py-1 rounded text-sm ${activeTab === "css" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-white/5"}`}
         >
-          CSS
+          CSS (Read Only)
         </button>
         <button
           onClick={() => setActiveTab("js")}
-          className={`px-3 py-1 rounded text-sm \${activeTab === "js" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-white/5"}`}
+          className={`px-3 py-1 rounded text-sm ${activeTab === "js" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-white/5"}`}
         >
           JavaScript
         </button>
@@ -189,19 +246,61 @@ export default function IDEClient({ problem, user }: { problem: any; user: any }
 
       <div className="flex-1 flex min-h-[400px]">
         {/* Editor Area */}
-        <div className="w-1/2 h-full border-r border-white/10">
-          <Editor
-            height="100%"
-            language={activeTab === "js" ? "javascript" : activeTab}
-            theme="vs-dark"
-            value={activeCode}
-            onChange={handleEditorChange}
-            options={{
-              minimap: { enabled: false },
-              fontSize: 14,
-              padding: { top: 16 },
-            }}
-          />
+        <div className="w-1/2 h-full border-r border-white/10 flex flex-col">
+          {activeTab === "html" && (
+            <Editor
+              height="100%"
+              language="html"
+              theme="vs-dark"
+              value={boilerplateHtml}
+              options={{ minimap: { enabled: false }, fontSize: 14, padding: { top: 16 }, readOnly: true }}
+            />
+          )}
+          {activeTab === "css" && (
+            <Editor
+              height="100%"
+              language="css"
+              theme="vs-dark"
+              value={boilerplateCss}
+              options={{ minimap: { enabled: false }, fontSize: 14, padding: { top: 16 }, readOnly: true }}
+            />
+          )}
+          {activeTab === "js" && (
+            <div className="flex flex-col h-full overflow-y-auto">
+              {jsPrefix && (
+                <div className="shrink-0 bg-black/40">
+                  <Editor
+                    height={Math.max(50, jsPrefix.split('\n').length * 20 + 20) + "px"}
+                    language="javascript"
+                    theme="vs-dark"
+                    value={jsPrefix}
+                    options={{ minimap: { enabled: false }, fontSize: 14, padding: { top: 16 }, readOnly: true, scrollBeyondLastLine: false, overviewRulerLanes: 0, hideCursorInOverviewRuler: true, scrollbar: { vertical: 'hidden', horizontal: 'hidden' }, renderLineHighlight: 'none' }}
+                  />
+                </div>
+              )}
+              <div className="flex-1 min-h-[200px]">
+                <Editor
+                  height="100%"
+                  language="javascript"
+                  theme="vs-dark"
+                  value={jsCode}
+                  onChange={(val) => setJsCode(val || "")}
+                  options={{ minimap: { enabled: false }, fontSize: 14, padding: { top: jsPrefix ? 0 : 16, bottom: jsSuffix ? 0 : 16 }, scrollBeyondLastLine: false }}
+                />
+              </div>
+              {jsSuffix && (
+                <div className="shrink-0 bg-black/40">
+                  <Editor
+                    height={Math.max(50, jsSuffix.split('\n').length * 20 + 20) + "px"}
+                    language="javascript"
+                    theme="vs-dark"
+                    value={jsSuffix}
+                    options={{ minimap: { enabled: false }, fontSize: 14, padding: { bottom: 16 }, readOnly: true, scrollBeyondLastLine: false, overviewRulerLanes: 0, hideCursorInOverviewRuler: true, scrollbar: { vertical: 'hidden', horizontal: 'hidden' }, renderLineHighlight: 'none' }}
+                  />
+                </div>
+              )}
+            </div>
+          )}
         </div>
         
         {/* Live Preview & Evaluation Area */}
@@ -219,7 +318,7 @@ export default function IDEClient({ problem, user }: { problem: any; user: any }
             <div className="h-64 bg-[#2D2D2D] border-t border-white/10 p-4 overflow-y-auto">
               <h3 className="font-semibold text-lg mb-2">
                 Score: {evaluationResult.score}/100 
-                <span className={`ml-2 text-sm px-2 py-1 rounded \${evaluationResult.passed ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                <span className={`ml-2 text-sm px-2 py-1 rounded ${evaluationResult.passed ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
                   {evaluationResult.passed ? "PASSED" : "FAILED"}
                 </span>
               </h3>
