@@ -8,17 +8,13 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   ArrowRight,
   ChevronRight,
-  Users,
   Sparkles,
   CheckCircle2,
   ShieldCheck,
-  Flame,
   Code2,
-  Rocket,
   Layers,
   Terminal,
   Trophy,
-  Briefcase,
   HelpCircle,
   ChevronDown,
   X,
@@ -36,6 +32,9 @@ import {
   Server,
   Bug,
   Layout,
+  Flame,
+  Plus,
+  Minus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -44,9 +43,8 @@ import { SpotlightCard } from "@/components/SpotlightCard";
 import { GSAPAnimatedBox } from "@/components/gsap-company-box";
 import { ScrollGlowingLine } from "@/components/ScrollGlowingLine";
 import { HowItWorks } from "@/components/landing/HowItWorks";
+import { CapabilitiesShowcase } from "@/components/landing/CapabilitiesShowcase";
 import { UserNav } from "@/components/navigation/UserNav";
-import { LogoCloud } from "@/components/logo-cloud";
-import { Integrations } from "@/components/integrations";
 import { DecorIcon } from "@/components/decor-icon";
 
 // ---------------------------------------------------------------------------
@@ -309,40 +307,50 @@ function useVirtualList(itemCount, itemHeight, viewportHeight) {
 ];
 
 // ---------------------------------------------------------------------------
-// FAQ List
+// Comprehensive All-Visible FAQ Data
 // ---------------------------------------------------------------------------
 const FAQS = [
   {
-    q: "What is Staqor and how is it different from LeetCode?",
-    a: "LeetCode tests abstract algorithmic puzzle solving through stdout return values. Staqor tests real frontend craftsmanship: responsive CSS Grid/Flexbox layouts, DOM event delegation, and React component state—graded by Groq AI against multi-criteria rubrics in under 2.5 seconds.",
+    q: "How does Staqor evaluate frontend code in under 2.5 seconds?",
+    a: "Staqor compiles HTML, CSS, and JS 100% client-side inside an isolated iframe with a 2000ms loop-killer. When you run or submit, a zero-token syntax pre-filter checks structural code in 0.02s before Groq LPU models grade layout fidelity (35%), DOM/state logic (35%), and semantic cleanliness (30%) in <2.5 seconds.",
   },
   {
-    q: "Is Staqor free for developers and students?",
+    q: "Is Staqor completely free for developers and students?",
     a: "Yes! Every challenge comes with a generous lifetime free quota (5 Runs & 3 Submits per challenge). You get instant client-side execution, live Groq AI rubric feedback, and verified public portfolio replays at $0.",
   },
   {
-    q: "How does Groq AI evaluate frontend code without server lag?",
-    a: "Staqor compiles code 100% in the client browser inside an isolated iframe with a 2000ms loop-killer wrapper. Submissions pass through a zero-cost syntax pre-filter gate before Groq LPU models evaluate visual design (35%), DOM/state logic (35%), and semantic cleanliness (30%) in <2.5 seconds.",
+    q: "What are the 8 specialized practice tracks covered in Staqor?",
+    a: "The catalog spans HTML & CSS Layouts, JavaScript & DOM Events, React Components, Vue.js Reactive UI, Node.js & Mock APIs, Real-World Bug Fixes, Full-Stack Scenarios, and Performance Optimization across Easy, Medium, and Hard tiers.",
   },
   {
-    q: "How do recruiters and hiring teams verify candidate work?",
-    a: "When you pass a challenge, Staqor publishes a verified candidate showcase on your profile. Recruiters and engineering leads test your live component in an interactive sandbox and inspect your Monaco code tabs with one click—no repository cloning required.",
+    q: "How do locked scaffolding and read-only files work?",
+    a: "To enforce targeted practice, challenges lock boilerplate files. For example, in a JS DOM challenge, HTML markup and CSS styling are locked read-only so you focus purely on DOM manipulation and state logic without breaking scaffolding.",
   },
   {
-    q: "What practice tracks and difficulty levels are available?",
-    a: "Staqor offers 8 specialized tracks spanning HTML & CSS Layouts, JavaScript & DOM Events, React Components, Vue.js, Node.js Mock APIs, Real-World Bug Fixes, and Full-Stack Scenarios across Easy, Medium, and Hard tiers.",
+    q: "How do recruiters and engineering leads verify candidate work?",
+    a: "When you solve a challenge, Staqor generates a verified candidate showcase link. Recruiters can test your live component in an interactive sandbox and inspect your Monaco code tabs with one click—no repository cloning required.",
+  },
+  {
+    q: "Can I test responsive breakpoints and mobile viewports inside the IDE?",
+    a: "Yes! The workspace includes instant Desktop (100%), Tablet (768px), and Mobile (375px) viewport toggles with interactive mouse events, keyboard access, and local storage state persistence.",
   },
 ];
 
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [openFaqs, setOpenFaqs] = useState<number[]>([0, 1, 2, 3, 4, 5]); // All open by default for full visibility
+
+  const toggleFaq = (index: number) => {
+    setOpenFaqs((prev) =>
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    );
+  };
 
   // Interactive IDE Mockup State
   const [heroChallengeIdx, setHeroChallengeIdx] = useState(0);
   const currentHeroChallenge = HERO_CHALLENGES[heroChallengeIdx];
   const [mockupEditorTab, setMockupEditorTab] = useState<"html" | "css" | "js">("html");
-  const [mockupLeftTab, setMockupLeftTab] = useState<"spec" | "rubric" | "preview" | "feedback">("spec");
+  const [mockupLeftTab, setMockupLeftTab] = useState<"spec" | "rubric" | "preview" | "feedback">("preview");
   const [mockupViewport, setMockupViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [evalTimer, setEvalTimer] = useState(currentHeroChallenge.time);
@@ -369,7 +377,6 @@ export default function HomePage() {
   const whyHeaderRef = useRef<HTMLDivElement>(null);
   const whyGridRef = useRef<HTMLDivElement>(null);
   const faqHeaderRef = useRef<HTMLDivElement>(null);
-  const faqListRef = useRef<HTMLDivElement>(null);
 
   // Simulate IDE Evaluation
   const handleRunEvaluation = (type: "run" | "submit") => {
@@ -377,7 +384,7 @@ export default function HomePage() {
     setIsEvaluating(true);
     setMockupLogs((prev) => [
       ...prev,
-      `[Trigger] ${type.toUpperCase()} initiated on challenge: ${currentHeroChallenge.title.slice(0, 30)}...`,
+      `[Trigger] ${type.toUpperCase()} initiated on: ${currentHeroChallenge.title.slice(0, 30)}...`,
       `[Pre-Filter] Structural syntax check: PASSED (0.02s)`,
       `[Groq LPU] Dispatching weighted prompt to LPU inference stream...`,
     ]);
@@ -433,7 +440,7 @@ export default function HomePage() {
       });
 
       // 3. Section Entrance ScrollTriggers
-      const animateSection = (header: React.RefObject<HTMLDivElement>, grid: React.RefObject<HTMLDivElement>) => {
+      const animateSection = (header: React.RefObject<HTMLDivElement>, grid?: React.RefObject<HTMLDivElement>) => {
         if (header.current) {
           gsap.from(header.current.children, {
             opacity: 0,
@@ -448,7 +455,7 @@ export default function HomePage() {
             },
           });
         }
-        if (grid.current) {
+        if (grid && grid.current) {
           gsap.from(grid.current.children, {
             opacity: 0,
             y: 35,
@@ -466,7 +473,7 @@ export default function HomePage() {
 
       animateSection(progHeaderRef, progGridRef);
       animateSection(whyHeaderRef, whyGridRef);
-      animateSection(faqHeaderRef, faqListRef);
+      animateSection(faqHeaderRef);
 
       ScrollTrigger.refresh();
     }, pageContainerRef);
@@ -480,7 +487,7 @@ export default function HomePage() {
       className="min-h-screen bg-[#0A0A0F] text-[#F5F5F7] selection:bg-[#ABDAC8] selection:text-[#0A0A0F] font-sans relative overflow-x-hidden"
     >
       {/* ========================================================================= */}
-      {/* 1. SCROLL-RESPONSIVE GLOWING ACCENT LINE (Real-time Framer Motion Spring) */}
+      {/* 1. SCROLL-RESPONSIVE GLOWING ACCENT LINE */}
       {/* ========================================================================= */}
       <ScrollGlowingLine />
 
@@ -541,12 +548,6 @@ export default function HomePage() {
               Why Staqor
             </a>
             <a
-              href="#ecosystem"
-              className="text-zinc-300 hover:text-white transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#ABDAC8] hover:after:w-full after:transition-all after:duration-200"
-            >
-              Ecosystem
-            </a>
-            <a
               href="#faq"
               className="text-zinc-300 hover:text-white transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#ABDAC8] hover:after:w-full after:transition-all after:duration-200"
             >
@@ -596,9 +597,6 @@ export default function HomePage() {
               <a href="#why-staqor" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#ABDAC8] transition-colors py-1">
                 Why Staqor
               </a>
-              <a href="#ecosystem" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#ABDAC8] transition-colors py-1">
-                Ecosystem
-              </a>
               <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#ABDAC8] transition-colors py-1">
                 FAQ
               </a>
@@ -626,7 +624,7 @@ export default function HomePage() {
               <div className="w-7 h-7 rounded-full bg-[#ABDAC8]/20 text-[#ABDAC8] border border-[#ABDAC8]/40 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                 <Cpu className="w-4 h-4" />
               </div>
-              <span className="font-extrabold text-white group-hover:text-[#ABDAC8] transition-colors">
+              <span className="font-extrabold text-white group-hover:text-[#ABDAC8] transition-colors font-mono">
                 Sub-2.5s Groq AI
               </span>
             </div>
@@ -644,7 +642,7 @@ export default function HomePage() {
               <div className="w-7 h-7 rounded-full bg-[#ABDAC8]/20 text-[#ABDAC8] flex items-center justify-center group-hover:scale-110 transition-transform">
                 <ShieldCheck className="w-4 h-4" />
               </div>
-              <span className="group-hover:text-[#ABDAC8] transition-colors">100% Client Sandbox</span>
+              <span className="group-hover:text-[#ABDAC8] transition-colors font-mono">100% Client Sandbox</span>
             </div>
             <p className="text-[10px] text-zinc-400 font-normal pl-9 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 transition-all duration-300 overflow-hidden leading-tight">
               Isolated iframe execution with 2000ms loop-killer
@@ -658,7 +656,7 @@ export default function HomePage() {
           >
             <div className="flex items-center gap-2">
               <Lock className="w-4 h-4 text-emerald-400 shrink-0 group-hover:scale-110 transition-transform" />
-              <span>Locked Scaffolding</span>
+              <span className="font-mono">Locked Scaffolding</span>
             </div>
             <p className="text-[10px] text-zinc-400 font-normal pl-6 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 transition-all duration-300 overflow-hidden leading-tight">
               Scoped read-only tabs enforce focused UI practice
@@ -672,7 +670,7 @@ export default function HomePage() {
           >
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-amber-400 shrink-0 group-hover:scale-110 transition-transform" />
-              <span>8 Practice Tracks</span>
+              <span className="font-mono">8 Practice Tracks</span>
             </div>
             <p className="text-[10px] text-zinc-400 font-normal pl-6 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 transition-all duration-300 overflow-hidden leading-tight">
               HTML/CSS, JS DOM, React, Vue, APIs &amp; Bug Fixes
@@ -1070,8 +1068,22 @@ export default function HomePage() {
                     <span className="text-[10px] font-mono text-[#9CA3AF]">Monaco Editor v0.46</span>
                   </div>
 
+                  {/* Monaco Editor Code Display with Line Numbers & High Contrast */}
                   <div className="p-4 font-mono text-[11px] text-[#9CA3AF] bg-[#0B0B10] flex-1 overflow-x-auto leading-relaxed border-b border-[#26262E]">
-                    <pre className="text-[#F5F5F7]/90">{currentHeroChallenge.code[mockupEditorTab]}</pre>
+                    <div className="flex gap-4">
+                      {/* Line Numbers */}
+                      <div className="select-none text-zinc-600 text-right pr-2 border-r border-zinc-800/80">
+                        {currentHeroChallenge.code[mockupEditorTab]
+                          .split("\n")
+                          .slice(0, 16)
+                          .map((_, i) => (
+                            <div key={i}>{i + 1}</div>
+                          ))}
+                      </div>
+                      <pre className="text-[#F5F5F7]/95 font-mono">
+                        <code>{currentHeroChallenge.code[mockupEditorTab]}</code>
+                      </pre>
+                    </div>
                   </div>
 
                   {/* Interactive Console */}
@@ -1119,30 +1131,9 @@ export default function HomePage() {
         </section>
 
         {/* ========================================================================= */}
-        {/* 3. METRICS STRIP & LOGO CLOUD */}
+        {/* 3. DEVELOPER CAPABILITIES & VALUE SHOWCASE */}
         {/* ========================================================================= */}
-        <section className="py-10 border-y border-[#26262E]">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div className="p-4 rounded-xl bg-[#111117] border border-[#26262E] hover:border-[#ABDAC8]/40 hover:-translate-y-1 transition-all">
-              <span className="text-2xl font-bold font-mono text-[#ABDAC8] block">&lt; 2.5s</span>
-              <span className="text-xs text-zinc-400">Groq AI Latency</span>
-            </div>
-            <div className="p-4 rounded-xl bg-[#111117] border border-[#26262E] hover:border-[#ABDAC8]/40 hover:-translate-y-1 transition-all">
-              <span className="text-2xl font-bold font-mono text-[#ABDAC8] block">8 Tracks</span>
-              <span className="text-xs text-zinc-400">Full UI Curriculum</span>
-            </div>
-            <div className="p-4 rounded-xl bg-[#111117] border border-[#26262E] hover:border-[#4ADE80]/40 hover:-translate-y-1 transition-all">
-              <span className="text-2xl font-bold font-mono text-[#4ADE80] block">100% Client</span>
-              <span className="text-xs text-zinc-400">Zero Docker Lag</span>
-            </div>
-            <div className="p-4 rounded-xl bg-[#111117] border border-[#26262E] hover:border-[#ABDAC8]/40 hover:-translate-y-1 transition-all">
-              <span className="text-2xl font-bold font-mono text-[#ABDAC8] block">35/35/30%</span>
-              <span className="text-xs text-zinc-400">Weighted Rubrics</span>
-            </div>
-          </div>
-
-          <LogoCloud />
-        </section>
+        <CapabilitiesShowcase />
 
         {/* ========================================================================= */}
         {/* 4. 8 PRACTICE TRACKS CATALOG (Curriculum Explorer) */}
@@ -1150,7 +1141,7 @@ export default function HomePage() {
         <section id="tracks" className="py-16 md:py-24 border-t border-[#26262E]">
           <div ref={progHeaderRef} className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
             <div>
-              <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2">Curriculum Catalog</div>
+              <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2 font-mono">Curriculum Catalog</div>
               <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight">
                 Practice Across <GSAPAnimatedBox text="8 Tracks" />
               </h2>
@@ -1211,7 +1202,7 @@ export default function HomePage() {
         {/* ========================================================================= */}
         <section id="why-staqor" className="py-16 md:py-24 border-t border-[#26262E]">
           <div ref={whyHeaderRef} className="text-center max-w-3xl mx-auto mb-12">
-            <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2">The Proof of Work Loop</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2 font-mono">The Proof of Work Loop</div>
             <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-4">
               Why Staqor Wins Over <GSAPAnimatedBox text="LeetCode" />
             </h2>
@@ -1274,70 +1265,65 @@ export default function HomePage() {
         </section>
 
         {/* ========================================================================= */}
-        {/* 7. DEVELOPER TOOLING ECOSYSTEM */}
-        {/* ========================================================================= */}
-        <section id="ecosystem" className="py-16 md:py-24 border-t border-[#26262E]">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2 font-mono">Developer Ecosystem</div>
-            <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-3">
-              Modern Runtime Architecture
-            </h2>
-            <p className="text-zinc-300 text-base font-normal">
-              Built on industry-standard editor runtimes and high-throughput Groq LPU inference.
-            </p>
-          </div>
-
-          <Integrations />
-        </section>
-
-        {/* ========================================================================= */}
-        {/* 8. FAQ ACCORDION */}
+        {/* 7. ALL-VISIBLE COMPREHENSIVE FAQ ACCORDION */}
         {/* ========================================================================= */}
         <section id="faq" className="py-16 md:py-24 border-t border-[#26262E]">
-          <div ref={faqHeaderRef} className="text-center max-w-2xl mx-auto mb-12">
+          <div ref={faqHeaderRef} className="text-center max-w-2xl mx-auto mb-14">
             <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2 flex items-center justify-center gap-1.5 font-mono">
               <HelpCircle className="w-4 h-4" />
-              <span>Frequently Asked Questions</span>
+              <span>Got Questions? We Have Answers</span>
             </div>
             <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-3">
-              Got Questions? We Have Answers.
+              Frequently Asked <GSAPAnimatedBox text="Questions." />
             </h2>
             <p className="text-zinc-300 text-base font-normal">
-              Everything you need to know about Staqor challenges, Groq AI rubric evaluation, and verified recruiter replays.
+              Everything you need to know about Staqor challenges, Groq AI rubric scoring, and verified recruiter sandboxes.
             </p>
           </div>
 
-          <div ref={faqListRef} className="max-w-3xl mx-auto space-y-4">
-            {FAQS.map((faq, index) => (
-              <SpotlightCard key={index} accentColor="aqua">
-                <div className="overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-5xl mx-auto">
+            {FAQS.map((faq, index) => {
+              const isOpen = openFaqs.includes(index);
+              return (
+                <div
+                  key={index}
+                  className="rounded-2xl border border-[#26262E] bg-[#111117] overflow-hidden hover:border-[#ABDAC8]/40 transition-all duration-300"
+                >
                   <button
-                    onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                    className="w-full p-6 text-left flex items-center justify-between gap-4 font-display text-lg font-bold text-white hover:text-[#ABDAC8] transition-colors group cursor-pointer"
+                    onClick={() => toggleFaq(index)}
+                    className="w-full p-5 sm:p-6 text-left flex items-start justify-between gap-4 font-display text-base font-bold text-white hover:text-[#ABDAC8] transition-colors cursor-pointer group"
                   >
-                    <span>{faq.q}</span>
-                    <div className="w-8 h-8 rounded-full bg-[#16161F] group-hover:bg-[#ABDAC8]/20 flex items-center justify-center transition-colors shrink-0">
-                      <ChevronDown
-                        className={`w-4 h-4 text-zinc-400 group-hover:text-[#ABDAC8] transition-transform duration-300 ${
-                          openFaq === index ? "rotate-180 text-[#ABDAC8]" : ""
-                        }`}
-                      />
+                    <span className="flex-1 leading-snug">{faq.q}</span>
+                    <div className="w-7 h-7 rounded-lg bg-[#16161F] group-hover:bg-[#ABDAC8]/20 flex items-center justify-center transition-colors shrink-0 mt-0.5">
+                      {isOpen ? (
+                        <Minus className="w-3.5 h-3.5 text-[#ABDAC8]" />
+                      ) : (
+                        <Plus className="w-3.5 h-3.5 text-zinc-400 group-hover:text-[#ABDAC8]" />
+                      )}
                     </div>
                   </button>
 
-                  {openFaq === index && (
-                    <div className="px-6 pb-6 text-sm text-zinc-300 leading-relaxed border-t border-zinc-800/60 pt-4 animate-in fade-in duration-300">
-                      {faq.a}
-                    </div>
-                  )}
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.25, ease: "easeInOut" }}
+                        className="px-5 sm:px-6 pb-6 text-xs sm:text-sm text-zinc-300 leading-relaxed border-t border-[#26262E]/60 pt-3"
+                      >
+                        {faq.a}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-              </SpotlightCard>
-            ))}
+              );
+            })}
           </div>
         </section>
 
         {/* ========================================================================= */}
-        {/* 9. COMMUNITY CTA BAND */}
+        {/* 8. COMMUNITY CTA BAND */}
         {/* ========================================================================= */}
         <section id="community" className="py-12">
           <div className="p-10 md:p-16 rounded-3xl bg-gradient-to-br from-[#ABDAC8]/20 via-[#111117] to-[#0A0A0F] border border-[#ABDAC8]/40 text-center relative overflow-hidden shadow-2xl">
@@ -1364,7 +1350,7 @@ export default function HomePage() {
       </main>
 
       {/* ========================================================================= */}
-      {/* 10. FOOTER */}
+      {/* 9. FOOTER */}
       {/* ========================================================================= */}
       <footer className="border-t border-[#26262E] bg-[#0A0A0F] py-12 text-xs text-zinc-400 relative z-10 font-medium">
         <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
