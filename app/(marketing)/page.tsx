@@ -26,7 +26,7 @@ import { SpotlightCard } from "@/components/SpotlightCard";
 import { GSAPAnimatedBox } from "@/components/gsap-company-box";
 import { ScrollGlowingLine } from "@/components/ScrollGlowingLine";
 import { Header } from "@/components/header";
-import { SaaSSandboxShowcase } from "@/components/landing/SaaSSandboxShowcase";
+import { LiveActivityShowcase } from "@/components/landing/LiveActivityShowcase";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { CapabilitiesShowcase } from "@/components/landing/CapabilitiesShowcase";
 import { FaqsSection } from "@/components/faqs-page";
@@ -196,7 +196,7 @@ export default function HomePage() {
       {/* 2. HERO SECTION */}
       {/* ========================================================================= */}
       <main className="relative z-10 max-w-6xl mx-auto px-4">
-        <section className="pt-16 pb-20 md:pt-24 md:pb-28 text-center flex flex-col items-center relative">
+        <section className="pt-16 pb-16 md:pt-24 md:pb-20 text-center flex flex-col items-center relative">
           {/* Floating Badge 1 (Mid-Left) */}
           <div
             ref={badge1Ref}
@@ -281,7 +281,7 @@ export default function HomePage() {
             </p>
 
             {/* Primary Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto mb-10">
+            <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto mb-6">
               <Link href="/signup" className="w-full sm:w-auto">
                 <Button
                   size="lg"
@@ -306,9 +306,9 @@ export default function HomePage() {
         </section>
 
         {/* ========================================================================= */}
-        {/* INTERACTIVE HERO IDE & SAAS SANDBOX SHOWCASE */}
+        {/* LIVE PLATFORM ACTIVITY & VERIFICATION SHOWCASE (Replaces Cluttered Mock IDE) */}
         {/* ========================================================================= */}
-        <SaaSSandboxShowcase />
+        <LiveActivityShowcase />
 
         {/* ========================================================================= */}
         {/* 3. DEVELOPER CAPABILITIES & VALUE SHOWCASE */}
