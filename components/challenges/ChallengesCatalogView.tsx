@@ -20,6 +20,7 @@ import {
   Circle,
   Trophy,
   ArrowRight,
+  Database,
   ShieldCheck,
   ChevronLeft,
   ChevronRight,
@@ -51,14 +52,15 @@ interface ChallengesCatalogViewProps {
 }
 
 const CATEGORIES = [
-  { id: "all", label: "All Tracks", icon: Layers, track: null },
-  { id: "html-css", label: "HTML & CSS", icon: Code2, track: "html-css" },
-  { id: "javascript", label: "JS / DOM", icon: Terminal, track: "javascript" },
-  { id: "react", label: "React", icon: Zap, track: "react" },
-  { id: "vue", label: "Vue", icon: Sparkles, track: "vue" },
-  { id: "node-api", label: "Node.js & API", icon: Server, track: "node-api" },
-  { id: "bug-fix", label: "Bug-Fix", icon: Bug, track: "bug-fix" },
-  { id: "full-stack", label: "Full-Stack", icon: Layout, track: "full-stack" },
+  { id: "all", label: "All Domains", icon: Layers, track: null },
+  { id: "html-css", label: "Frontend UI & CSS", icon: Code2, track: "html-css" },
+  { id: "javascript", label: "JS / DOM Architecture", icon: Terminal, track: "javascript" },
+  { id: "react", label: "React Components", icon: Zap, track: "react" },
+  { id: "node-api", label: "Backend REST APIs", icon: Server, track: "node-api" },
+  { id: "databases", label: "Databases & SQL", icon: Database, track: "databases" },
+  { id: "systems", label: "Systems & Caching", icon: Sparkles, track: "systems" },
+  { id: "bug-fix", label: "Bug Diagnostics", icon: Bug, track: "bug-fix" },
+  { id: "full-stack", label: "End-to-End Systems", icon: Layout, track: "full-stack" },
 ];
 
 export function ChallengesCatalogView({
