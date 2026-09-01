@@ -16,22 +16,19 @@
 
 ---
 
-### [2026-09-01] — Landing Page: Authentic Staqor Architecture, Working ScrollGlowingLine & GSAP Animated Boxes
+### [2026-09-01] — Landing Page: How Staqor Works Tree Diagram, Pricing Removal & Rich Card Animations
 - **What was built:**
-  - **ScrollGlowingLine Fix ([`components/ScrollGlowingLine.tsx`](file:///D:/Staqor/components/ScrollGlowingLine.tsx)):**
-    - Switched to Framer Motion `useScroll()` and `useSpring({ stiffness: 400, damping: 35 })` to track window scroll in real time with zero calculation delay or offset clipping.
-    - Rendered in Staqor's aqua/mint laser gradient (`#ABDAC8`, `#D4EDE3`, `#7BC4A8`) with atmospheric blur aura.
-  - **GSAP Animated Boxes ([`components/gsap-company-box.tsx`](file:///D:/Staqor/components/gsap-company-box.tsx)):**
-    - Elastic bounce & rotation entrance pop, 4 corner dots with scale/pulse, breathing glow in `#ABDAC8`, floating sparkles, and interactive hover elasticity.
-    - Deployed in multiple key headline anchors across the landing page (*craftsmanship*, *8 Tracks*, *LeetCode*, *Pro Speed*).
-  - **Authentic Staqor Content & Sections ([`app/(marketing)/page.tsx`](file:///D:/Staqor/app/(marketing)/page.tsx)):**
-    - **Hero:** 4 Parallax Floating Badges (*Sub-2.5s Groq AI*, *100% Client Sandbox*, *Locked Scaffolding*, *8 Practice Tracks*) + Interactive Split IDE Simulation with real challenge switcher (*Pricing Switcher*, *Kanban Board*, *Virtual Grid*), Monaco Editor tabs, live preview viewport toggles, and instant RUN/SUBMIT simulation.
-    - **Metrics & Trust:** `<2.5s` AI Latency, `8 Tracks` Curriculum, `100% Client` Zero Lag, `35/35/30%` Weighted Multi-Rubric + `<LogoCloud />`.
-    - **8 Tracks Curriculum Catalog:** Interactive `SpotlightCard` grid highlighting HTML/CSS, JS DOM, React, Vue, APIs, Bug Fixes, and Full-Stack tracks.
-    - **Step-by-Step Blueprint:** 3 connected step cards with animated SVG cubic bezier connector curves.
-    - **Why Staqor Wins:** Side-by-side comparison of traditional LeetCode math puzzles vs. real frontend DOM and Groq AI rubrics.
-    - **Developer Ecosystem & Pricing:** Architecture breakdown (`<Integrations />`) and transparent quotas (Free Starter vs. Staqor Pro $15/mo vs. Enterprise).
-    - **Wall of Proof Testimonials & FAQ:** Real developer quotes and expandable FAQ cards.
+  - **Tree Diagram How It Works ([`components/landing/HowItWorks.tsx`](file:///D:/Staqor/components/landing/HowItWorks.tsx)):**
+    - Scroll-revealed SVG connecting line diagram using Framer Motion `useScroll()` & `useTransform()`.
+    - Center top "DEVELOPER" node branching downward into 3 connected steps (*01. Choose Challenge*, *02. Code in Monaco*, *03. AI Score & Proof*).
+    - Interactive step highlighting on hover (`activeStep` 0, 1, 2) which adds glowing drop-shadows to the corresponding SVG branches and cards.
+    - 3 rich step cards with top radial ambient lights, watermark numbers, icon badges, and arrow transitions.
+  - **Removed Pricing Section:**
+    - Completely deleted the Pricing section and cleaned up navbar links.
+  - **Removed Proof of Impact / Testimonials:**
+    - Cleaned up testimonials section and unused icon imports.
+  - **Rich Card Animations Across All Sections:**
+    - Added 3D tactile hover lift (`hover:-translate-y-2 hover:scale-[1.02]`), glowing border pulses, mouse-following spotlights, and animated icons to Track Cards, How It Works Cards, and Why Staqor Cards.
 - **Known gaps / notes:**
   - Production build compiled successfully (`next build`).
 - **Next recommended action:** Ready for review and deployment.

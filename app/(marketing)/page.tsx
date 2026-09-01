@@ -13,7 +13,6 @@ import {
   CheckCircle2,
   ShieldCheck,
   Flame,
-  GitCommitHorizontal,
   Code2,
   Rocket,
   Layers,
@@ -23,8 +22,6 @@ import {
   HelpCircle,
   ChevronDown,
   X,
-  Star,
-  Quote,
   Mail,
   MessageSquare,
   Menu,
@@ -35,13 +32,10 @@ import {
   Tablet,
   Smartphone,
   Check,
-  Award,
   Zap,
   Server,
   Bug,
   Layout,
-  Database,
-  ArrowUpRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -49,6 +43,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { SpotlightCard } from "@/components/SpotlightCard";
 import { GSAPAnimatedBox } from "@/components/gsap-company-box";
 import { ScrollGlowingLine } from "@/components/ScrollGlowingLine";
+import { HowItWorks } from "@/components/landing/HowItWorks";
 import { UserNav } from "@/components/navigation/UserNav";
 import { LogoCloud } from "@/components/logo-cloud";
 import { Integrations } from "@/components/integrations";
@@ -369,20 +364,10 @@ export default function HomePage() {
   const badge3Ref = useRef<HTMLDivElement>(null);
   const badge4Ref = useRef<HTMLDivElement>(null);
 
-  const trustGridRef = useRef<HTMLDivElement>(null);
   const progHeaderRef = useRef<HTMLDivElement>(null);
   const progGridRef = useRef<HTMLDivElement>(null);
-  const howHeaderRef = useRef<HTMLDivElement>(null);
-  const howCardsRef = useRef<HTMLDivElement>(null);
-  const path1Ref = useRef<SVGPathElement>(null);
-  const path2Ref = useRef<SVGPathElement>(null);
-  const dot1Ref = useRef<SVGCircleElement>(null);
-  const dot2Ref = useRef<SVGCircleElement>(null);
-  const dot3Ref = useRef<SVGCircleElement>(null);
   const whyHeaderRef = useRef<HTMLDivElement>(null);
   const whyGridRef = useRef<HTMLDivElement>(null);
-  const testHeaderRef = useRef<HTMLDivElement>(null);
-  const testGridRef = useRef<HTMLDivElement>(null);
   const faqHeaderRef = useRef<HTMLDivElement>(null);
   const faqListRef = useRef<HTMLDivElement>(null);
 
@@ -447,36 +432,7 @@ export default function HomePage() {
         }
       });
 
-      // 3. How It Works SVG Connectors
-      const p1 = path1Ref.current;
-      const p2 = path2Ref.current;
-      if (p1 && p2) {
-        const len1 = p1.getTotalLength();
-        const len2 = p2.getTotalLength();
-
-        gsap.set(p1, { strokeDasharray: len1, strokeDashoffset: len1 });
-        gsap.set(p2, { strokeDasharray: len2, strokeDashoffset: len2 });
-
-        if (dot1Ref.current) gsap.set(dot1Ref.current, { scale: 0, opacity: 0, transformOrigin: "center" });
-        if (dot2Ref.current) gsap.set(dot2Ref.current, { scale: 0, opacity: 0, transformOrigin: "center" });
-        if (dot3Ref.current) gsap.set(dot3Ref.current, { scale: 0, opacity: 0, transformOrigin: "center" });
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: "#how-it-works",
-            start: "top 70%",
-            toggleActions: "play none none reverse",
-          },
-        });
-
-        tl.to(dot1Ref.current, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2)" })
-          .to(p1, { strokeDashoffset: 0, duration: 1.0, ease: "power2.inOut" })
-          .to(dot2Ref.current, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2)" }, "-=0.2")
-          .to(p2, { strokeDashoffset: 0, duration: 1.0, ease: "power2.inOut" }, "-=0.2")
-          .to(dot3Ref.current, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2)" }, "-=0.2");
-      }
-
-      // 4. Section Entrance ScrollTriggers
+      // 3. Section Entrance ScrollTriggers
       const animateSection = (header: React.RefObject<HTMLDivElement>, grid: React.RefObject<HTMLDivElement>) => {
         if (header.current) {
           gsap.from(header.current.children, {
@@ -509,9 +465,7 @@ export default function HomePage() {
       };
 
       animateSection(progHeaderRef, progGridRef);
-      animateSection(howHeaderRef, howCardsRef);
       animateSection(whyHeaderRef, whyGridRef);
-      animateSection(testHeaderRef, testGridRef);
       animateSection(faqHeaderRef, faqListRef);
 
       ScrollTrigger.refresh();
@@ -593,12 +547,6 @@ export default function HomePage() {
               Ecosystem
             </a>
             <a
-              href="#pricing"
-              className="text-zinc-300 hover:text-white transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#ABDAC8] hover:after:w-full after:transition-all after:duration-200"
-            >
-              Pricing
-            </a>
-            <a
               href="#faq"
               className="text-zinc-300 hover:text-white transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#ABDAC8] hover:after:w-full after:transition-all after:duration-200"
             >
@@ -651,9 +599,6 @@ export default function HomePage() {
               <a href="#ecosystem" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#ABDAC8] transition-colors py-1">
                 Ecosystem
               </a>
-              <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#ABDAC8] transition-colors py-1">
-                Pricing
-              </a>
               <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#ABDAC8] transition-colors py-1">
                 FAQ
               </a>
@@ -675,17 +620,17 @@ export default function HomePage() {
           {/* Floating Badge 1 (Mid-Left) */}
           <div
             ref={badge1Ref}
-            className="hidden lg:flex flex-col items-start gap-1 p-3 rounded-2xl bg-[#111117]/95 backdrop-blur-xl border border-[#ABDAC8]/40 hover:border-[#ABDAC8] shadow-xl text-xs font-bold text-white absolute -left-6 xl:-left-16 top-72 xl:top-[22rem] z-20 group cursor-pointer transition-all duration-300 hover:shadow-2xl hover:shadow-[#ABDAC8]/30 hover:scale-105 max-w-[210px] text-left"
+            className="hidden lg:flex flex-col items-start gap-1 p-3.5 rounded-2xl bg-[#111117]/95 backdrop-blur-xl border border-[#ABDAC8]/40 hover:border-[#ABDAC8] shadow-xl text-xs font-bold text-white absolute -left-6 xl:-left-16 top-72 xl:top-[22rem] z-20 group cursor-pointer transition-all duration-300 hover:shadow-2xl hover:shadow-[#ABDAC8]/30 hover:scale-105 max-w-[210px] text-left"
           >
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-[#ABDAC8]/20 text-[#ABDAC8] border border-[#ABDAC8]/40 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                <Cpu className="w-3.5 h-3.5" />
+              <div className="w-7 h-7 rounded-full bg-[#ABDAC8]/20 text-[#ABDAC8] border border-[#ABDAC8]/40 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                <Cpu className="w-4 h-4" />
               </div>
               <span className="font-extrabold text-white group-hover:text-[#ABDAC8] transition-colors">
                 Sub-2.5s Groq AI
               </span>
             </div>
-            <p className="text-[10px] text-zinc-400 font-normal pl-8 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 transition-all duration-300 overflow-hidden leading-tight">
+            <p className="text-[10px] text-zinc-400 font-normal pl-9 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 transition-all duration-300 overflow-hidden leading-tight">
               Weighted multi-criteria rubrics graded instantly
             </p>
           </div>
@@ -693,15 +638,15 @@ export default function HomePage() {
           {/* Floating Badge 2 (Top-Right) */}
           <div
             ref={badge2Ref}
-            className="hidden lg:flex flex-col items-start gap-1 p-3 rounded-2xl bg-[#111117]/90 backdrop-blur-md border border-[#26262E] hover:border-[#ABDAC8] shadow-xl text-xs font-bold text-white absolute right-4 xl:right-8 top-8 z-20 group cursor-pointer transition-all duration-300 hover:shadow-2xl hover:shadow-[#ABDAC8]/20 hover:scale-105 max-w-[210px] text-left"
+            className="hidden lg:flex flex-col items-start gap-1 p-3.5 rounded-2xl bg-[#111117]/90 backdrop-blur-md border border-[#26262E] hover:border-[#ABDAC8] shadow-xl text-xs font-bold text-white absolute right-4 xl:right-8 top-8 z-20 group cursor-pointer transition-all duration-300 hover:shadow-2xl hover:shadow-[#ABDAC8]/20 hover:scale-105 max-w-[210px] text-left"
           >
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-[#ABDAC8]/20 text-[#ABDAC8] flex items-center justify-center group-hover:scale-110 transition-transform">
-                <ShieldCheck className="w-3.5 h-3.5" />
+              <div className="w-7 h-7 rounded-full bg-[#ABDAC8]/20 text-[#ABDAC8] flex items-center justify-center group-hover:scale-110 transition-transform">
+                <ShieldCheck className="w-4 h-4" />
               </div>
               <span className="group-hover:text-[#ABDAC8] transition-colors">100% Client Sandbox</span>
             </div>
-            <p className="text-[10px] text-zinc-400 font-normal pl-8 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 transition-all duration-300 overflow-hidden leading-tight">
+            <p className="text-[10px] text-zinc-400 font-normal pl-9 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 transition-all duration-300 overflow-hidden leading-tight">
               Isolated iframe execution with 2000ms loop-killer
             </p>
           </div>
@@ -709,7 +654,7 @@ export default function HomePage() {
           {/* Floating Badge 3 (Bottom-Left) */}
           <div
             ref={badge3Ref}
-            className="hidden lg:flex flex-col items-start gap-1 p-3 rounded-2xl bg-[#111117]/90 backdrop-blur-md border border-emerald-500/40 hover:border-emerald-400 shadow-xl text-xs font-bold text-emerald-400 absolute left-4 xl:left-8 bottom-4 z-20 group cursor-pointer transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/20 hover:scale-105 max-w-[210px] text-left"
+            className="hidden lg:flex flex-col items-start gap-1 p-3.5 rounded-2xl bg-[#111117]/90 backdrop-blur-md border border-emerald-500/40 hover:border-emerald-400 shadow-xl text-xs font-bold text-emerald-400 absolute left-4 xl:left-8 bottom-4 z-20 group cursor-pointer transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/20 hover:scale-105 max-w-[210px] text-left"
           >
             <div className="flex items-center gap-2">
               <Lock className="w-4 h-4 text-emerald-400 shrink-0 group-hover:scale-110 transition-transform" />
@@ -723,7 +668,7 @@ export default function HomePage() {
           {/* Floating Badge 4 (Bottom-Right) */}
           <div
             ref={badge4Ref}
-            className="hidden lg:flex flex-col items-start gap-1 p-3 rounded-2xl bg-[#111117]/90 backdrop-blur-md border border-amber-500/40 hover:border-amber-400 shadow-xl text-xs font-bold text-amber-300 absolute right-4 xl:right-8 bottom-8 z-20 group cursor-pointer transition-all duration-300 hover:shadow-2xl hover:shadow-amber-500/20 hover:scale-105 max-w-[210px] text-left"
+            className="hidden lg:flex flex-col items-start gap-1 p-3.5 rounded-2xl bg-[#111117]/90 backdrop-blur-md border border-amber-500/40 hover:border-amber-400 shadow-xl text-xs font-bold text-amber-300 absolute right-4 xl:right-8 bottom-8 z-20 group cursor-pointer transition-all duration-300 hover:shadow-2xl hover:shadow-amber-500/20 hover:scale-105 max-w-[210px] text-left"
           >
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-amber-400 shrink-0 group-hover:scale-110 transition-transform" />
@@ -771,7 +716,7 @@ export default function HomePage() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="w-full sm:w-auto border-[#26262E] bg-[#111117] hover:bg-[#16161F] text-white font-bold px-8 py-7 text-base rounded-xl transition-all"
+                  className="w-full sm:w-auto border-[#26262E] bg-[#111117] hover:bg-[#16161F] text-white font-bold px-8 py-7 text-base rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98]"
                 >
                   Explore 8 Tracks Catalog
                 </Button>
@@ -788,7 +733,7 @@ export default function HomePage() {
             {/* Floating AI Verdict Card */}
             <div
               ref={floatingBadgeRef}
-              className="mb-4 lg:mb-0 lg:absolute lg:-top-8 lg:-right-4 z-30 w-full lg:w-80 p-4 rounded-2xl bg-[#16161F]/95 backdrop-blur-md border border-[#ABDAC8]/40 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_20px_rgba(171,218,200,0.15)] text-left transition-all"
+              className="mb-4 lg:mb-0 lg:absolute lg:-top-8 lg:-right-4 z-30 w-full lg:w-80 p-4 rounded-2xl bg-[#16161F]/95 backdrop-blur-md border border-[#ABDAC8]/40 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_20px_rgba(171,218,200,0.15)] text-left transition-all hover:scale-[1.02]"
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
@@ -1040,12 +985,12 @@ export default function HomePage() {
                             <span>Billing:</span>
                             <button
                               onClick={() => setMockupAnnualBilling(!mockupAnnualBilling)}
-                              className="px-2 py-0.5 rounded bg-[#ABDAC8] text-[#0A0A0F] font-bold cursor-pointer"
+                              className="px-2 py-0.5 rounded bg-[#ABDAC8] text-[#0A0A0F] font-bold cursor-pointer hover:scale-105 transition-transform"
                             >
                               {mockupAnnualBilling ? "Annual (Save 20%)" : "Monthly"}
                             </button>
                           </div>
-                          <div className="p-4 rounded-lg bg-[#111614] border border-[#ABDAC8]/40">
+                          <div className="p-4 rounded-lg bg-[#111614] border border-[#ABDAC8]/40 shadow-lg">
                             <span className="text-[10px] font-mono font-bold text-[#ABDAC8] uppercase tracking-wider block mb-1">
                               PRO CANDIDATE
                             </span>
@@ -1054,7 +999,7 @@ export default function HomePage() {
                               <span className="text-xs text-[#9CA3AF] font-normal"> / mo</span>
                             </div>
                             <p className="text-[10px] text-[#9CA3AF] mb-3">Unlimited AI runs + recruiter portfolio</p>
-                            <button className="w-full py-1.5 text-xs font-bold rounded bg-[#ABDAC8] text-[#0A0A0F]">
+                            <button className="w-full py-1.5 text-xs font-bold rounded bg-[#ABDAC8] text-[#0A0A0F] hover:bg-[#ABDAC8]/90 transition-colors">
                               Get Started
                             </button>
                           </div>
@@ -1154,14 +1099,14 @@ export default function HomePage() {
                         variant="outline"
                         disabled={isEvaluating}
                         onClick={() => handleRunEvaluation("run")}
-                        className="h-8 text-xs font-mono border-[#ABDAC8]/50 text-[#ABDAC8] hover:bg-[#ABDAC8]/10"
+                        className="h-8 text-xs font-mono border-[#ABDAC8]/50 text-[#ABDAC8] hover:bg-[#ABDAC8]/10 cursor-pointer"
                       >
                         {isEvaluating ? "GRADING..." : "RUN (DIAGNOSTIC)"}
                       </Button>
                       <button
                         disabled={isEvaluating}
                         onClick={() => handleRunEvaluation("submit")}
-                        className="px-4 py-1.5 text-xs font-mono font-bold rounded-lg bg-[#ABDAC8] text-[#0A0A0F] shadow-[3px_3px_0px_#26262E] cursor-pointer"
+                        className="px-4 py-1.5 text-xs font-mono font-bold rounded-lg bg-[#ABDAC8] text-[#0A0A0F] shadow-[3px_3px_0px_#26262E] hover:scale-105 active:scale-95 transition-transform cursor-pointer"
                       >
                         SUBMIT
                       </button>
@@ -1177,20 +1122,20 @@ export default function HomePage() {
         {/* 3. METRICS STRIP & LOGO CLOUD */}
         {/* ========================================================================= */}
         <section className="py-10 border-y border-[#26262E]">
-          <div ref={trustGridRef} className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div className="p-4 rounded-xl bg-[#111117] border border-[#26262E]">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="p-4 rounded-xl bg-[#111117] border border-[#26262E] hover:border-[#ABDAC8]/40 hover:-translate-y-1 transition-all">
               <span className="text-2xl font-bold font-mono text-[#ABDAC8] block">&lt; 2.5s</span>
               <span className="text-xs text-zinc-400">Groq AI Latency</span>
             </div>
-            <div className="p-4 rounded-xl bg-[#111117] border border-[#26262E]">
+            <div className="p-4 rounded-xl bg-[#111117] border border-[#26262E] hover:border-[#ABDAC8]/40 hover:-translate-y-1 transition-all">
               <span className="text-2xl font-bold font-mono text-[#ABDAC8] block">8 Tracks</span>
               <span className="text-xs text-zinc-400">Full UI Curriculum</span>
             </div>
-            <div className="p-4 rounded-xl bg-[#111117] border border-[#26262E]">
+            <div className="p-4 rounded-xl bg-[#111117] border border-[#26262E] hover:border-[#4ADE80]/40 hover:-translate-y-1 transition-all">
               <span className="text-2xl font-bold font-mono text-[#4ADE80] block">100% Client</span>
               <span className="text-xs text-zinc-400">Zero Docker Lag</span>
             </div>
-            <div className="p-4 rounded-xl bg-[#111117] border border-[#26262E]">
+            <div className="p-4 rounded-xl bg-[#111117] border border-[#26262E] hover:border-[#ABDAC8]/40 hover:-translate-y-1 transition-all">
               <span className="text-2xl font-bold font-mono text-[#ABDAC8] block">35/35/30%</span>
               <span className="text-xs text-zinc-400">Weighted Rubrics</span>
             </div>
@@ -1230,9 +1175,9 @@ export default function HomePage() {
                           <span className="text-[11px] font-mono font-bold tracking-wide px-2.5 py-0.5 rounded-full bg-[#16161F] text-[#ABDAC8] border border-[#26262E]">
                             {tr.challengesCount} Challenges
                           </span>
-                          <Icon className="w-5 h-5 text-zinc-400 group-hover:text-[#ABDAC8] transition-colors" />
+                          <Icon className="w-5 h-5 text-zinc-400 group-hover:text-[#ABDAC8] group-hover:scale-110 transition-all duration-300" />
                         </div>
-                        <h3 className="font-display text-lg font-bold text-white mb-2 tracking-tight">
+                        <h3 className="font-display text-lg font-bold text-white mb-2 tracking-tight group-hover:text-[#ABDAC8] transition-colors">
                           {tr.title}
                         </h3>
                         <p className="text-xs text-zinc-300 leading-relaxed mb-4 font-normal">
@@ -1243,7 +1188,7 @@ export default function HomePage() {
                         <span className="text-[10px] font-mono uppercase text-zinc-500 block mb-1">Example Challenge</span>
                         <p className="text-xs font-semibold text-zinc-200 truncate mb-3">{tr.sample}</p>
                         <Link href={`/challenges?track=${tr.id}`} className="block">
-                          <Button size="sm" variant="outline" className="w-full text-xs font-mono border-[#26262E] hover:border-[#ABDAC8] hover:text-[#ABDAC8]">
+                          <Button size="sm" variant="outline" className="w-full text-xs font-mono border-[#26262E] hover:border-[#ABDAC8] hover:text-[#ABDAC8] transition-all hover:scale-[1.02] active:scale-[0.98]">
                             Browse Track
                           </Button>
                         </Link>
@@ -1257,123 +1202,9 @@ export default function HomePage() {
         </section>
 
         {/* ========================================================================= */}
-        {/* 5. HOW STAQOR WORKS (With SVG Connector Curves) */}
+        {/* 5. HOW STAQOR WORKS (Tree Diagram with Animated Branches & Cards) */}
         {/* ========================================================================= */}
-        <section id="how-it-works" className="py-16 md:py-24 relative overflow-hidden">
-          <div ref={howHeaderRef} className="text-center max-w-2xl mx-auto mb-16">
-            <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2">Step-by-Step Blueprint</div>
-            <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-3">
-              How Staqor Works
-            </h2>
-            <p className="text-zinc-300 text-base sm:text-lg font-normal">
-              Turn consistent daily effort into career-defining proof of work.
-            </p>
-          </div>
-
-          <div className="relative max-w-6xl mx-auto">
-            {/* SVG Connector Overlay with Beziers & Drop-Shadow Glow Filters */}
-            <svg
-              className="hidden md:block absolute top-10 left-0 w-full h-24 pointer-events-none z-0 overflow-visible"
-              aria-hidden="true"
-            >
-              <defs>
-                <filter id="glow-aqua-path" x="-30%" y="-30%" width="160%" height="160%">
-                  <feGaussianBlur stdDeviation="5" result="blur" />
-                  <feMerge>
-                    <feMergeNode in="blur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-                <linearGradient id="path1-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#ABDAC8" />
-                  <stop offset="100%" stopColor="#7BC4A8" />
-                </linearGradient>
-                <linearGradient id="path2-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#7BC4A8" />
-                  <stop offset="100%" stopColor="#4ADE80" />
-                </linearGradient>
-              </defs>
-
-              <path
-                ref={path1Ref}
-                d="M 220 20 C 300 -15, 380 -15, 460 20"
-                fill="none"
-                stroke="url(#path1-grad)"
-                strokeWidth="3"
-                strokeLinecap="round"
-                filter="url(#glow-aqua-path)"
-              />
-
-              <path
-                ref={path2Ref}
-                d="M 580 20 C 660 -15, 740 -15, 820 20"
-                fill="none"
-                stroke="url(#path2-grad)"
-                strokeWidth="3"
-                strokeLinecap="round"
-                filter="url(#glow-aqua-path)"
-              />
-
-              <circle ref={dot1Ref} cx="220" cy="20" r="5" fill="#ABDAC8" filter="url(#glow-aqua-path)" />
-              <circle ref={dot2Ref} cx="520" cy="20" r="5" fill="#7BC4A8" filter="url(#glow-aqua-path)" />
-              <circle ref={dot3Ref} cx="820" cy="20" r="5" fill="#4ADE80" filter="url(#glow-aqua-path)" />
-            </svg>
-
-            {/* 3 Step Cards */}
-            <div ref={howCardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
-              <SpotlightCard accentColor="aqua" watermark="01">
-                <div className="p-8 h-full flex flex-col justify-between">
-                  <div>
-                    <div className="w-12 h-12 rounded-xl bg-[#ABDAC8]/15 border border-[#ABDAC8]/30 flex items-center justify-center text-[#ABDAC8] mb-6 shadow-md shadow-[#ABDAC8]/20">
-                      <Layers className="w-6 h-6" />
-                    </div>
-                    <div className="text-xs font-bold text-[#ABDAC8] uppercase tracking-wider mb-2 font-mono">
-                      Step 01
-                    </div>
-                    <h3 className="font-display text-2xl font-bold text-white mb-3">Choose a Challenge</h3>
-                    <p className="text-sm text-zinc-300 leading-relaxed font-normal">
-                      Filter across 8 tracks and study comprehensive Figma-aligned specs, requirements, and evaluation rubrics.
-                    </p>
-                  </div>
-                </div>
-              </SpotlightCard>
-
-              <SpotlightCard accentColor="aqua" watermark="02">
-                <div className="p-8 h-full flex flex-col justify-between">
-                  <div>
-                    <div className="w-12 h-12 rounded-xl bg-[#ABDAC8]/15 border border-[#ABDAC8]/30 flex items-center justify-center text-[#ABDAC8] mb-6 shadow-md shadow-[#ABDAC8]/20">
-                      <Terminal className="w-6 h-6" />
-                    </div>
-                    <div className="text-xs font-bold text-[#ABDAC8] uppercase tracking-wider mb-2 font-mono">
-                      Step 02
-                    </div>
-                    <h3 className="font-display text-2xl font-bold text-white mb-3">Code in Split Monaco</h3>
-                    <p className="text-sm text-zinc-300 leading-relaxed font-normal">
-                      Write HTML, CSS, and JS across dedicated tabs with locked scaffolding. Watch real-time component updates inside an isolated sandbox with loop protection.
-                    </p>
-                  </div>
-                </div>
-              </SpotlightCard>
-
-              <SpotlightCard accentColor="emerald" watermark="03">
-                <div className="p-8 h-full flex flex-col justify-between">
-                  <div>
-                    <div className="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-6 shadow-md shadow-emerald-500/20">
-                      <Trophy className="w-6 h-6" />
-                    </div>
-                    <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2 font-mono">
-                      Step 03
-                    </div>
-                    <h3 className="font-display text-2xl font-bold text-white mb-3">AI Score &amp; Recruiter Proof</h3>
-                    <p className="text-sm text-zinc-300 leading-relaxed font-normal">
-                      Groq LPU evaluates visual fidelity, DOM events, and semantic cleanliness in &lt;2.5s. Passed solutions generate interactive recruiter replays.
-                    </p>
-                  </div>
-                </div>
-              </SpotlightCard>
-            </div>
-          </div>
-        </section>
+        <HowItWorks />
 
         {/* ========================================================================= */}
         {/* 6. WHY STAQOR COMPARISON */}
@@ -1393,7 +1224,7 @@ export default function HomePage() {
             {/* Traditional LeetCode */}
             <SpotlightCard accentColor="purple" watermark="OLD">
               <div className="p-8 h-full">
-                <div className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-3">Traditional Platforms</div>
+                <div className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-3 font-mono">Traditional Platforms</div>
                 <h3 className="font-display text-2xl font-bold text-white mb-6">Algorithmic Math Puzzles</h3>
                 <div className="space-y-4 text-sm text-zinc-300">
                   <div className="flex items-start gap-3">
@@ -1421,7 +1252,7 @@ export default function HomePage() {
             {/* The Staqor Way */}
             <SpotlightCard accentColor="aqua" watermark="STAQ">
               <div className="p-8 h-full bg-gradient-to-b from-[#ABDAC8]/10 to-transparent">
-                <div className="text-xs font-bold text-[#ABDAC8] uppercase tracking-wider mb-3">The Staqor Way</div>
+                <div className="text-xs font-bold text-[#ABDAC8] uppercase tracking-wider mb-3 font-mono">The Staqor Way</div>
                 <h3 className="font-display text-2xl font-bold text-white mb-6">Daily Frontend Proof of Work</h3>
                 <div className="space-y-4 text-sm text-zinc-200 font-medium">
                   <div className="flex items-start gap-3">
@@ -1447,7 +1278,7 @@ export default function HomePage() {
         {/* ========================================================================= */}
         <section id="ecosystem" className="py-16 md:py-24 border-t border-[#26262E]">
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2">Developer Ecosystem</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2 font-mono">Developer Ecosystem</div>
             <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-3">
               Modern Runtime Architecture
             </h2>
@@ -1460,215 +1291,11 @@ export default function HomePage() {
         </section>
 
         {/* ========================================================================= */}
-        {/* 8. PRICING & QUOTAS */}
-        {/* ========================================================================= */}
-        <section id="pricing" className="py-16 md:py-24 border-t border-[#26262E]">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2">Transparent Tiers</div>
-            <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-3">
-              Practice for Free. Upgrade for <GSAPAnimatedBox text="Pro Speed." />
-            </h2>
-            <p className="text-zinc-300 text-base font-normal">
-              Generous lifetime free quotas with instant Pro upgrades for active job seekers.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-            {/* Free Starter */}
-            <div className="p-8 rounded-2xl bg-[#111117] border border-[#26262E] flex flex-col justify-between shadow-xl relative overflow-hidden">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm font-bold font-mono text-[#9CA3AF]">FREE STARTER</span>
-                  <Badge variant="outline" className="text-[10px] border-[#26262E]">
-                    $0 / FOREVER
-                  </Badge>
-                </div>
-                <div className="mb-6">
-                  <span className="text-4xl font-extrabold text-[#F5F5F7]">$0</span>
-                  <span className="text-xs text-[#9CA3AF]"> / month</span>
-                </div>
-                <ul className="space-y-3 text-xs text-[#9CA3AF] mb-8">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                    <span>Access all core challenges</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                    <span>5 Runs &amp; 3 Submits lifetime per challenge</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                    <span>Groq AI rubric scoring &amp; feedback</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                    <span>Public recruiter portfolio replay</span>
-                  </li>
-                </ul>
-              </div>
-
-              <Link href="/signup">
-                <Button variant="outline" className="w-full h-11 border-[#26262E] hover:bg-[#16161F] text-xs font-semibold">
-                  Get Started Free
-                </Button>
-              </Link>
-            </div>
-
-            {/* Staqor Pro */}
-            <div className="p-8 rounded-2xl bg-[#111614] border-2 border-[#ABDAC8] relative flex flex-col justify-between shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_30px_rgba(171,218,200,0.15)] overflow-hidden">
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                <Badge className="bg-[#ABDAC8] text-[#0A0A0F] font-bold text-[10px] px-3 py-0.5">MOST POPULAR</Badge>
-              </div>
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm font-bold font-mono text-[#ABDAC8]">STAQOR PRO</span>
-                  <Badge variant="outline" className="text-[10px] text-[#ABDAC8] border-[#ABDAC8]/30">
-                    ACTIVE DEV
-                  </Badge>
-                </div>
-                <div className="mb-6">
-                  <span className="text-4xl font-extrabold text-[#F5F5F7]">$15</span>
-                  <span className="text-xs text-[#9CA3AF]"> / month</span>
-                </div>
-                <ul className="space-y-3 text-xs text-[#F5F5F7] mb-8">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                    <span className="font-semibold">Unlimited Runs &amp; Submissions</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                    <span>Instant Model Solution Unlocking</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                    <span>Verified Candidate Recruiter Badge</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                    <span>All 8 Track Challenges Unlocked</span>
-                  </li>
-                </ul>
-              </div>
-
-              <Link href="/signup?plan=pro">
-                <Button className="w-full h-11 bg-[#ABDAC8] text-[#0A0A0F] font-bold hover:bg-[#ABDAC8]/90 text-xs">
-                  Upgrade to Pro
-                </Button>
-              </Link>
-            </div>
-
-            {/* Enterprise */}
-            <div className="p-8 rounded-2xl bg-[#111117] border border-[#26262E] flex flex-col justify-between shadow-xl relative overflow-hidden">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm font-bold font-mono text-[#9CA3AF]">ENTERPRISE</span>
-                  <Badge variant="outline" className="text-[10px] border-[#26262E]">
-                    HIRING TEAMS
-                  </Badge>
-                </div>
-                <div className="mb-6">
-                  <span className="text-4xl font-extrabold text-[#F5F5F7]">Custom</span>
-                </div>
-                <ul className="space-y-3 text-xs text-[#9CA3AF] mb-8">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                    <span>Custom company interview rubrics</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                    <span>Dedicated candidate assessment portals</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                    <span>Team grading analytics &amp; audit logs</span>
-                  </li>
-                </ul>
-              </div>
-
-              <a href="mailto:sales@staqor.dev?subject=Staqor%20Enterprise%20Inquiry">
-                <Button variant="outline" className="w-full h-11 border-[#26262E] hover:bg-[#16161F] text-xs font-semibold">
-                  Contact Sales
-                </Button>
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {/* ========================================================================= */}
-        {/* 9. WALL OF PROOF TESTIMONIALS */}
-        {/* ========================================================================= */}
-        <section id="testimonials" className="py-16 md:py-24 border-t border-[#26262E]">
-          <div ref={testHeaderRef} className="text-center max-w-xl mx-auto mb-12">
-            <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2">Proof of Impact</div>
-            <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-3">
-              What Our Builders Say
-            </h2>
-            <p className="text-base text-zinc-300 font-normal">
-              Real feedback from developers, candidates, and engineering leaders in the Staqor network.
-            </p>
-          </div>
-
-          <div ref={testGridRef} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <SpotlightCard accentColor="aqua" watermark={<Quote className="w-16 h-16 opacity-30" />}>
-              <div className="p-6 h-full flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-[#ABDAC8] text-[#0A0A0F] flex items-center justify-center font-bold text-sm shadow-md shadow-[#ABDAC8]/30">
-                        SG
-                      </div>
-                      <div>
-                        <div className="text-sm font-bold text-white">Samridhi Gupta</div>
-                        <div className="text-xs text-zinc-400 font-medium">Frontend Engineer @ FinTech Scaleup</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1 mb-3">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-[#ABDAC8] text-[#ABDAC8]" />
-                    ))}
-                  </div>
-                  <p className="text-sm text-zinc-300 leading-relaxed italic font-normal">
-                    &ldquo;Staqor gave me the structure and momentum I needed. Building interactive UI components with sub-2.5s Groq AI feedback transformed my confidence as a frontend engineer.&rdquo;
-                  </p>
-                </div>
-              </div>
-            </SpotlightCard>
-
-            <SpotlightCard accentColor="amber" watermark={<Quote className="w-16 h-16 opacity-30" />}>
-              <div className="p-6 h-full flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-amber-500 text-[#0A0A0F] flex items-center justify-center font-bold text-sm shadow-md shadow-amber-500/30">
-                        VN
-                      </div>
-                      <div>
-                        <div className="text-sm font-bold text-white">Vivek Nambiar</div>
-                        <div className="text-xs text-zinc-400 font-medium">Engineering Lead • 15+ years experience</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1 mb-3">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
-                  <p className="text-sm text-zinc-300 leading-relaxed italic font-normal">
-                    &ldquo;When reviewing candidate profiles, playing with interactive Staqor sandboxes gives our hiring team instant certainty that the candidate writes accessible, production-grade UI.&rdquo;
-                  </p>
-                </div>
-              </div>
-            </SpotlightCard>
-          </div>
-        </section>
-
-        {/* ========================================================================= */}
-        {/* 10. FAQ ACCORDION */}
+        {/* 8. FAQ ACCORDION */}
         {/* ========================================================================= */}
         <section id="faq" className="py-16 md:py-24 border-t border-[#26262E]">
           <div ref={faqHeaderRef} className="text-center max-w-2xl mx-auto mb-12">
-            <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2 flex items-center justify-center gap-1.5">
+            <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2 flex items-center justify-center gap-1.5 font-mono">
               <HelpCircle className="w-4 h-4" />
               <span>Frequently Asked Questions</span>
             </div>
@@ -1710,7 +1337,7 @@ export default function HomePage() {
         </section>
 
         {/* ========================================================================= */}
-        {/* 11. COMMUNITY CTA BAND */}
+        {/* 9. COMMUNITY CTA BAND */}
         {/* ========================================================================= */}
         <section id="community" className="py-12">
           <div className="p-10 md:p-16 rounded-3xl bg-gradient-to-br from-[#ABDAC8]/20 via-[#111117] to-[#0A0A0F] border border-[#ABDAC8]/40 text-center relative overflow-hidden shadow-2xl">
@@ -1737,7 +1364,7 @@ export default function HomePage() {
       </main>
 
       {/* ========================================================================= */}
-      {/* 12. FOOTER */}
+      {/* 10. FOOTER */}
       {/* ========================================================================= */}
       <footer className="border-t border-[#26262E] bg-[#0A0A0F] py-12 text-xs text-zinc-400 relative z-10 font-medium">
         <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
