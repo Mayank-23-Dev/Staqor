@@ -26,7 +26,7 @@ import { SpotlightCard } from "@/components/SpotlightCard";
 import { GSAPAnimatedBox } from "@/components/gsap-company-box";
 import { ScrollGlowingLine } from "@/components/ScrollGlowingLine";
 import { Header } from "@/components/header";
-import { LiveActivityShowcase } from "@/components/landing/LiveActivityShowcase";
+import { CodeEditorHeroShowcase } from "@/components/landing/CodeEditorHeroShowcase";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { CapabilitiesShowcase } from "@/components/landing/CapabilitiesShowcase";
 import { FaqsSection } from "@/components/faqs-page";
@@ -196,7 +196,7 @@ export default function HomePage() {
       {/* 2. HERO SECTION */}
       {/* ========================================================================= */}
       <main className="relative z-10 max-w-6xl mx-auto px-4">
-        <section className="pt-16 pb-16 md:pt-24 md:pb-20 text-center flex flex-col items-center relative">
+        <section className="pt-16 pb-12 md:pt-24 md:pb-16 text-center flex flex-col items-center relative">
           {/* Floating Badge 1 (Mid-Left) */}
           <div
             ref={badge1Ref}
@@ -306,9 +306,9 @@ export default function HomePage() {
         </section>
 
         {/* ========================================================================= */}
-        {/* LIVE PLATFORM ACTIVITY & VERIFICATION SHOWCASE (Replaces Cluttered Mock IDE) */}
+        {/* AUTHENTIC CODE EDITOR HERO SHOWCASE (VS Code / Monaco 3-Panel Card) */}
         {/* ========================================================================= */}
-        <LiveActivityShowcase />
+        <CodeEditorHeroShowcase />
 
         {/* ========================================================================= */}
         {/* 3. DEVELOPER CAPABILITIES & VALUE SHOWCASE */}
