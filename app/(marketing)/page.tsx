@@ -588,25 +588,26 @@ export default function LandingPage() {
         });
       }
 
-      // 3. Scroll-Responsive Glowing Accent Line Scrub
-      if (glowPathRef.current && containerRef.current) {
-        const path = glowPathRef.current;
-        const length = path.getTotalLength ? path.getTotalLength() : 5000;
+      // 3. Scroll-Responsive Glowing Accent Line Scrub (Multi-Layer Wide Neon Beam)
+      const glowPaths = containerRef.current?.querySelectorAll<SVGPathElement>(".glow-scroll-path");
+      if (glowPaths && glowPaths.length > 0 && containerRef.current) {
+        glowPaths.forEach((path) => {
+          const length = path.getTotalLength ? path.getTotalLength() : 6000;
+          gsap.set(path, {
+            strokeDasharray: length,
+            strokeDashoffset: length,
+          });
 
-        gsap.set(path, {
-          strokeDasharray: length,
-          strokeDashoffset: length,
-        });
-
-        gsap.to(path, {
-          strokeDashoffset: 0,
-          ease: "none",
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top top",
-            end: "bottom bottom",
-            scrub: 0.6,
-          },
+          gsap.to(path, {
+            strokeDashoffset: 0,
+            ease: "none",
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: "top top",
+              end: "bottom bottom",
+              scrub: 0.6,
+            },
+          });
         });
       }
 
@@ -728,51 +729,86 @@ export default function LandingPage() {
       </div>
 
       {/* ========================================================================= */}
-      {/* 4. SCROLL-RESPONSIVE GLOWING ACCENT LINE (SVG Scrubbed with GSAP) */}
+      {/* 4. SCROLL-RESPONSIVE GLOWING ACCENT LINE (Wider, Curvier Multi-Layer Beam) */}
       {/* ========================================================================= */}
       <div className="absolute inset-0 pointer-events-none -z-5 overflow-hidden">
         <svg
           className="w-full h-full"
-          viewBox="0 0 1000 5200"
+          viewBox="0 0 1200 5600"
           preserveAspectRatio="none"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
             <linearGradient id="mintGlowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#ABDAC8" stopOpacity="0.85" />
-              <stop offset="25%" stopColor="#7BC4A8" stopOpacity="0.9" />
-              <stop offset="55%" stopColor="#D4EDE3" stopOpacity="0.85" />
-              <stop offset="85%" stopColor="#ABDAC8" stopOpacity="0.9" />
-              <stop offset="100%" stopColor="#7BC4A8" stopOpacity="0.8" />
+              <stop offset="0%" stopColor="#ABDAC8" stopOpacity="0.9" />
+              <stop offset="20%" stopColor="#7BC4A8" stopOpacity="1" />
+              <stop offset="45%" stopColor="#D4EDE3" stopOpacity="0.95" />
+              <stop offset="70%" stopColor="#ABDAC8" stopOpacity="1" />
+              <stop offset="90%" stopColor="#7BC4A8" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#D4EDE3" stopOpacity="0.9" />
             </linearGradient>
-            <filter id="mintGlowFilter" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="3.5" result="blur" />
+
+            {/* Tight crisp neon bloom */}
+            <filter id="mintGlowFilter" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
               <feMerge>
                 <feMergeNode in="blur" />
                 <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
+
+            {/* Deep wide ambient aura */}
+            <filter id="mintGlowWide" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="14" result="wideBlur" />
+              <feGaussianBlur in="SourceGraphic" stdDeviation="26" result="deepBlur" />
+              <feMerge>
+                <feMergeNode in="deepBlur" />
+                <feMergeNode in="wideBlur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
           </defs>
 
-          {/* Base faint dotted trail */}
+          {/* 1. Base faint guide trail with dots */}
           <path
-            d="M 500 80 C 800 320, 880 750, 800 1150 C 700 1600, 180 1850, 200 2350 C 220 2850, 820 3150, 800 3650 C 760 4150, 250 4450, 500 5150"
+            d="M 680 80 C 1050 320, 1160 720, 960 1150 C 780 1520, 100 1680, 120 2150 C 140 2620, 1100 2820, 1040 3350 C 980 3880, 80 4050, 140 4550 C 200 4980, 1020 5150, 620 5550"
             stroke="#26262E"
-            strokeWidth="1.5"
-            strokeDasharray="6 8"
-            strokeOpacity="0.4"
+            strokeWidth="2.5"
+            strokeDasharray="10 14"
+            strokeOpacity="0.45"
           />
 
-          {/* Animated Glowing Foreground Path (Syncs with scroll) */}
+          {/* 2. Layer 1: Wide Ambient Aura Beam (16px wide glow) */}
           <path
-            ref={glowPathRef}
-            d="M 500 80 C 800 320, 880 750, 800 1150 C 700 1600, 180 1850, 200 2350 C 220 2850, 820 3150, 800 3650 C 760 4150, 250 4450, 500 5150"
+            className="glow-scroll-path"
+            d="M 680 80 C 1050 320, 1160 720, 960 1150 C 780 1520, 100 1680, 120 2150 C 140 2620, 1100 2820, 1040 3350 C 980 3880, 80 4050, 140 4550 C 200 4980, 1020 5150, 620 5550"
             stroke="url(#mintGlowGrad)"
-            strokeWidth="2.5"
+            strokeWidth="18"
+            strokeLinecap="round"
+            filter="url(#mintGlowWide)"
+            opacity="0.25"
+          />
+
+          {/* 3. Layer 2: Mid Neon Bloom Stroke (7px wide) */}
+          <path
+            className="glow-scroll-path"
+            d="M 680 80 C 1050 320, 1160 720, 960 1150 C 780 1520, 100 1680, 120 2150 C 140 2620, 1100 2820, 1040 3350 C 980 3880, 80 4050, 140 4550 C 200 4980, 1020 5150, 620 5550"
+            stroke="url(#mintGlowGrad)"
+            strokeWidth="7"
             strokeLinecap="round"
             filter="url(#mintGlowFilter)"
-            opacity="0.85"
+            opacity="0.65"
+          />
+
+          {/* 4. Layer 3: Vivid Core Mint Laser Line (3.5px wide) */}
+          <path
+            className="glow-scroll-path"
+            d="M 680 80 C 1050 320, 1160 720, 960 1150 C 780 1520, 100 1680, 120 2150 C 140 2620, 1100 2820, 1040 3350 C 980 3880, 80 4050, 140 4550 C 200 4980, 1020 5150, 620 5550"
+            stroke="#ABDAC8"
+            strokeWidth="3.5"
+            strokeLinecap="round"
+            opacity="0.95"
           />
         </svg>
       </div>
