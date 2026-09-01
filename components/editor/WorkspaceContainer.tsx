@@ -14,6 +14,7 @@ import {
   ChevronUp,
   Terminal,
   Monitor,
+  AlertTriangle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -80,6 +81,8 @@ export function WorkspaceContainer({ challenge }: WorkspaceContainerProps) {
     }
   };
 
+  const lockedFiles = challenge.locked_files || challenge.starter_code.locked_files || [];
+
   const handleRunEvaluation = async (attemptType: "run" | "submit" = "run") => {
     if (attemptType === "run") {
       setIsRunning(true);
@@ -113,17 +116,29 @@ export function WorkspaceContainer({ challenge }: WorkspaceContainerProps) {
       if (data.evaluation) {
         setEvaluation(data.evaluation);
         setActiveLeftTab("feedback");
-        setLogs((prev) => [
-          ...prev,
-          {
-            id: Math.random().toString(),
-            type: data.evaluation.passed ? "info" : "warn",
-            message: `[AI Judge] Evaluation Complete: Score ${data.evaluation.score}/100 — ${
-              data.evaluation.passed ? "PASSED" : "NEEDS REFINEMENT"
-            }`,
-            timestamp: new Date().toLocaleTimeString(),
-          },
-        ]);
+        if (data.gateFailed) {
+          setLogs((prev) => [
+            ...prev,
+            {
+              id: Math.random().toString(),
+              type: "error",
+              message: `[Correctness Gate] Check Failed: ${data.evaluation.overall_feedback}`,
+              timestamp: new Date().toLocaleTimeString(),
+            },
+          ]);
+        } else {
+          setLogs((prev) => [
+            ...prev,
+            {
+              id: Math.random().toString(),
+              type: data.evaluation.passed ? "info" : "warn",
+              message: `[AI Judge] Evaluation Complete: Score ${data.evaluation.score}/100 — ${
+                data.evaluation.passed ? "PASSED" : "NEEDS REFINEMENT"
+              }`,
+              timestamp: new Date().toLocaleTimeString(),
+            },
+          ]);
+        }
       }
     } catch (err: any) {
       setLogs((prev) => [
@@ -342,34 +357,51 @@ export function WorkspaceContainer({ challenge }: WorkspaceContainerProps) {
             >
               {evaluation ? (
                 <div className="space-y-4">
-                  {/* Score Card */}
-                  <div
-                    className={`p-4 rounded-xl border flex items-center justify-between ${
-                      evaluation.passed
-                        ? "bg-emerald-950/20 border-emerald-500/40 text-emerald-400"
-                        : "bg-amber-950/20 border-amber-500/40 text-amber-400"
-                    }`}
-                  >
-                    <div>
+                  {/* Gate Failure Banner or Standard Score Card */}
+                  {evaluation.gate_failed ? (
+                    <div className="p-4 rounded-xl border bg-rose-950/20 border-rose-500/40 text-rose-400 space-y-2">
                       <div className="flex items-center gap-2">
-                        {evaluation.passed ? (
-                          <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                        ) : (
-                          <XCircle className="w-5 h-5 text-amber-400" />
-                        )}
-                        <span className="font-bold text-sm">
-                          {evaluation.passed ? "Submission Passed!" : "Attempt Completed"}
+                        <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0" />
+                        <span className="font-bold text-sm text-rose-300">
+                          Correctness Pre-Filter Gate Failed
                         </span>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-xs text-rose-200/90 leading-relaxed font-mono bg-rose-950/40 p-2.5 rounded border border-rose-500/20">
                         {evaluation.overall_feedback}
                       </p>
+                      <p className="text-[11px] text-muted-foreground">
+                        Please resolve syntax and structural errors in your code before requesting AI evaluation.
+                      </p>
                     </div>
-                    <div className="text-right">
-                      <span className="text-3xl font-extrabold font-mono">{evaluation.score}</span>
-                      <span className="text-xs text-muted-foreground">/100</span>
+                  ) : (
+                    <div
+                      className={`p-4 rounded-xl border flex items-center justify-between ${
+                        evaluation.passed
+                          ? "bg-emerald-950/20 border-emerald-500/40 text-emerald-400"
+                          : "bg-amber-950/20 border-amber-500/40 text-amber-400"
+                      }`}
+                    >
+                      <div>
+                        <div className="flex items-center gap-2">
+                          {evaluation.passed ? (
+                            <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                          ) : (
+                            <XCircle className="w-5 h-5 text-amber-400" />
+                          )}
+                          <span className="font-bold text-sm">
+                            {evaluation.passed ? "Submission Passed!" : "Attempt Completed"}
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {evaluation.overall_feedback}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-3xl font-extrabold font-mono">{evaluation.score}</span>
+                        <span className="text-xs text-muted-foreground">/100</span>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Rubric Breakdown List */}
                   <div className="space-y-2">
@@ -428,6 +460,7 @@ export function WorkspaceContainer({ challenge }: WorkspaceContainerProps) {
           <div className="flex-1 min-h-[140px] w-full overflow-hidden flex flex-col">
             <CodeEditor
               code={code}
+              lockedFiles={lockedFiles}
               onChange={handleCodeChange}
               onRun={() => handleRunEvaluation("run")}
             />

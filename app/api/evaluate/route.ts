@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getChallengeBySlug, FALLBACK_CHALLENGE } from "@/lib/supabase/db";
 import { groq, buildGroqPrompt } from "@/lib/groq";
+import { runStructuralPreFilter } from "@/lib/groq/prefilter";
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,7 +19,52 @@ export async function POST(req: NextRequest) {
     // 1. Fetch challenge spec & rubric
     const challenge = await getChallengeBySlug(challengeSlug);
 
-    // 2. Groq AI Evaluation with fallback parsing
+    // 2. Structural Correctness & Syntax Pre-Filter Gate (Checks syntax & execution before LLM call)
+    const preFilter = runStructuralPreFilter(code, challenge);
+    if (!preFilter.passed) {
+      const gateResult = {
+        score: 0,
+        passed: false,
+        gate_failed: true,
+        breakdown: preFilter.breakdown || [
+          {
+            rubric_id: "prefilter_gate",
+            name: "Structural Correctness Gate",
+            score: 0,
+            feedback: preFilter.error || "Code failed pre-execution correctness checks.",
+          },
+        ],
+        overall_feedback: `[Correctness Gate Failed] ${preFilter.error || preFilter.reason}. Please resolve syntax and structural issues before AI rubric evaluation.`,
+      };
+
+      // Optional persistence in Supabase
+      try {
+        const supabase = await createClient();
+        if (userId && userId !== "anonymous") {
+          await supabase.from("submissions").insert({
+            user_id: userId,
+            challenge_id: challenge.id,
+            code_submitted: code,
+            attempt_type: attemptType,
+            score: 0,
+            passed: false,
+            groq_response: gateResult,
+            is_public: false,
+          });
+        }
+      } catch {
+        // Non-blocking submission write
+      }
+
+      return NextResponse.json({
+        evaluation: gateResult,
+        challengeSlug,
+        gateFailed: true,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    // 3. Groq AI Evaluation with fallback parsing
     let parsedResult;
     try {
       const { systemPrompt, userPrompt } = buildGroqPrompt({

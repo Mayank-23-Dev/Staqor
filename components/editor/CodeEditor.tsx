@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Editor, { OnMount } from "@monaco-editor/react";
-import { FileCode, FileType, Code2, Copy, Check } from "lucide-react";
+import { FileCode, FileType, Code2, Copy, Check, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export type EditorTab = "html" | "css" | "js";
@@ -13,15 +13,19 @@ interface CodeEditorProps {
     css: string;
     js: string;
   };
+  lockedFiles?: ("html" | "css" | "js")[];
   onChange: (tab: EditorTab, value: string) => void;
   onRun?: () => void;
 }
 
-export function CodeEditor({ code, onChange, onRun }: CodeEditorProps) {
+export function CodeEditor({ code, lockedFiles = [], onChange, onRun }: CodeEditorProps) {
   const [activeTab, setActiveTab] = useState<EditorTab>("html");
   const [copied, setCopied] = useState(false);
 
+  const isCurrentTabLocked = lockedFiles.includes(activeTab);
+
   const handleEditorChange = (value: string | undefined) => {
+    if (isCurrentTabLocked) return;
     onChange(activeTab, value || "");
   };
 
@@ -90,6 +94,11 @@ export function CodeEditor({ code, onChange, onRun }: CodeEditorProps) {
           >
             <FileCode className="w-3.5 h-3.5 text-orange-400" />
             <span>index.html</span>
+            {lockedFiles.includes("html") && (
+              <span title="Read-only file">
+                <Lock className="w-3 h-3 text-muted-foreground/60 ml-0.5" />
+              </span>
+            )}
           </button>
 
           <button
@@ -102,6 +111,11 @@ export function CodeEditor({ code, onChange, onRun }: CodeEditorProps) {
           >
             <FileType className="w-3.5 h-3.5 text-sky-400" />
             <span>style.css</span>
+            {lockedFiles.includes("css") && (
+              <span title="Read-only file">
+                <Lock className="w-3 h-3 text-muted-foreground/60 ml-0.5" />
+              </span>
+            )}
           </button>
 
           <button
@@ -114,14 +128,26 @@ export function CodeEditor({ code, onChange, onRun }: CodeEditorProps) {
           >
             <Code2 className="w-3.5 h-3.5 text-yellow-400" />
             <span>script.js</span>
+            {lockedFiles.includes("js") && (
+              <span title="Read-only file">
+                <Lock className="w-3 h-3 text-muted-foreground/60 ml-0.5" />
+              </span>
+            )}
           </button>
         </div>
 
         {/* Tab Right Utilities */}
         <div className="flex items-center gap-2">
-          <span className="hidden lg:inline text-[11px] text-muted-foreground/60 font-mono">
-            Ctrl+Enter to Run
-          </span>
+          {isCurrentTabLocked ? (
+            <div className="flex items-center gap-1 text-[10px] text-amber-400 font-mono bg-amber-950/30 border border-amber-500/30 px-2 py-0.5 rounded">
+              <Lock className="w-2.5 h-2.5" />
+              <span>Read-Only Scaffolding</span>
+            </div>
+          ) : (
+            <span className="hidden lg:inline text-[11px] text-muted-foreground/60 font-mono">
+              Ctrl+Enter to Run
+            </span>
+          )}
           <Button
             variant="ghost"
             size="sm"
@@ -144,6 +170,7 @@ export function CodeEditor({ code, onChange, onRun }: CodeEditorProps) {
           onChange={handleEditorChange}
           onMount={handleEditorDidMount}
           options={{
+            readOnly: isCurrentTabLocked,
             fontSize: 13,
             lineNumbers: "on",
             fontFamily: "var(--font-mono, 'Fira Code', Menlo, Monaco, Consolas, monospace)",

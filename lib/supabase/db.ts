@@ -4,6 +4,7 @@ export interface IChallengeCode {
   html: string;
   css: string;
   js: string;
+  locked_files?: ("html" | "css" | "js")[];
 }
 
 export interface IRubricItem {
@@ -22,6 +23,7 @@ export interface IChallenge {
   difficulty: "easy" | "medium" | "hard";
   spec_markdown: string;
   starter_code: IChallengeCode;
+  locked_files?: ("html" | "css" | "js")[];
   model_solution?: IChallengeCode;
   rubric: IRubricItem[];
   design_spec?: {

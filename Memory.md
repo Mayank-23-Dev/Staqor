@@ -16,6 +16,21 @@
 
 ---
 
+### [2026-09-01] — Phase 2 & Groq: Locked Code Regions & Structural Correctness Pre-Filter Gate
+- **What was built:**
+  - **Locked/Read-Only Code Regions (`lib/supabase/db.ts`, `components/editor/CodeEditor.tsx`, `components/editor/WorkspaceContainer.tsx`):**
+    - Extended `IChallengeCode` and `IChallenge` with `locked_files: ("html" | "css" | "js")[]`.
+    - Integrated read-only enforcement in Monaco Editor (`readOnly: true`), showing lock badges on file tabs, and "Read-Only Scaffolding" indicator for scoped challenges (e.g. JS/DOM challenges where HTML/CSS is locked scaffolding).
+  - **Structural Correctness Pre-Filter Gate (`lib/groq/prefilter.ts`, `app/api/evaluate/route.ts`):**
+    - Pre-execution validation checking JavaScript syntax errors, malformed HTML, empty submissions, and track-specific code presence before LLM invocation.
+    - If pre-filter fails: immediately returns clear syntax/runtime feedback and marks the attempt without spending a Groq LLM call/quota.
+    - If pre-filter passes: proceeds to full Groq AI rubric evaluation.
+  - **UI Diagnostic Banner (`components/editor/WorkspaceContainer.tsx`):**
+    - Renders an alert failure card in the AI Feedback tab explaining syntax/logic errors when the gate fails.
+- **Known gaps / notes:**
+  - Zero token expenditure on invalid syntax/empty attempts verified.
+- **Next recommended action:** Proceed with expanding challenge catalog definitions with custom track locks.
+
 ### [2026-09-01] — Phase 2 & Workspace: Stacked IDE/Console & 4-Tab Problem/Live Preview Split
 - **What was built:**
   - **Left Panel (40%):** Added 4th tab "Live Preview" alongside "Problem Spec", "Rubric Criteria", and "AI Feedback". Houses the sandboxed iframe runtime (`sandbox="allow-scripts allow-modals"`), status badges ("LIVE SANDBOX" / "Isolated Runtime"), viewport device toggles (Desktop/Tablet/Mobile), and "Re-run" action.
