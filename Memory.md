@@ -16,32 +16,22 @@
 
 ---
 
-### [2026-09-01] — Landing Page: Complete AB Talk Layout Alignment with Staqor Aqua/Mint Theme
+### [2026-09-01] — Landing Page: Authentic Staqor Architecture, Working ScrollGlowingLine & GSAP Animated Boxes
 - **What was built:**
-  - **Full AB Talk Landing Page Architecture Adopted for Staqor:**
-    - **Hero Section:**
-      - 4 Parallax Floating Badges with infinite GSAP sine loops (*Verified Proof of Work*, *10,000+ Active Builders*, *100% Free for Students*, *8 Practice Tracks*).
-      - Headline: *"Become the Frontend Engineer that Companies Want to Hire!"* with glowing aqua box on *Companies*.
-      - Student & Developer Community Avatars + 5-star rating strip (`10,000+ Engineers Enrolled`).
-      - Primary CTA: *Explore Challenges* with glowing aqua gradient, hover scale, and drop-shadows.
-    - **Dynamic Proof-of-Work Terminal Window:**
-      - CRT scanline overlay, ambient aqua/mint glow auras, control dots, and pulsing `Live Evaluation Stream`.
-      - Animated GSAP typewriter command line with pre-filter validation checks and Groq AI 94/100 score reveal.
-      - Active Engineer profile card + streak counter (`Flame` animation) + bottom pagination dots.
-    - **Stats Trust Strip (`TrustStrip`):**
-      - Grid of 3 metric cards (`10,000+` Active Frontend Engineers, `250,000+` Verified UI Runs, `50+` Recruiter Partners).
-    - **Active Challenges & Cohorts (`ProgramCards` with `SpotlightCard`):**
-      - Responsive cards with GSAP mouse-tracking radial spotlights (*60-Day Frontend Mastery*, *48-Hour UI Hackathon*, *31 Days React & State*, *Full-Stack Mock API Sprint*).
-    - **How Staqor Works (`HowItWorks`):**
-      - Animated SVG cubic bezier connector curves linking the 3 step cards on scroll.
-    - **Why Staqor Wins (`WhyStaqor`):**
-      - Comparison matrix: Traditional Platforms vs. The Staqor Way (Daily Frontend Proof of Work).
-    - **Community CTA Band & Wall of Proof (`Testimonials`):**
-      - High-impact gradient CTA box and 2-column verified quote cards.
-    - **FAQ Accordion & Clean Footer:**
-      - Expandable FAQ cards and Staqor footer with social links and contact info.
-    - **Scroll-Responsive Glowing Accent Line:**
-      - Continuous SVG laser line in Staqor aqua/mint gradient (`#ABDAC8`, `#D4EDE3`, `#7BC4A8`) with GSAP scrub.
+  - **ScrollGlowingLine Fix ([`components/ScrollGlowingLine.tsx`](file:///D:/Staqor/components/ScrollGlowingLine.tsx)):**
+    - Switched to Framer Motion `useScroll()` and `useSpring({ stiffness: 400, damping: 35 })` to track window scroll in real time with zero calculation delay or offset clipping.
+    - Rendered in Staqor's aqua/mint laser gradient (`#ABDAC8`, `#D4EDE3`, `#7BC4A8`) with atmospheric blur aura.
+  - **GSAP Animated Boxes ([`components/gsap-company-box.tsx`](file:///D:/Staqor/components/gsap-company-box.tsx)):**
+    - Elastic bounce & rotation entrance pop, 4 corner dots with scale/pulse, breathing glow in `#ABDAC8`, floating sparkles, and interactive hover elasticity.
+    - Deployed in multiple key headline anchors across the landing page (*craftsmanship*, *8 Tracks*, *LeetCode*, *Pro Speed*).
+  - **Authentic Staqor Content & Sections ([`app/(marketing)/page.tsx`](file:///D:/Staqor/app/(marketing)/page.tsx)):**
+    - **Hero:** 4 Parallax Floating Badges (*Sub-2.5s Groq AI*, *100% Client Sandbox*, *Locked Scaffolding*, *8 Practice Tracks*) + Interactive Split IDE Simulation with real challenge switcher (*Pricing Switcher*, *Kanban Board*, *Virtual Grid*), Monaco Editor tabs, live preview viewport toggles, and instant RUN/SUBMIT simulation.
+    - **Metrics & Trust:** `<2.5s` AI Latency, `8 Tracks` Curriculum, `100% Client` Zero Lag, `35/35/30%` Weighted Multi-Rubric + `<LogoCloud />`.
+    - **8 Tracks Curriculum Catalog:** Interactive `SpotlightCard` grid highlighting HTML/CSS, JS DOM, React, Vue, APIs, Bug Fixes, and Full-Stack tracks.
+    - **Step-by-Step Blueprint:** 3 connected step cards with animated SVG cubic bezier connector curves.
+    - **Why Staqor Wins:** Side-by-side comparison of traditional LeetCode math puzzles vs. real frontend DOM and Groq AI rubrics.
+    - **Developer Ecosystem & Pricing:** Architecture breakdown (`<Integrations />`) and transparent quotas (Free Starter vs. Staqor Pro $15/mo vs. Enterprise).
+    - **Wall of Proof Testimonials & FAQ:** Real developer quotes and expandable FAQ cards.
 - **Known gaps / notes:**
   - Production build compiled successfully (`next build`).
 - **Next recommended action:** Ready for review and deployment.

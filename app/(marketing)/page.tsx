@@ -28,70 +28,288 @@ import {
   Mail,
   MessageSquare,
   Menu,
+  Cpu,
+  Lock,
+  Play,
+  Monitor,
+  Tablet,
+  Smartphone,
+  Check,
+  Award,
+  Zap,
+  Server,
+  Bug,
+  Layout,
+  Database,
+  ArrowUpRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { SpotlightCard } from "@/components/SpotlightCard";
+import { GSAPAnimatedBox } from "@/components/gsap-company-box";
+import { ScrollGlowingLine } from "@/components/ScrollGlowingLine";
 import { UserNav } from "@/components/navigation/UserNav";
+import { LogoCloud } from "@/components/logo-cloud";
+import { Integrations } from "@/components/integrations";
+import { DecorIcon } from "@/components/decor-icon";
 
 // ---------------------------------------------------------------------------
-// Dynamic Hero Live Proof Submissions
+// 8 Tracks Data
 // ---------------------------------------------------------------------------
-const PROOF_SUBMISSIONS = [
+const TRACKS_DATA = [
   {
-    id: 1,
-    tag: "// Daily Challenge #48 — React & State Cohort",
-    command: '$ staqor submit --challenge="virtualized-infinite-scroll"',
-    streak: 48,
-    name: "Aarav Sharma",
-    role: "Frontend Engineer '25",
+    id: "html-css",
+    title: "HTML & CSS Layouts",
+    tag: "UI & STYLING",
+    icon: Code2,
+    desc: "Master Flexbox, CSS Grid, animations, fluid typography, and responsive micro-interactions.",
+    challengesCount: 14,
+    accent: "aqua" as const,
+    sample: "Responsive Pricing Matrix with Annual Switch",
+  },
+  {
+    id: "javascript",
+    title: "JavaScript & DOM",
+    tag: "LOGIC & EVENTS",
+    icon: Terminal,
+    desc: "Build interactive widgets, stateful DOM mutations, event delegations, and client-side storage.",
+    challengesCount: 18,
+    accent: "emerald" as const,
+    sample: "Drag-and-Drop Kanban Task Board",
+  },
+  {
+    id: "react",
+    title: "React Components",
+    tag: "MODERN SPA",
+    icon: Zap,
+    desc: "Author custom hooks, compound components, virtualized lists, and accessible modal dialogs.",
+    challengesCount: 16,
+    accent: "aqua" as const,
+    sample: "Virtualized Infinite Scroll Product Grid",
+  },
+  {
+    id: "vue",
+    title: "Vue.js Reactive UI",
+    tag: "COMPOSITION API",
+    icon: Sparkles,
+    desc: "Leverage Vue 3 Composition API, custom directives, computed watchers, and reactive store patterns.",
+    challengesCount: 10,
+    accent: "amber" as const,
+    sample: "Dynamic Multi-Step Form with Schema Validation",
+  },
+  {
+    id: "node-api",
+    title: "Node.js & Mock APIs",
+    tag: "DATA & REST",
+    icon: Server,
+    desc: "Build RESTful route handlers, request payload validation, pagination algorithms, and rate limiters.",
+    challengesCount: 8,
+    accent: "blue" as const,
+    sample: "In-Memory Rate Limiter Token Bucket",
+  },
+  {
+    id: "bug-fix",
+    title: "Real-World Bug Fixes",
+    tag: "DIAGNOSTICS",
+    icon: Bug,
+    desc: "Inspect broken codebases, identify layout glitches, patch event memory leaks, and fix race conditions.",
+    challengesCount: 12,
+    accent: "purple" as const,
+    sample: "Patching Async Race Conditions in Autocomplete",
+  },
+  {
+    id: "full-stack",
+    title: "Full-Stack Scenarios",
+    tag: "END-TO-END",
+    icon: Layout,
+    desc: "Connect frontend components with mock API backends, handling loading, optimistic updates, and errors.",
+    challengesCount: 7,
+    accent: "emerald" as const,
+    sample: "Optimistic Comment Thread with Offline Queue",
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Interactive Hero Simulation Data
+// ---------------------------------------------------------------------------
+const HERO_CHALLENGES = [
+  {
+    id: "pricing",
+    label: "Pricing Switcher",
+    track: "HTML & CSS",
+    difficulty: "EASY",
+    score: 94,
+    time: "1.8s",
+    title: "Interactive Pricing Table with Monthly/Annual Switch",
+    desc: "Build a responsive 3-tier card layout with an annual billing toggle that updates prices dynamically with zero layout shifts.",
+    rubricDesign: "35/35%",
+    rubricLogic: "34/35%",
+    rubricQuality: "25/30%",
+    code: {
+      html: `<!-- 3-Tier Responsive Pricing Matrix -->
+<div class="pricing-container">
+  <div class="billing-toggle">
+    <span>Monthly</span>
+    <button id="toggleBtn" class="switch active" aria-label="Toggle annual billing"></button>
+    <span>Annual <span class="badge">Save 20%</span></span>
+  </div>
+
+  <div class="pricing-grid">
+    <div class="card card-popular">
+      <div class="tag">MOST POPULAR</div>
+      <h3 class="tier-title">Pro Candidate</h3>
+      <p class="desc">Unlimited Groq AI evaluations & verified portfolio.</p>
+      <div class="price-wrap">
+        <span class="currency">$</span>
+        <span id="priceVal" class="amount">15</span>
+        <span class="period">/month</span>
+      </div>
+      <button class="cta-btn">Start 14-Day Trial</button>
+    </div>
+  </div>
+</div>`,
+      css: `/* Responsive Grid & 3D Tactile Buttons */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.card-popular {
+  background: #111614;
+  border: 2px solid #ABDAC8;
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(171,218,200,0.15);
+}
+
+.cta-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: #ABDAC8;
+  color: #0A0A0F;
+  font-weight: 700;
+  border-radius: 0.75rem;
+  box-shadow: 3px 3px 0px #26262E;
+  cursor: pointer;
+}`,
+      js: `// Annual Billing Toggle State Handler
+const toggleBtn = document.getElementById('toggleBtn');
+const priceVal = document.getElementById('priceVal');
+
+let isAnnual = true;
+
+toggleBtn.addEventListener('click', () => {
+  isAnnual = !isAnnual;
+  toggleBtn.classList.toggle('active', isAnnual);
+  priceVal.textContent = isAnnual ? '15' : '19';
+  console.log('[Event] Switched billing cycle to:', isAnnual ? 'Annual' : 'Monthly');
+});`,
+    },
+  },
+  {
+    id: "kanban",
+    label: "Kanban Task Board",
+    track: "JS / DOM",
+    difficulty: "MEDIUM",
+    score: 96,
+    time: "2.1s",
+    title: "Drag-and-Drop Task Board with State Persistence",
+    desc: "Implement HTML5 Drag and Drop event delegation to reorder sprint tasks across To Do, In Progress, and Done columns.",
+    rubricDesign: "34/35%",
+    rubricLogic: "35/35%",
+    rubricQuality: "27/30%",
+    code: {
+      html: `<!-- Kanban Column Layout -->
+<div class="kanban-board">
+  <div class="column" id="col-todo" data-status="todo">
+    <h3>To Do</h3>
+    <div class="card" draggable="true" id="task-1">
+      <span class="badge">UI Design</span>
+      <p>Build accessible modal dialog</p>
+    </div>
+  </div>
+  <div class="column" id="col-done" data-status="done">
+    <h3>Done</h3>
+  </div>
+</div>`,
+      css: `.kanban-board {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+.column {
+  background: #111117;
+  border: 1px solid #26262E;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  min-height: 180px;
+}
+.card {
+  background: #16161F;
+  border: 1px solid #ABDAC8/40;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  cursor: grab;
+}`,
+      js: `// Drag and Drop Event Listeners
+const cards = document.querySelectorAll('.card');
+const columns = document.querySelectorAll('.column');
+
+cards.forEach(card => {
+  card.addEventListener('dragstart', (e) => {
+    e.dataTransfer.setData('text/plain', card.id);
+    console.log('[Drag] Started dragging:', card.id);
+  });
+});`,
+    },
+  },
+  {
+    id: "virtual-scroll",
+    label: "Virtual Grid",
     track: "React Components",
-    score: "96/100",
-    avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=120&h=120&q=80",
-  },
-  {
-    id: 2,
-    tag: "// Daily Challenge #23 — JavaScript & DOM Events",
-    command: '$ staqor submit --challenge="drag-and-drop-kanban-board"',
-    streak: 23,
-    name: "Priya Patel",
-    role: "UI Engineer '26",
-    track: "JS / DOM Logic",
-    score: "94/100",
-    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&h=120&q=80",
-  },
-  {
-    id: 3,
-    tag: "// Daily Challenge #60 — HTML & CSS Layouts",
-    command: '$ staqor submit --challenge="responsive-pricing-matrix"',
-    streak: 60,
-    name: "Rohan Gupta",
-    role: "Full-Stack Dev '25",
-    track: "CSS Architecture",
-    score: "98/100",
-    avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=120&h=120&q=80",
-  },
-  {
-    id: 4,
-    tag: "// Daily Challenge #34 — Vue.js Composition API",
-    command: '$ staqor submit --challenge="multi-step-form-validation"',
-    streak: 34,
-    name: "Ananya Iyer",
-    role: "Frontend Specialist '26",
-    track: "Vue 3 Reactive UI",
-    score: "92/100",
-    avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&h=120&q=80",
-  },
-  {
-    id: 5,
-    tag: "// Daily Challenge #14 — Node.js & Mock APIs",
-    command: '$ staqor submit --challenge="in-memory-rate-limiter"',
-    streak: 14,
-    name: "Vikram Verma",
-    role: "API Engineer '25",
-    track: "Node.js & APIs",
-    score: "95/100",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80",
+    difficulty: "HARD",
+    score: 98,
+    time: "2.3s",
+    title: "Virtualized Infinite Scroll Product Grid",
+    desc: "Build a windowed product list that recycles DOM elements using IntersectionObserver to maintain 60 FPS under 10,000 items.",
+    rubricDesign: "35/35%",
+    rubricLogic: "35/35%",
+    rubricQuality: "28/30%",
+    code: {
+      html: `<!-- React Windowing Scaffolding -->
+<div id="root">
+  <div class="virtual-viewport" style="height: 320px; overflow-y: auto;">
+    <div class="virtual-spacer" style="height: 12000px; position: relative;">
+      <!-- Recycled DOM Item Tiles Rendered Here -->
+    </div>
+  </div>
+</div>`,
+      css: `.virtual-viewport {
+  position: relative;
+  border: 1px solid #26262E;
+  border-radius: 0.75rem;
+  background: #0B0B10;
+}
+.virtual-item {
+  position: absolute;
+  left: 0; right: 0;
+  height: 60px;
+  border-bottom: 1px solid #26262E;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}`,
+      js: `// Custom Virtual List Hook
+function useVirtualList(itemCount, itemHeight, viewportHeight) {
+  const [scrollTop, setScrollTop] = useState(0);
+  const startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - 2);
+  const endIndex = Math.min(itemCount, Math.ceil((scrollTop + viewportHeight) / itemHeight) + 2);
+  return { startIndex, endIndex };
+}`,
+    },
   },
 ];
 
@@ -100,8 +318,8 @@ const PROOF_SUBMISSIONS = [
 // ---------------------------------------------------------------------------
 const FAQS = [
   {
-    q: "What is Staqor and how does it work?",
-    a: "Staqor is the in-browser IDE for modern frontend engineering. Instead of testing abstract math algorithms, Staqor tests real frontend skills: responsive CSS Grid/Flexbox layouts, DOM event handling, and React component state—graded by Groq AI against multi-criteria rubrics in under 2.5 seconds.",
+    q: "What is Staqor and how is it different from LeetCode?",
+    a: "LeetCode tests abstract algorithmic puzzle solving through stdout return values. Staqor tests real frontend craftsmanship: responsive CSS Grid/Flexbox layouts, DOM event delegation, and React component state—graded by Groq AI against multi-criteria rubrics in under 2.5 seconds.",
   },
   {
     q: "Is Staqor free for developers and students?",
@@ -112,34 +330,45 @@ const FAQS = [
     a: "Staqor compiles code 100% in the client browser inside an isolated iframe with a 2000ms loop-killer wrapper. Submissions pass through a zero-cost syntax pre-filter gate before Groq LPU models evaluate visual design (35%), DOM/state logic (35%), and semantic cleanliness (30%) in <2.5 seconds.",
   },
   {
-    q: "How are submissions verified for hiring teams?",
+    q: "How do recruiters and hiring teams verify candidate work?",
     a: "When you pass a challenge, Staqor publishes a verified candidate showcase on your profile. Recruiters and engineering leads test your live component in an interactive sandbox and inspect your Monaco code tabs with one click—no repository cloning required.",
   },
   {
-    q: "What practice formats and tracks are available?",
-    a: "Staqor offers 8 specialized tracks spanning HTML & CSS Layouts, JavaScript & DOM Events, React Components, Vue.js, Node.js Mock APIs, Real-World Bug Fixes, and Full-Stack Scenarios across self-paced daily tasks and weekend hackathons.",
+    q: "What practice tracks and difficulty levels are available?",
+    a: "Staqor offers 8 specialized tracks spanning HTML & CSS Layouts, JavaScript & DOM Events, React Components, Vue.js, Node.js Mock APIs, Real-World Bug Fixes, and Full-Stack Scenarios across Easy, Medium, and Hard tiers.",
   },
 ];
 
 export default function HomePage() {
-  const [activeEntryIndex, setActiveEntryIndex] = useState(0);
-  const [typedText, setTypedText] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
-  const currentEntry = PROOF_SUBMISSIONS[activeEntryIndex];
+  // Interactive IDE Mockup State
+  const [heroChallengeIdx, setHeroChallengeIdx] = useState(0);
+  const currentHeroChallenge = HERO_CHALLENGES[heroChallengeIdx];
+  const [mockupEditorTab, setMockupEditorTab] = useState<"html" | "css" | "js">("html");
+  const [mockupLeftTab, setMockupLeftTab] = useState<"spec" | "rubric" | "preview" | "feedback">("spec");
+  const [mockupViewport, setMockupViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
+  const [isEvaluating, setIsEvaluating] = useState(false);
+  const [evalTimer, setEvalTimer] = useState(currentHeroChallenge.time);
+  const [mockupAnnualBilling, setMockupAnnualBilling] = useState(true);
+  const [mockupScore, setMockupScore] = useState(currentHeroChallenge.score);
+  const [mockupLogs, setMockupLogs] = useState<string[]>([
+    "[Sandbox Engine] Isolated iframe sandbox mounted with 2000ms loop-killer.",
+    "[Pre-Filter Gate] Checking syntax & locked scaffolding: PASSED (0.02s).",
+    "[Groq LPU] Ready for diagnostic Run or official Submit.",
+  ]);
 
   // GSAP Animation Refs
   const pageContainerRef = useRef<HTMLDivElement>(null);
-  const glowPathRef = useRef<SVGPathElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
-  const terminalRef = useRef<HTMLDivElement>(null);
+  const heroMockupRef = useRef<HTMLDivElement>(null);
+  const floatingBadgeRef = useRef<HTMLDivElement>(null);
   const badge1Ref = useRef<HTMLDivElement>(null);
   const badge2Ref = useRef<HTMLDivElement>(null);
   const badge3Ref = useRef<HTMLDivElement>(null);
   const badge4Ref = useRef<HTMLDivElement>(null);
 
-  const trustHeaderRef = useRef<HTMLDivElement>(null);
   const trustGridRef = useRef<HTMLDivElement>(null);
   const progHeaderRef = useRef<HTMLDivElement>(null);
   const progGridRef = useRef<HTMLDivElement>(null);
@@ -157,6 +386,30 @@ export default function HomePage() {
   const faqHeaderRef = useRef<HTMLDivElement>(null);
   const faqListRef = useRef<HTMLDivElement>(null);
 
+  // Simulate IDE Evaluation
+  const handleRunEvaluation = (type: "run" | "submit") => {
+    if (isEvaluating) return;
+    setIsEvaluating(true);
+    setMockupLogs((prev) => [
+      ...prev,
+      `[Trigger] ${type.toUpperCase()} initiated on challenge: ${currentHeroChallenge.title.slice(0, 30)}...`,
+      `[Pre-Filter] Structural syntax check: PASSED (0.02s)`,
+      `[Groq LPU] Dispatching weighted prompt to LPU inference stream...`,
+    ]);
+
+    setTimeout(() => {
+      setIsEvaluating(false);
+      const newScore = type === "submit" ? currentHeroChallenge.score : currentHeroChallenge.score - 2;
+      setMockupScore(newScore);
+      setEvalTimer(type === "submit" ? "2.1s" : "1.8s");
+      setMockupLeftTab("feedback");
+      setMockupLogs((prev) => [
+        ...prev,
+        `[Groq LPU] Response received (200 OK) in ${type === "submit" ? "2.1s" : "1.8s"}. Score: ${newScore}/100 PASSED.`,
+      ]);
+    }, 1800);
+  };
+
   // GSAP Setup
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -173,18 +426,7 @@ export default function HomePage() {
         });
       }
 
-      // 2. Terminal Entrance
-      if (terminalRef.current) {
-        gsap.from(terminalRef.current, {
-          opacity: 0,
-          y: 45,
-          duration: 0.9,
-          delay: 0.3,
-          ease: "power3.out",
-        });
-      }
-
-      // 3. Infinite Floating Loops for 4 Badges
+      // 2. Infinite Floating Loops for 4 Badges
       const badges = [
         { ref: badge1Ref, duration: 4.2, delay: 0 },
         { ref: badge2Ref, duration: 3.8, delay: 0.6 },
@@ -205,30 +447,7 @@ export default function HomePage() {
         }
       });
 
-      // 4. Scroll-Responsive Glowing Accent Line Scrub
-      const glowPaths = pageContainerRef.current?.querySelectorAll<SVGPathElement>(".glow-scroll-path");
-      if (glowPaths && glowPaths.length > 0 && pageContainerRef.current) {
-        glowPaths.forEach((path) => {
-          const length = path.getTotalLength ? path.getTotalLength() : 6000;
-          gsap.set(path, {
-            strokeDasharray: length,
-            strokeDashoffset: length,
-          });
-
-          gsap.to(path, {
-            strokeDashoffset: 0,
-            ease: "none",
-            scrollTrigger: {
-              trigger: pageContainerRef.current,
-              start: "top top",
-              end: "bottom bottom",
-              scrub: 0.6,
-            },
-          });
-        });
-      }
-
-      // 5. How It Works SVG Connectors
+      // 3. How It Works SVG Connectors
       const p1 = path1Ref.current;
       const p2 = path2Ref.current;
       if (p1 && p2) {
@@ -257,7 +476,7 @@ export default function HomePage() {
           .to(dot3Ref.current, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2)" }, "-=0.2");
       }
 
-      // 6. Section Entrance ScrollTriggers
+      // 4. Section Entrance ScrollTriggers
       const animateSection = (header: React.RefObject<HTMLDivElement>, grid: React.RefObject<HTMLDivElement>) => {
         if (header.current) {
           gsap.from(header.current.children, {
@@ -268,7 +487,7 @@ export default function HomePage() {
             ease: "power3.out",
             scrollTrigger: {
               trigger: header.current,
-              start: "top 88%",
+              start: "top 90%",
               once: true,
             },
           });
@@ -276,20 +495,19 @@ export default function HomePage() {
         if (grid.current) {
           gsap.from(grid.current.children, {
             opacity: 0,
-            y: 40,
+            y: 35,
             duration: 0.8,
-            stagger: 0.12,
+            stagger: 0.1,
             ease: "power3.out",
             scrollTrigger: {
               trigger: grid.current,
-              start: "top 85%",
+              start: "top 88%",
               once: true,
             },
           });
         }
       };
 
-      animateSection(trustHeaderRef, trustGridRef);
       animateSection(progHeaderRef, progGridRef);
       animateSection(howHeaderRef, howCardsRef);
       animateSection(whyHeaderRef, whyGridRef);
@@ -302,45 +520,19 @@ export default function HomePage() {
     return () => ctx.revert();
   }, []);
 
-  // GSAP Typewriter Effect for Terminal
-  useEffect(() => {
-    setTypedText("");
-    const fullCommand = currentEntry.command;
-    let charIndex = 0;
-
-    const interval = setInterval(() => {
-      if (charIndex < fullCommand.length) {
-        setTypedText(fullCommand.slice(0, charIndex + 1));
-        charIndex++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 30);
-
-    return () => clearInterval(interval);
-  }, [activeEntryIndex]);
-
-  // Auto-cycle Terminal entries every 5.5s
-  useEffect(() => {
-    const cycleInterval = setInterval(() => {
-      setActiveEntryIndex((prev) => (prev + 1) % PROOF_SUBMISSIONS.length);
-    }, 5500);
-
-    return () => clearInterval(cycleInterval);
-  }, []);
-
   return (
     <div
       ref={pageContainerRef}
       className="min-h-screen bg-[#0A0A0F] text-[#F5F5F7] selection:bg-[#ABDAC8] selection:text-[#0A0A0F] font-sans relative overflow-x-hidden"
     >
       {/* ========================================================================= */}
-      {/* BACKGROUND TEXTURE & AMBIENT AQUA/MINT GLOW LAYERS */}
+      {/* 1. SCROLL-RESPONSIVE GLOWING ACCENT LINE (Real-time Framer Motion Spring) */}
       {/* ========================================================================= */}
+      <ScrollGlowingLine />
 
-      {/* 1. Subtle Background Grid Overlay */}
+      {/* 2. Background Texture & Ambient Multi-Stop Gradients */}
       <div
-        className="fixed inset-0 pointer-events-none z-0 opacity-30"
+        className="fixed inset-0 pointer-events-none z-0 opacity-25"
         style={{
           backgroundImage: `
             linear-gradient(to right, #26262E 1px, transparent 1px),
@@ -351,79 +543,9 @@ export default function HomePage() {
           WebkitMaskImage: "radial-gradient(ellipse at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0.1) 100%)",
         }}
       />
-
-      {/* 2. Multi-Stop Ambient Background Aqua Glows */}
       <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[550px] bg-gradient-to-b from-[#ABDAC8]/18 via-[#ABDAC8]/6 to-transparent blur-[160px] pointer-events-none z-0" />
       <div className="fixed bottom-0 right-0 w-[600px] h-[600px] bg-[#ABDAC8]/8 blur-[180px] pointer-events-none z-0" />
       <div className="absolute top-24 left-1/2 -translate-x-1/2 w-[850px] h-[400px] bg-[radial-gradient(ellipse_60%_50%_at_50%_35%,#ABDAC826_0%,#ABDAC808_60%,transparent_100%)] blur-[110px] pointer-events-none z-0" />
-
-      {/* 3. SCROLL-RESPONSIVE GLOWING ACCENT LINE (SVG Scrubbed with GSAP) */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
-        <svg
-          className="w-full h-full"
-          preserveAspectRatio="none"
-          viewBox="0 0 100 1000"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <defs>
-            <filter id="thickLaserGlow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur1" />
-              <feGaussianBlur in="SourceGraphic" stdDeviation="5.0" result="blur2" />
-              <feMerge>
-                <feMergeNode in="blur2" />
-                <feMergeNode in="blur1" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-
-            <linearGradient id="thickNeonGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#ABDAC8" stopOpacity="0.8" />
-              <stop offset="35%" stopColor="#D4EDE3" stopOpacity="0.95" />
-              <stop offset="70%" stopColor="#ABDAC8" stopOpacity="0.9" />
-              <stop offset="100%" stopColor="#7BC4A8" stopOpacity="0.75" />
-            </linearGradient>
-
-            <linearGradient id="thickTrackGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#26262E" stopOpacity="0.3" />
-              <stop offset="50%" stopColor="#ABDAC8" stopOpacity="0.2" />
-              <stop offset="100%" stopColor="#26262E" stopOpacity="0.3" />
-            </linearGradient>
-          </defs>
-
-          {/* Background Inactive Curvy Guide Track */}
-          <path
-            d="M 50,0 C 12,90 88,180 50,270 C 12,360 8,450 15,540 C 24,630 48,700 68,780 C 84,850 70,930 50,1000"
-            stroke="url(#thickTrackGradient)"
-            strokeWidth="0.8"
-            strokeDasharray="1.5 1.5"
-            fill="none"
-          />
-
-          {/* Active Thick Curvy Glowing Laser Line */}
-          <path
-            className="glow-scroll-path"
-            d="M 50,0 C 12,90 88,180 50,270 C 12,360 8,450 15,540 C 24,630 48,700 68,780 C 84,850 70,930 50,1000"
-            stroke="url(#thickNeonGradient)"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            fill="none"
-            filter="url(#thickLaserGlow)"
-          />
-
-          {/* Outer Atmospheric Light Aura Trace */}
-          <path
-            className="glow-scroll-path"
-            d="M 50,0 C 12,90 88,180 50,270 C 12,360 8,450 15,540 C 24,630 48,700 68,780 C 84,850 70,930 50,1000"
-            stroke="#ABDAC8"
-            strokeWidth="4.5"
-            strokeOpacity="0.25"
-            strokeLinecap="round"
-            fill="none"
-            filter="blur(8px)"
-          />
-        </svg>
-      </div>
 
       {/* ========================================================================= */}
       {/* NAVBAR */}
@@ -436,15 +558,21 @@ export default function HomePage() {
               <Terminal className="w-4 h-4 text-[#ABDAC8]" />
             </div>
             <span className="font-bold text-lg tracking-tight text-[#F5F5F7]">Staqor</span>
+            <Badge
+              variant="outline"
+              className="text-[10px] uppercase font-mono text-[#ABDAC8] border-[#ABDAC8]/30 ml-1 py-0 px-2 bg-[#111614]"
+            >
+              v1.0 MVP
+            </Badge>
           </Link>
 
           {/* Navigation Links */}
           <nav className="hidden md:flex items-center gap-7 text-sm font-semibold text-zinc-300">
             <a
-              href="#challenges"
+              href="#tracks"
               className="text-zinc-300 hover:text-white transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#ABDAC8] hover:after:w-full after:transition-all after:duration-200"
             >
-              Programs
+              8 Tracks
             </a>
             <a
               href="#how-it-works"
@@ -459,10 +587,16 @@ export default function HomePage() {
               Why Staqor
             </a>
             <a
-              href="#testimonials"
+              href="#ecosystem"
               className="text-zinc-300 hover:text-white transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#ABDAC8] hover:after:w-full after:transition-all after:duration-200"
             >
-              Wall of Proof
+              Ecosystem
+            </a>
+            <a
+              href="#pricing"
+              className="text-zinc-300 hover:text-white transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#ABDAC8] hover:after:w-full after:transition-all after:duration-200"
+            >
+              Pricing
             </a>
             <a
               href="#faq"
@@ -472,14 +606,14 @@ export default function HomePage() {
             </a>
           </nav>
 
-          {/* Right Action & User Nav */}
+          {/* Right Actions */}
           <div className="flex items-center gap-3">
             <Link href="/challenges" className="hidden sm:block">
               <Button
                 size="sm"
                 className="bg-gradient-to-b from-[#ABDAC8] via-[#ABDAC8] to-[#7BC4A8] hover:from-[#c2e8dc] hover:to-[#8cd4b9] text-[#0A0A0F] font-bold rounded-xl px-5 py-2.5 text-sm shadow-lg shadow-[#ABDAC8]/25 hover:shadow-xl hover:shadow-[#ABDAC8]/40 border border-[#ABDAC8]/40 transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
               >
-                <span>Join Challenge</span>
+                <span>Browse Catalog</span>
                 <ChevronRight className="w-4 h-4 ml-0.5" />
               </Button>
             </Link>
@@ -505,44 +639,27 @@ export default function HomePage() {
               exit={{ opacity: 0, height: 0 }}
               className="md:hidden border-t border-[#26262E] bg-[#0A0A0F] px-6 py-5 flex flex-col gap-4 text-sm font-semibold text-zinc-300"
             >
-              <a
-                href="#challenges"
-                onClick={() => setMobileMenuOpen(false)}
-                className="hover:text-[#ABDAC8] transition-colors py-1"
-              >
-                Programs
+              <a href="#tracks" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#ABDAC8] transition-colors py-1">
+                8 Tracks
               </a>
-              <a
-                href="#how-it-works"
-                onClick={() => setMobileMenuOpen(false)}
-                className="hover:text-[#ABDAC8] transition-colors py-1"
-              >
+              <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#ABDAC8] transition-colors py-1">
                 How It Works
               </a>
-              <a
-                href="#why-staqor"
-                onClick={() => setMobileMenuOpen(false)}
-                className="hover:text-[#ABDAC8] transition-colors py-1"
-              >
+              <a href="#why-staqor" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#ABDAC8] transition-colors py-1">
                 Why Staqor
               </a>
-              <a
-                href="#testimonials"
-                onClick={() => setMobileMenuOpen(false)}
-                className="hover:text-[#ABDAC8] transition-colors py-1"
-              >
-                Wall of Proof
+              <a href="#ecosystem" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#ABDAC8] transition-colors py-1">
+                Ecosystem
               </a>
-              <a
-                href="#faq"
-                onClick={() => setMobileMenuOpen(false)}
-                className="hover:text-[#ABDAC8] transition-colors py-1"
-              >
+              <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#ABDAC8] transition-colors py-1">
+                Pricing
+              </a>
+              <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#ABDAC8] transition-colors py-1">
                 FAQ
               </a>
               <Link href="/challenges" onClick={() => setMobileMenuOpen(false)} className="pt-2">
                 <Button size="sm" className="w-full bg-gradient-to-b from-[#ABDAC8] to-[#7BC4A8] text-[#0A0A0F] font-bold rounded-xl py-2.5">
-                  Join Challenge
+                  Browse Catalog
                 </Button>
               </Link>
             </motion.div>
@@ -551,7 +668,7 @@ export default function HomePage() {
       </header>
 
       {/* ========================================================================= */}
-      {/* 1. HERO SECTION */}
+      {/* 2. HERO SECTION */}
       {/* ========================================================================= */}
       <main className="relative z-10 max-w-6xl mx-auto px-4">
         <section className="pt-16 pb-20 md:pt-24 md:pb-28 text-center flex flex-col items-center relative">
@@ -562,14 +679,14 @@ export default function HomePage() {
           >
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-full bg-[#ABDAC8]/20 text-[#ABDAC8] border border-[#ABDAC8]/40 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                <ShieldCheck className="w-3.5 h-3.5" />
+                <Cpu className="w-3.5 h-3.5" />
               </div>
               <span className="font-extrabold text-white group-hover:text-[#ABDAC8] transition-colors">
-                Verified Proof of Work
+                Sub-2.5s Groq AI
               </span>
             </div>
             <p className="text-[10px] text-zinc-400 font-normal pl-8 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 transition-all duration-300 overflow-hidden leading-tight">
-              Auto-validated candidate sandbox &amp; recruiter proof
+              Weighted multi-criteria rubrics graded instantly
             </p>
           </div>
 
@@ -580,12 +697,12 @@ export default function HomePage() {
           >
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-full bg-[#ABDAC8]/20 text-[#ABDAC8] flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Users className="w-3.5 h-3.5" />
+                <ShieldCheck className="w-3.5 h-3.5" />
               </div>
-              <span className="group-hover:text-[#ABDAC8] transition-colors">10,000+ Active Builders</span>
+              <span className="group-hover:text-[#ABDAC8] transition-colors">100% Client Sandbox</span>
             </div>
             <p className="text-[10px] text-zinc-400 font-normal pl-8 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 transition-all duration-300 overflow-hidden leading-tight">
-              Frontend engineers practicing real UI specs
+              Isolated iframe execution with 2000ms loop-killer
             </p>
           </div>
 
@@ -595,11 +712,11 @@ export default function HomePage() {
             className="hidden lg:flex flex-col items-start gap-1 p-3 rounded-2xl bg-[#111117]/90 backdrop-blur-md border border-emerald-500/40 hover:border-emerald-400 shadow-xl text-xs font-bold text-emerald-400 absolute left-4 xl:left-8 bottom-4 z-20 group cursor-pointer transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/20 hover:scale-105 max-w-[210px] text-left"
           >
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 group-hover:scale-110 transition-transform" />
-              <span>100% Free for Students</span>
+              <Lock className="w-4 h-4 text-emerald-400 shrink-0 group-hover:scale-110 transition-transform" />
+              <span>Locked Scaffolding</span>
             </div>
             <p className="text-[10px] text-zinc-400 font-normal pl-6 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 transition-all duration-300 overflow-hidden leading-tight">
-              5 Runs &amp; 3 Submits lifetime per challenge
+              Scoped read-only tabs enforce focused UI practice
             </p>
           </div>
 
@@ -617,435 +734,530 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Hero Content */}
+          {/* Hero Content Elements */}
           <div ref={heroRef} className="flex flex-col items-center max-w-5xl">
             {/* Eyebrow Tag */}
-            <h4 className="uppercase text-[#ABDAC8] text-sm sm:text-base md:text-lg font-bold tracking-widest mb-4">
-              PRACTICE. &nbsp;EVALUATE. &nbsp;GET PLACED.
-            </h4>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#111614] border border-[#26352E] text-xs font-mono text-[#ABDAC8] mb-6 shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-[#4ADE80] animate-pulse" />
+              <span>GROQ LPU AI GRADING • SUB-2.5S • 100% IN-BROWSER WORKSPACE</span>
+            </div>
 
-            {/* Main Headline */}
+            {/* Main Headline with GSAP Animated Box */}
             <div className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-[5.2rem] font-black tracking-tight text-white max-w-5xl leading-[1.08] mb-6">
               <h1 className="flex flex-col sm:block items-center">
-                <span>Become the Frontend Engineer that </span>
-                <span className="inline-block px-3 py-1 my-1 rounded-2xl bg-[#111614] border-2 border-[#ABDAC8] text-[#ABDAC8] shadow-[0_0_35px_rgba(171,218,200,0.35)]">
-                  Companies
-                </span>
-                <span> Want to Hire!</span>
+                <span>The in-browser IDE for modern frontend </span>
+                <GSAPAnimatedBox text="craftsmanship." />
               </h1>
             </div>
 
             {/* Sub-headline */}
             <p className="text-base sm:text-xl md:text-2xl text-zinc-300 max-w-3xl leading-relaxed mb-8 font-normal">
-              Join a growing community of developers mastering real UI components, passing sub-2.5s Groq AI rubrics, and building verified portfolios at Staqor.
+              Solve real HTML/CSS, JS DOM, and React component challenges inside a split Monaco IDE. Graded against weighted rubrics in &lt;2.5s by Groq AI with zero server latency.
             </p>
 
-            {/* Dev Community Avatars & Proof Strip */}
-            <div className="flex flex-wrap justify-center items-center gap-3 text-sm text-zinc-300 font-medium mb-8">
-              <div className="flex -space-x-2.5 items-center">
-                <img
-                  src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&h=120&q=80"
-                  alt="Staqor Builder"
-                  className="w-9 h-9 rounded-full object-cover border-2 border-[#0A0A0F] shadow-md hover:scale-110 hover:z-10 transition-transform cursor-pointer"
-                />
-                <img
-                  src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=120&h=120&q=80"
-                  alt="Staqor Builder"
-                  className="w-9 h-9 rounded-full object-cover border-2 border-[#0A0A0F] shadow-md hover:scale-110 hover:z-10 transition-transform cursor-pointer"
-                />
-                <img
-                  src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&h=120&q=80"
-                  alt="Staqor Builder"
-                  className="w-9 h-9 rounded-full object-cover border-2 border-[#0A0A0F] shadow-md hover:scale-110 hover:z-10 transition-transform cursor-pointer"
-                />
-                <img
-                  src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=120&h=120&q=80"
-                  alt="Staqor Builder"
-                  className="w-9 h-9 rounded-full object-cover border-2 border-[#0A0A0F] shadow-md hover:scale-110 hover:z-10 transition-transform cursor-pointer"
-                />
-              </div>
-              <div className="flex items-center gap-1.5 text-zinc-200">
-                <div className="flex items-center gap-0.5 text-amber-400">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i}>★</span>
-                  ))}
-                </div>
-                <span className="font-bold text-white">10,000+</span>
-                <span>Engineers Enrolled</span>
-              </div>
-            </div>
-
-            {/* Primary CTA */}
-            <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-              <Link href="/challenges" className="w-full sm:w-auto">
+            {/* Primary Action Buttons */}
+            <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto mb-10">
+              <Link href="/signup" className="w-full sm:w-auto">
                 <Button
                   size="lg"
                   className="w-full sm:w-auto bg-gradient-to-b from-[#ABDAC8] via-[#ABDAC8] to-[#7BC4A8] hover:from-[#c2e8dc] hover:to-[#8cd4b9] text-[#0A0A0F] font-extrabold px-10 py-7 text-lg rounded-xl shadow-2xl shadow-[#ABDAC8]/35 hover:shadow-2xl hover:shadow-[#ABDAC8]/50 border border-[#ABDAC8]/40 transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
                 >
-                  <span>Explore Challenges</span>
+                  <span>Start Practicing Free</span>
                   <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
+
+              <Link href="/challenges" className="w-full sm:w-auto">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full sm:w-auto border-[#26262E] bg-[#111117] hover:bg-[#16161F] text-white font-bold px-8 py-7 text-base rounded-xl transition-all"
+                >
+                  Explore 8 Tracks Catalog
                 </Button>
               </Link>
             </div>
           </div>
         </section>
 
-        {/* DYNAMIC HERO PROOF-OF-WORK SHOWCASE TERMINAL */}
+        {/* ========================================================================= */}
+        {/* INTERACTIVE HERO IDE SIMULATION WINDOW */}
+        {/* ========================================================================= */}
         <section className="pb-16 md:pb-24">
-          <div
-            ref={terminalRef}
-            className="w-full max-w-4xl mx-auto rounded-2xl bg-[#111117] border border-[#26262E] p-4 sm:p-6 shadow-2xl shadow-[#ABDAC8]/10 relative overflow-hidden group"
-          >
-            {/* CRT Terminal Scanline Overlay */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.35)_50%)] bg-[size:100%_4px] pointer-events-none opacity-25 z-10" />
-
-            {/* Ambient Terminal Glow Auras */}
-            <div className="absolute -top-20 -right-20 w-60 h-60 bg-[#ABDAC8]/10 blur-[90px] pointer-events-none rounded-full" />
-            <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-emerald-500/10 blur-[90px] pointer-events-none rounded-full" />
-
-            {/* Terminal Header Bar */}
-            <div className="flex flex-wrap items-center justify-between pb-4 border-b border-[#26262E] mb-5 gap-3 relative z-20">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-500/80 shadow-sm" />
-                <div className="w-3 h-3 rounded-full bg-amber-500/80 shadow-sm" />
-                <div className="w-3 h-3 rounded-full bg-emerald-500/80 shadow-sm" />
-                <span className="text-xs font-mono text-zinc-400 ml-2 font-semibold flex items-center gap-1.5">
-                  <GitCommitHorizontal className="w-3.5 h-3.5 text-[#ABDAC8]" />
-                  <span>Staqor Proof-of-Work Terminal v2.4</span>
-                </span>
+          <div className="relative max-w-5xl mx-auto">
+            {/* Floating AI Verdict Card */}
+            <div
+              ref={floatingBadgeRef}
+              className="mb-4 lg:mb-0 lg:absolute lg:-top-8 lg:-right-4 z-30 w-full lg:w-80 p-4 rounded-2xl bg-[#16161F]/95 backdrop-blur-md border border-[#ABDAC8]/40 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_20px_rgba(171,218,200,0.15)] text-left transition-all"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-2 w-2 rounded-full bg-[#4ADE80] animate-pulse" />
+                  <span className="text-[11px] font-mono font-bold text-[#4ADE80]">
+                    SCORE {mockupScore}/100 • PASSED
+                  </span>
+                </div>
+                <Badge variant="outline" className="text-[9px] font-mono text-[#ABDAC8] border-[#ABDAC8]/30 py-0 px-1.5">
+                  {evalTimer} INFERENCE
+                </Badge>
               </div>
-
-              {/* Pulsing Live Commit Stream Indicator */}
-              <div className="flex items-center gap-2 text-xs text-[#ABDAC8] font-mono bg-[#111614] px-2.5 py-1 rounded-full border border-[#ABDAC8]/30">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ABDAC8] opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ABDAC8]" />
-                </span>
-                <span className="font-bold tracking-wide">Live Evaluation Stream</span>
+              <h4 className="text-xs font-bold text-[#F5F5F7] mb-2 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-[#ABDAC8]" />
+                <span>Groq AI Multi-Criteria Rubric</span>
+              </h4>
+              <div className="space-y-1.5 text-[11px] font-mono text-[#9CA3AF]">
+                <div className="flex justify-between items-center">
+                  <span>Layout &amp; Visual Fidelity:</span>
+                  <span className="text-[#ABDAC8] font-semibold">{currentHeroChallenge.rubricDesign}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>DOM &amp; State Logic:</span>
+                  <span className="text-[#ABDAC8] font-semibold">{currentHeroChallenge.rubricLogic}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Semantic Cleanliness:</span>
+                  <span className="text-[#ABDAC8] font-semibold">{currentHeroChallenge.rubricQuality}</span>
+                </div>
+              </div>
+              <div className="mt-3 pt-2.5 border-t border-[#26262E] flex items-center justify-between text-[10px] font-mono text-[#9CA3AF]">
+                <span className="text-[#4ADE80]">⚡ Pre-Filter Gate: PASSED</span>
+                <span>🔒 Scaffolding Valid</span>
               </div>
             </div>
 
-            {/* Terminal Main Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left font-mono text-xs relative z-20">
-              {/* Left Code Console Panel */}
-              <div className="md:col-span-2 bg-[#09090D] p-4 sm:p-5 rounded-xl border border-zinc-800/90 text-zinc-300 leading-relaxed min-h-[175px] flex flex-col justify-between shadow-inner">
-                <div className="flex flex-col justify-between h-full">
+            {/* Main Interactive IDE Window */}
+            <div
+              ref={heroMockupRef}
+              className="rounded-2xl border border-[#26262E] bg-[#111117] shadow-[0_30px_90px_rgba(0,0,0,0.9),0_0_30px_rgba(171,218,200,0.06)] overflow-hidden text-left relative"
+            >
+              <DecorIcon position="top-left" className="text-[#ABDAC8]/40" />
+              <DecorIcon position="top-right" className="text-[#ABDAC8]/40" />
+
+              {/* Top Workspace Header Bar */}
+              <div className="border-b border-[#26262E] bg-[#0E0E14] px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-[#F87171]/80" />
+                  <div className="w-3 h-3 rounded-full bg-[#FBBF24]/80" />
+                  <div className="w-3 h-3 rounded-full bg-[#4ADE80]/80" />
+
+                  {/* Challenge Switcher Pills */}
+                  <div className="ml-2 flex items-center gap-1.5 bg-[#16161F] p-1 rounded-lg border border-[#26262E]">
+                    {HERO_CHALLENGES.map((ch, idx) => (
+                      <button
+                        key={ch.id}
+                        onClick={() => {
+                          setHeroChallengeIdx(idx);
+                          setMockupScore(ch.score);
+                          setEvalTimer(ch.time);
+                          setMockupLogs((prev) => [
+                            ...prev,
+                            `[Workspace] Switched challenge to: ${ch.title}`,
+                          ]);
+                        }}
+                        className={`px-2.5 py-1 text-[10px] font-mono rounded transition-all cursor-pointer ${
+                          heroChallengeIdx === idx
+                            ? "bg-[#ABDAC8] text-[#0A0A0F] font-bold"
+                            : "text-[#9CA3AF] hover:text-[#F5F5F7]"
+                        }`}
+                      >
+                        {ch.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Badge
+                    variant="outline"
+                    className="text-[10px] font-mono text-[#ABDAC8] border-[#ABDAC8]/30 bg-[#111614] flex items-center gap-1"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80]" />
+                    CLIENT SANDBOX ACTIVE
+                  </Badge>
+                  <Badge variant="outline" className="text-[10px] font-mono border-[#26262E] text-[#9CA3AF]">
+                    2000MS LOOP-KILLER
+                  </Badge>
+                </div>
+              </div>
+
+              {/* Split Layout: 40% Left Spec / 60% Right Monaco + Console */}
+              <div className="grid md:grid-cols-12 min-h-[460px]">
+                {/* 40% Left Panel */}
+                <div className="md:col-span-5 p-4 sm:p-5 border-r border-[#26262E] bg-[#0F0F16]/70 flex flex-col justify-between">
                   <div>
-                    <div className="text-zinc-500 mb-2 font-mono flex items-center justify-between">
-                      <span>{currentEntry.tag}</span>
-                      <span className="text-[10px] text-zinc-500 font-sans uppercase tracking-wider">{currentEntry.track}</span>
+                    {/* Tabs Bar */}
+                    <div className="grid grid-cols-4 gap-1 p-1 bg-[#111117] border border-[#26262E] rounded-lg mb-4 text-[11px] font-mono">
+                      <button
+                        onClick={() => setMockupLeftTab("spec")}
+                        className={`py-1.5 rounded text-center transition-all ${
+                          mockupLeftTab === "spec"
+                            ? "bg-[#16161F] text-[#ABDAC8] font-bold border border-[#26262E]"
+                            : "text-[#9CA3AF] hover:text-[#F5F5F7]"
+                        }`}
+                      >
+                        Spec
+                      </button>
+                      <button
+                        onClick={() => setMockupLeftTab("rubric")}
+                        className={`py-1.5 rounded text-center transition-all ${
+                          mockupLeftTab === "rubric"
+                            ? "bg-[#16161F] text-[#ABDAC8] font-bold border border-[#26262E]"
+                            : "text-[#9CA3AF] hover:text-[#F5F5F7]"
+                        }`}
+                      >
+                        Rubric
+                      </button>
+                      <button
+                        onClick={() => setMockupLeftTab("preview")}
+                        className={`py-1.5 rounded text-center transition-all ${
+                          mockupLeftTab === "preview"
+                            ? "bg-[#16161F] text-[#ABDAC8] font-bold border border-[#26262E]"
+                            : "text-[#9CA3AF] hover:text-[#F5F5F7]"
+                        }`}
+                      >
+                        Preview
+                      </button>
+                      <button
+                        onClick={() => setMockupLeftTab("feedback")}
+                        className={`py-1.5 rounded text-center transition-all ${
+                          mockupLeftTab === "feedback"
+                            ? "bg-[#16161F] text-[#ABDAC8] font-bold border border-[#26262E]"
+                            : "text-[#9CA3AF] hover:text-[#F5F5F7]"
+                        }`}
+                      >
+                        Feedback
+                      </button>
                     </div>
 
-                    {/* Animated GSAP Typewriter Command Line */}
-                    <div className="text-[#ABDAC8] font-mono font-bold min-h-[2.5rem] flex items-center flex-wrap">
-                      <span>{typedText}</span>
-                      <span className="inline-block w-2 h-4 bg-[#ABDAC8] ml-1 animate-pulse" />
-                    </div>
+                    {/* Tab Content */}
+                    {mockupLeftTab === "spec" && (
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="text-[10px] font-mono text-[#4ADE80] border-[#4ADE80]/30">
+                            {currentHeroChallenge.difficulty}
+                          </Badge>
+                          <Badge variant="outline" className="text-[10px] font-mono border-[#26262E]">
+                            {currentHeroChallenge.track}
+                          </Badge>
+                          <span className="text-[11px] font-mono text-[#9CA3AF]">Runs: 1/5 • Submits: 1/3</span>
+                        </div>
 
-                    <div className="text-zinc-400 mt-2 text-[11px] space-y-0.5">
-                      <div className="flex items-center gap-1.5 text-emerald-400/90">
-                        <span>✔</span>
-                        <span>Validating JavaScript syntax &amp; locked scaffolding... OK</span>
+                        <h3 className="text-sm sm:text-base font-bold text-[#F5F5F7]">
+                          {currentHeroChallenge.title}
+                        </h3>
+                        <p className="text-xs text-[#9CA3AF] leading-relaxed">
+                          {currentHeroChallenge.desc}
+                        </p>
+
+                        <div className="p-3 rounded-lg bg-[#16161F] border border-[#26262E] space-y-1.5 text-xs">
+                          <span className="text-[10px] font-mono font-bold text-[#ABDAC8] uppercase tracking-wider block">
+                            Requirement Checklist
+                          </span>
+                          <p className="text-[11px] text-[#9CA3AF] flex items-center gap-1.5">
+                            <Check className="w-3.5 h-3.5 text-[#4ADE80]" /> Verified responsive layout &amp; grid alignment
+                          </p>
+                          <p className="text-[11px] text-[#9CA3AF] flex items-center gap-1.5">
+                            <Check className="w-3.5 h-3.5 text-[#4ADE80]" /> Event delegation &amp; dynamic state transitions
+                          </p>
+                          <p className="text-[11px] text-[#9CA3AF] flex items-center gap-1.5">
+                            <Check className="w-3.5 h-3.5 text-[#4ADE80]" /> Clean semantic HTML &amp; accessibility ARIA
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1.5 text-[#ABDAC8]">
-                        <span>✔</span>
-                        <span>Groq LPU multi-criteria rubric evaluation... {currentEntry.score} PASSED</span>
+                    )}
+
+                    {mockupLeftTab === "rubric" && (
+                      <div className="space-y-3">
+                        <h4 className="text-xs font-mono font-bold text-[#ABDAC8] uppercase tracking-wider">
+                          Official Evaluation Rubric (100 pts)
+                        </h4>
+                        <div className="space-y-2 text-xs">
+                          <div className="p-2.5 rounded-md bg-[#16161F] border border-[#26262E]">
+                            <div className="flex justify-between font-mono font-bold text-[#F5F5F7] mb-1">
+                              <span>1. Visual Layout Fidelity</span>
+                              <span className="text-[#ABDAC8]">35%</span>
+                            </div>
+                            <p className="text-[11px] text-[#9CA3AF]">
+                              Clean grid spacing, mobile breakpoints, and consistent theme contrast.
+                            </p>
+                          </div>
+                          <div className="p-2.5 rounded-md bg-[#16161F] border border-[#26262E]">
+                            <div className="flex justify-between font-mono font-bold text-[#F5F5F7] mb-1">
+                              <span>2. DOM State &amp; Event Logic</span>
+                              <span className="text-[#ABDAC8]">35%</span>
+                            </div>
+                            <p className="text-[11px] text-[#9CA3AF]">
+                              Event listener toggles price values smoothly and handles keyboard access.
+                            </p>
+                          </div>
+                          <div className="p-2.5 rounded-md bg-[#16161F] border border-[#26262E]">
+                            <div className="flex justify-between font-mono font-bold text-[#F5F5F7] mb-1">
+                              <span>3. Semantic Code Quality</span>
+                              <span className="text-[#ABDAC8]">30%</span>
+                            </div>
+                            <p className="text-[11px] text-[#9CA3AF]">
+                              No redundant styles, proper HTML landmarks, clean variable naming.
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    )}
+
+                    {mockupLeftTab === "preview" && (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between pb-2 border-b border-[#26262E]">
+                          <span className="text-xs font-mono text-[#9CA3AF]">Viewport Mode</span>
+                          <div className="flex items-center gap-1">
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              onClick={() => setMockupViewport("desktop")}
+                              className={`w-7 h-7 ${mockupViewport === "desktop" ? "text-[#ABDAC8] bg-[#16161F]" : "text-[#9CA3AF]"}`}
+                            >
+                              <Monitor className="w-3.5 h-3.5" />
+                            </Button>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              onClick={() => setMockupViewport("tablet")}
+                              className={`w-7 h-7 ${mockupViewport === "tablet" ? "text-[#ABDAC8] bg-[#16161F]" : "text-[#9CA3AF]"}`}
+                            >
+                              <Tablet className="w-3.5 h-3.5" />
+                            </Button>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              onClick={() => setMockupViewport("mobile")}
+                              className={`w-7 h-7 ${mockupViewport === "mobile" ? "text-[#ABDAC8] bg-[#16161F]" : "text-[#9CA3AF]"}`}
+                            >
+                              <Smartphone className="w-3.5 h-3.5" />
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-[#0A0A0F] border border-[#26262E] text-center">
+                          <div className="inline-flex items-center gap-2 mb-3 px-2 py-1 rounded bg-[#16161F] border border-[#26262E] text-[10px] font-mono">
+                            <span>Billing:</span>
+                            <button
+                              onClick={() => setMockupAnnualBilling(!mockupAnnualBilling)}
+                              className="px-2 py-0.5 rounded bg-[#ABDAC8] text-[#0A0A0F] font-bold cursor-pointer"
+                            >
+                              {mockupAnnualBilling ? "Annual (Save 20%)" : "Monthly"}
+                            </button>
+                          </div>
+                          <div className="p-4 rounded-lg bg-[#111614] border border-[#ABDAC8]/40">
+                            <span className="text-[10px] font-mono font-bold text-[#ABDAC8] uppercase tracking-wider block mb-1">
+                              PRO CANDIDATE
+                            </span>
+                            <div className="text-2xl font-extrabold text-[#F5F5F7] mb-1">
+                              ${mockupAnnualBilling ? "15" : "19"}
+                              <span className="text-xs text-[#9CA3AF] font-normal"> / mo</span>
+                            </div>
+                            <p className="text-[10px] text-[#9CA3AF] mb-3">Unlimited AI runs + recruiter portfolio</p>
+                            <button className="w-full py-1.5 text-xs font-bold rounded bg-[#ABDAC8] text-[#0A0A0F]">
+                              Get Started
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {mockupLeftTab === "feedback" && (
+                      <div className="space-y-3">
+                        <div className="p-3 rounded-lg bg-[#111614] border border-[#4ADE80]/30 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-mono font-bold text-[#4ADE80] flex items-center gap-1.5">
+                              <CheckCircle2 className="w-4 h-4" /> SUBMISSION PASSED
+                            </span>
+                            <span className="text-xs font-mono text-[#ABDAC8] font-bold">{mockupScore}/100</span>
+                          </div>
+                          <p className="text-[11px] text-[#9CA3AF] leading-relaxed">
+                            Exceptional craft! The solution passes all criteria with zero token waste on syntax errors and complete responsive fidelity.
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
-                  <div className="text-[#ABDAC8] font-bold mt-4 pt-3 border-t border-zinc-900/80 flex items-center justify-between text-xs">
-                    <span className="flex items-center gap-1.5">
-                      <Flame className="w-4 h-4 text-[#ABDAC8] animate-bounce" />
-                      <span>Streak updated: {currentEntry.streak} Days Active!</span>
+                  <div className="pt-3 border-t border-[#26262E]/70 flex items-center justify-between text-[11px] font-mono text-[#9CA3AF]">
+                    <span className="flex items-center gap-1">
+                      <Lock className="w-3 h-3 text-[#ABDAC8]" /> Scaffolding Locked
                     </span>
-                    <span className="text-[10px] text-zinc-500 font-sans">Verified Attempt #{48900 + currentEntry.id}</span>
+                    <span className="text-[#ABDAC8]">Ready for Run / Submit</span>
+                  </div>
+                </div>
+
+                {/* 60% Right Monaco Editor */}
+                <div className="md:col-span-7 flex flex-col bg-[#0A0A0F]">
+                  <div className="h-10 border-b border-[#26262E] bg-[#111117] flex items-center justify-between px-3">
+                    <div className="flex items-center gap-1 text-xs font-mono">
+                      <button
+                        onClick={() => setMockupEditorTab("html")}
+                        className={`px-3 py-1.5 rounded-t font-semibold transition-all ${
+                          mockupEditorTab === "html"
+                            ? "bg-[#0B0B10] text-[#ABDAC8] border-t border-x border-[#26262E]"
+                            : "text-[#9CA3AF] hover:text-[#F5F5F7]"
+                        }`}
+                      >
+                        index.html
+                      </button>
+                      <button
+                        onClick={() => setMockupEditorTab("css")}
+                        className={`px-3 py-1.5 rounded-t font-semibold transition-all ${
+                          mockupEditorTab === "css"
+                            ? "bg-[#0B0B10] text-[#ABDAC8] border-t border-x border-[#26262E]"
+                            : "text-[#9CA3AF] hover:text-[#F5F5F7]"
+                        }`}
+                      >
+                        styles.css
+                      </button>
+                      <button
+                        onClick={() => setMockupEditorTab("js")}
+                        className={`px-3 py-1.5 rounded-t font-semibold transition-all ${
+                          mockupEditorTab === "js"
+                            ? "bg-[#0B0B10] text-[#ABDAC8] border-t border-x border-[#26262E]"
+                            : "text-[#9CA3AF] hover:text-[#F5F5F7]"
+                        }`}
+                      >
+                        script.js
+                      </button>
+                    </div>
+                    <span className="text-[10px] font-mono text-[#9CA3AF]">Monaco Editor v0.46</span>
+                  </div>
+
+                  <div className="p-4 font-mono text-[11px] text-[#9CA3AF] bg-[#0B0B10] flex-1 overflow-x-auto leading-relaxed border-b border-[#26262E]">
+                    <pre className="text-[#F5F5F7]/90">{currentHeroChallenge.code[mockupEditorTab]}</pre>
+                  </div>
+
+                  {/* Interactive Console */}
+                  <div className="p-3 bg-[#0E0E14] border-b border-[#26262E] flex flex-col justify-between max-h-32 overflow-y-auto font-mono text-[10px]">
+                    <div className="flex items-center justify-between pb-1 border-b border-[#26262E]/60 text-[#9CA3AF] mb-1.5">
+                      <span className="flex items-center gap-1.5">
+                        <Terminal className="w-3 h-3 text-[#ABDAC8]" /> Runtime Logs &amp; Diagnostics
+                      </span>
+                    </div>
+                    <div className="space-y-0.5 text-[#9CA3AF]">
+                      {mockupLogs.slice(-3).map((log, i) => (
+                        <div key={i} className="truncate">
+                          <span className={log.includes("PASSED") ? "text-[#4ADE80]" : "text-[#ABDAC8]"}>{log}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="p-3 bg-[#111117] flex items-center justify-between">
+                    <span className="text-xs font-mono text-[#9CA3AF]">Isolated Sandbox Engine</span>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={isEvaluating}
+                        onClick={() => handleRunEvaluation("run")}
+                        className="h-8 text-xs font-mono border-[#ABDAC8]/50 text-[#ABDAC8] hover:bg-[#ABDAC8]/10"
+                      >
+                        {isEvaluating ? "GRADING..." : "RUN (DIAGNOSTIC)"}
+                      </Button>
+                      <button
+                        disabled={isEvaluating}
+                        onClick={() => handleRunEvaluation("submit")}
+                        className="px-4 py-1.5 text-xs font-mono font-bold rounded-lg bg-[#ABDAC8] text-[#0A0A0F] shadow-[3px_3px_0px_#26262E] cursor-pointer"
+                      >
+                        SUBMIT
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-
-              {/* Right Active Builder Info Card */}
-              <div className="bg-[#09090D] p-4 sm:p-5 rounded-xl border border-zinc-800/90 flex flex-col justify-between min-h-[175px] shadow-inner">
-                <div className="flex flex-col justify-between h-full">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <div className="text-zinc-500 text-[10px] uppercase tracking-wider mb-1 font-sans font-bold">
-                        Active Engineer
-                      </div>
-                      <div className="text-white font-extrabold text-base font-sans tracking-tight">
-                        {currentEntry.name}
-                      </div>
-                      <div className="text-xs text-[#ABDAC8] font-bold mt-0.5 font-sans">
-                        {currentEntry.role}
-                      </div>
-                    </div>
-
-                    <img
-                      src={currentEntry.avatar}
-                      alt={currentEntry.name}
-                      className="w-10 h-10 rounded-full object-cover border-2 border-[#ABDAC8]/60 shadow-lg"
-                    />
-                  </div>
-
-                  <div className="pt-4 border-t border-zinc-900/80 flex items-center justify-between">
-                    <span className="text-zinc-400 text-xs font-sans font-semibold">Verified Proof</span>
-                    <div className="flex items-center gap-1 text-emerald-400 text-xs font-mono font-bold bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-500/30">
-                      <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                      <span>Verified</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Pagination Dots */}
-            <div className="flex items-center justify-center gap-1.5 mt-5 relative z-20">
-              {PROOF_SUBMISSIONS.map((entry, index) => (
-                <button
-                  key={entry.id}
-                  onClick={() => setActiveEntryIndex(index)}
-                  aria-label={`View entry ${index + 1}`}
-                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                    index === activeEntryIndex ? "w-6 bg-[#ABDAC8]" : "w-1.5 bg-zinc-800 hover:bg-zinc-600"
-                  }`}
-                />
-              ))}
             </div>
           </div>
         </section>
 
         {/* ========================================================================= */}
-        {/* 2. STATS TRUST STRIP */}
+        {/* 3. METRICS STRIP & LOGO CLOUD */}
         {/* ========================================================================= */}
         <section className="py-10 border-y border-[#26262E]">
-          <div ref={trustGridRef} className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Stat Card 1 */}
-            <div className="h-full">
-              <div className="p-6 rounded-2xl bg-[#111117] border border-[#26262E] flex items-center gap-5 hover:border-[#ABDAC8]/50 transition-all group relative overflow-hidden shadow-lg h-full">
-                <div className="absolute -top-10 -right-10 w-28 h-28 bg-[#ABDAC8]/10 rounded-full blur-xl group-hover:bg-[#ABDAC8]/20 transition-all pointer-events-none" />
-                <div className="w-14 h-14 rounded-xl bg-[#ABDAC8]/15 border border-[#ABDAC8]/30 flex items-center justify-center text-[#ABDAC8] group-hover:scale-110 transition-transform relative z-10">
-                  <Users className="w-7 h-7" />
-                </div>
-                <div className="relative z-10">
-                  <div className="text-2xl sm:text-3xl font-display font-black text-white tracking-tight font-mono">
-                    10,000+
-                  </div>
-                  <div className="text-xs text-zinc-400 font-medium">Active Frontend Engineers</div>
-                </div>
-              </div>
+          <div ref={trustGridRef} className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="p-4 rounded-xl bg-[#111117] border border-[#26262E]">
+              <span className="text-2xl font-bold font-mono text-[#ABDAC8] block">&lt; 2.5s</span>
+              <span className="text-xs text-zinc-400">Groq AI Latency</span>
             </div>
-
-            {/* Stat Card 2 */}
-            <div className="h-full">
-              <div className="p-6 rounded-2xl bg-[#111117] border border-[#26262E] flex items-center gap-5 hover:border-[#ABDAC8]/50 transition-all group relative overflow-hidden shadow-lg h-full">
-                <div className="absolute -top-10 -right-10 w-28 h-28 bg-[#ABDAC8]/10 rounded-full blur-xl group-hover:bg-[#ABDAC8]/20 transition-all pointer-events-none" />
-                <div className="w-14 h-14 rounded-xl bg-[#ABDAC8]/15 border border-[#ABDAC8]/30 flex items-center justify-center text-[#ABDAC8] group-hover:scale-110 transition-transform relative z-10">
-                  <Code2 className="w-7 h-7" />
-                </div>
-                <div className="relative z-10">
-                  <div className="text-2xl sm:text-3xl font-display font-black text-white tracking-tight font-mono">
-                    250,000+
-                  </div>
-                  <div className="text-xs text-zinc-400 font-medium">Verified UI Runs &amp; Submissions</div>
-                </div>
-              </div>
+            <div className="p-4 rounded-xl bg-[#111117] border border-[#26262E]">
+              <span className="text-2xl font-bold font-mono text-[#ABDAC8] block">8 Tracks</span>
+              <span className="text-xs text-zinc-400">Full UI Curriculum</span>
             </div>
-
-            {/* Stat Card 3 */}
-            <div className="h-full">
-              <div className="p-6 rounded-2xl bg-[#111117] border border-[#26262E] flex items-center gap-5 hover:border-[#ABDAC8]/50 transition-all group relative overflow-hidden shadow-lg h-full">
-                <div className="absolute -top-10 -right-10 w-28 h-28 bg-[#ABDAC8]/10 rounded-full blur-xl group-hover:bg-[#ABDAC8]/20 transition-all pointer-events-none" />
-                <div className="w-14 h-14 rounded-xl bg-[#ABDAC8]/15 border border-[#ABDAC8]/30 flex items-center justify-center text-[#ABDAC8] group-hover:scale-110 transition-transform relative z-10">
-                  <Briefcase className="w-7 h-7" />
-                </div>
-                <div className="relative z-10">
-                  <div className="text-2xl sm:text-3xl font-display font-black text-white tracking-tight font-mono">
-                    50+
-                  </div>
-                  <div className="text-xs text-zinc-400 font-medium">Hiring Recruiter Partners</div>
-                </div>
-              </div>
+            <div className="p-4 rounded-xl bg-[#111117] border border-[#26262E]">
+              <span className="text-2xl font-bold font-mono text-[#4ADE80] block">100% Client</span>
+              <span className="text-xs text-zinc-400">Zero Docker Lag</span>
+            </div>
+            <div className="p-4 rounded-xl bg-[#111117] border border-[#26262E]">
+              <span className="text-2xl font-bold font-mono text-[#ABDAC8] block">35/35/30%</span>
+              <span className="text-xs text-zinc-400">Weighted Rubrics</span>
             </div>
           </div>
+
+          <LogoCloud />
         </section>
 
         {/* ========================================================================= */}
-        {/* 3. FEATURED PROGRAMS & CHALLENGES */}
+        {/* 4. 8 PRACTICE TRACKS CATALOG (Curriculum Explorer) */}
         {/* ========================================================================= */}
-        <section id="challenges" className="py-16 md:py-24 border-t border-[#26262E]">
+        <section id="tracks" className="py-16 md:py-24 border-t border-[#26262E]">
           <div ref={progHeaderRef} className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
             <div>
-              <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2">Platform Programs</div>
+              <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2">Curriculum Catalog</div>
               <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight">
-                Active Challenges &amp; Cohorts
+                Practice Across <GSAPAnimatedBox text="8 Tracks" />
               </h2>
             </div>
             <p className="text-base text-zinc-300 max-w-md font-normal">
-              Choose your format and level up through daily interactive proof of work.
+              From core HTML &amp; CSS fundamentals to advanced React state machines and realistic bug-fixing scenarios.
             </p>
           </div>
 
           <div
             ref={progGridRef}
-            className="flex overflow-x-auto pb-4 gap-4 snap-x snap-mandatory scrollbar-none sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible sm:pb-0"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
           >
-            {/* Card 1: 60-Day Frontend Mastery */}
-            <div className="min-w-[280px] sm:min-w-0 snap-center h-full">
-              <SpotlightCard accentColor="aqua" watermark="60D">
-                <CardContent className="p-6 flex flex-col justify-between h-full">
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-[11px] font-bold tracking-wide px-3 py-1 rounded-full bg-[#ABDAC8]/15 text-[#ABDAC8] border border-[#ABDAC8]/30">
-                        Enrolling now
-                      </span>
-                      <Code2 className="w-5 h-5 text-zinc-400 group-hover:text-[#ABDAC8] transition-colors" />
-                    </div>
-                    <h3 className="font-display text-xl font-extrabold text-white mb-2 tracking-tight">
-                      60-Day Frontend Mastery
-                    </h3>
-                    <p className="text-xs text-zinc-300 leading-relaxed mb-5 font-normal">
-                      One real UI task every day across HTML/CSS, JS DOM, and React. Build a streak and a verified public portfolio.
-                    </p>
-                  </div>
-                  <div>
-                    <div className="mb-4">
-                      <span className="text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-full bg-[#16161F] text-zinc-200 border border-[#26262E]">
-                        60 days
-                      </span>
-                    </div>
-                    <Link href="/challenges" className="block">
-                      <Button
-                        size="sm"
-                        className="w-full bg-gradient-to-b from-[#ABDAC8] to-[#7BC4A8] hover:from-[#c2e8dc] hover:to-[#8cd4b9] text-[#0A0A0F] font-bold rounded-xl py-3 text-sm shadow-md shadow-[#ABDAC8]/25 hover:shadow-lg hover:shadow-[#ABDAC8]/40 border border-[#ABDAC8]/30 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
-                      >
-                        Start the challenge
-                      </Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </SpotlightCard>
-            </div>
-
-            {/* Card 2: 48-Hour UI Hackathon */}
-            <div className="min-w-[280px] sm:min-w-0 snap-center h-full">
-              <SpotlightCard accentColor="amber" watermark="48H">
-                <CardContent className="p-6 flex flex-col justify-between h-full">
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-[11px] font-bold tracking-wide px-3 py-1 rounded-full bg-zinc-800 text-zinc-300 border border-zinc-700">
-                        Registration open
-                      </span>
-                      <Rocket className="w-5 h-5 text-zinc-400 group-hover:text-amber-400 transition-colors" />
-                    </div>
-                    <h3 className="font-display text-xl font-extrabold text-white mb-2 tracking-tight">
-                      48-Hour UI Hackathon
-                    </h3>
-                    <p className="text-xs text-zinc-300 leading-relaxed mb-5 font-normal">
-                      Build full-featured web applications in 48 hours. Compete solo or in teams of up to 3 and ship production UI.
-                    </p>
-                  </div>
-                  <div>
-                    <div className="mb-4 flex flex-wrap gap-1.5">
-                      <span className="text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-full bg-[#16161F] text-zinc-200 border border-[#26262E]">
-                        48 hours
-                      </span>
-                      <span className="text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-full bg-[#16161F] text-zinc-200 border border-[#26262E]">
-                        Teams 1–3
-                      </span>
-                    </div>
-                    <Link href="/challenges" className="block">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="w-full border border-[#26262E] bg-[#16161F] hover:bg-zinc-800 hover:border-zinc-500 text-white font-bold rounded-xl py-3 text-sm transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
-                      >
-                        Explore Staqor
-                      </Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </SpotlightCard>
-            </div>
-
-            {/* Card 3: 31 Days React & State */}
-            <div className="min-w-[280px] sm:min-w-0 snap-center h-full">
-              <SpotlightCard accentColor="emerald" watermark="31D">
-                <CardContent className="p-6 flex flex-col justify-between h-full">
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-[11px] font-bold tracking-wide px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                        Applications open
-                      </span>
-                      <Sparkles className="w-5 h-5 text-zinc-400 group-hover:text-emerald-400 transition-colors" />
-                    </div>
-                    <h3 className="font-display text-xl font-extrabold text-white mb-2 tracking-tight">
-                      31 Days React &amp; State
-                    </h3>
-                    <p className="text-xs text-zinc-300 leading-relaxed mb-5 font-normal">
-                      Build production React components in 31 days. Master custom hooks, virtualized windowing, and state machines.
-                    </p>
-                  </div>
-                  <div>
-                    <div className="mb-4">
-                      <span className="text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-full bg-[#16161F] text-zinc-200 border border-[#26262E]">
-                        31 days
-                      </span>
-                    </div>
-                    <Link href="/challenges" className="block">
-                      <Button
-                        size="sm"
-                        className="w-full bg-gradient-to-b from-[#ABDAC8] to-[#7BC4A8] hover:from-[#c2e8dc] hover:to-[#8cd4b9] text-[#0A0A0F] font-bold rounded-xl py-3 text-sm shadow-md shadow-[#ABDAC8]/25 hover:shadow-lg hover:shadow-[#ABDAC8]/40 border border-[#ABDAC8]/30 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
-                      >
-                        Apply for cohort
-                      </Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </SpotlightCard>
-            </div>
-
-            {/* Card 4: Full-Stack Mock API Sprint */}
-            <div className="min-w-[280px] sm:min-w-0 snap-center h-full">
-              <SpotlightCard accentColor="blue" watermark="14D">
-                <CardContent className="p-6 flex flex-col justify-between h-full">
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-[11px] font-bold tracking-wide px-3 py-1 rounded-full bg-[#0a6df0]/15 text-[#60a5fa] border border-[#0a6df0]/30">
-                        Sprint format
-                      </span>
-                      <Layers className="w-5 h-5 text-zinc-400 group-hover:text-[#60a5fa] transition-colors" />
-                    </div>
-                    <h3 className="font-display text-xl font-extrabold text-white mb-2 tracking-tight">
-                      Full-Stack Mock API Sprint
-                    </h3>
-                    <p className="text-xs text-zinc-300 leading-relaxed mb-5 font-normal">
-                      Connect client-side components with mock backends, optimistic cache updates, and error rollback queues.
-                    </p>
-                  </div>
-                  <div>
-                    <div className="mb-4">
-                      <span className="text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-full bg-[#16161F] text-zinc-200 border border-[#26262E]">
-                        14 days
-                      </span>
-                    </div>
-                    <Link href="/challenges" className="block">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="w-full border border-[#26262E] bg-[#16161F] hover:bg-zinc-800 hover:border-zinc-500 text-white font-bold rounded-xl py-3 text-sm transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
-                      >
-                        View sprint specs
-                      </Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </SpotlightCard>
-            </div>
+            {TRACKS_DATA.map((tr) => {
+              const Icon = tr.icon;
+              return (
+                <div key={tr.id} className="h-full">
+                  <SpotlightCard accentColor={tr.accent} watermark={tr.title.slice(0, 3).toUpperCase()}>
+                    <CardContent className="p-6 flex flex-col justify-between h-full">
+                      <div>
+                        <div className="flex items-center justify-between mb-4">
+                          <span className="text-[11px] font-mono font-bold tracking-wide px-2.5 py-0.5 rounded-full bg-[#16161F] text-[#ABDAC8] border border-[#26262E]">
+                            {tr.challengesCount} Challenges
+                          </span>
+                          <Icon className="w-5 h-5 text-zinc-400 group-hover:text-[#ABDAC8] transition-colors" />
+                        </div>
+                        <h3 className="font-display text-lg font-bold text-white mb-2 tracking-tight">
+                          {tr.title}
+                        </h3>
+                        <p className="text-xs text-zinc-300 leading-relaxed mb-4 font-normal">
+                          {tr.desc}
+                        </p>
+                      </div>
+                      <div className="pt-2 border-t border-[#26262E]">
+                        <span className="text-[10px] font-mono uppercase text-zinc-500 block mb-1">Example Challenge</span>
+                        <p className="text-xs font-semibold text-zinc-200 truncate mb-3">{tr.sample}</p>
+                        <Link href={`/challenges?track=${tr.id}`} className="block">
+                          <Button size="sm" variant="outline" className="w-full text-xs font-mono border-[#26262E] hover:border-[#ABDAC8] hover:text-[#ABDAC8]">
+                            Browse Track
+                          </Button>
+                        </Link>
+                      </div>
+                    </CardContent>
+                  </SpotlightCard>
+                </div>
+              );
+            })}
           </div>
         </section>
 
         {/* ========================================================================= */}
-        {/* 4. HOW STAQOR WORKS (With SVG Connector Curves) */}
+        {/* 5. HOW STAQOR WORKS (With SVG Connector Curves) */}
         {/* ========================================================================= */}
         <section id="how-it-works" className="py-16 md:py-24 relative overflow-hidden">
           <div ref={howHeaderRef} className="text-center max-w-2xl mx-auto mb-16">
@@ -1109,7 +1321,6 @@ export default function HomePage() {
 
             {/* 3 Step Cards */}
             <div ref={howCardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
-              {/* Step 1 */}
               <SpotlightCard accentColor="aqua" watermark="01">
                 <div className="p-8 h-full flex flex-col justify-between">
                   <div>
@@ -1121,13 +1332,12 @@ export default function HomePage() {
                     </div>
                     <h3 className="font-display text-2xl font-bold text-white mb-3">Choose a Challenge</h3>
                     <p className="text-sm text-zinc-300 leading-relaxed font-normal">
-                      Filter across 8 tracks (HTML/CSS, JS DOM, React, Vue, APIs) and study comprehensive Figma-aligned specs and rubrics.
+                      Filter across 8 tracks and study comprehensive Figma-aligned specs, requirements, and evaluation rubrics.
                     </p>
                   </div>
                 </div>
               </SpotlightCard>
 
-              {/* Step 2 */}
               <SpotlightCard accentColor="aqua" watermark="02">
                 <div className="p-8 h-full flex flex-col justify-between">
                   <div>
@@ -1145,7 +1355,6 @@ export default function HomePage() {
                 </div>
               </SpotlightCard>
 
-              {/* Step 3 */}
               <SpotlightCard accentColor="emerald" watermark="03">
                 <div className="p-8 h-full flex flex-col justify-between">
                   <div>
@@ -1167,13 +1376,13 @@ export default function HomePage() {
         </section>
 
         {/* ========================================================================= */}
-        {/* 5. WHY STAQOR COMPARISON */}
+        {/* 6. WHY STAQOR COMPARISON */}
         {/* ========================================================================= */}
         <section id="why-staqor" className="py-16 md:py-24 border-t border-[#26262E]">
           <div ref={whyHeaderRef} className="text-center max-w-3xl mx-auto mb-12">
             <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2">The Proof of Work Loop</div>
             <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-4">
-              Why Staqor Wins Over Traditional Platforms
+              Why Staqor Wins Over <GSAPAnimatedBox text="LeetCode" />
             </h2>
             <p className="text-zinc-300 text-base sm:text-lg">
               Stop solving abstract tree puzzles. Start building real, verified engineering portfolios that get you hired.
@@ -1181,7 +1390,7 @@ export default function HomePage() {
           </div>
 
           <div ref={whyGridRef} className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Traditional LeetCode / Courses */}
+            {/* Traditional LeetCode */}
             <SpotlightCard accentColor="purple" watermark="OLD">
               <div className="p-8 h-full">
                 <div className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-3">Traditional Platforms</div>
@@ -1234,33 +1443,159 @@ export default function HomePage() {
         </section>
 
         {/* ========================================================================= */}
-        {/* 6. COMMUNITY CTA BAND */}
+        {/* 7. DEVELOPER TOOLING ECOSYSTEM */}
         {/* ========================================================================= */}
-        <section id="community" className="py-12">
-          <div className="p-10 md:p-16 rounded-3xl bg-gradient-to-br from-[#ABDAC8]/20 via-[#111117] to-[#0A0A0F] border border-[#ABDAC8]/40 text-center relative overflow-hidden shadow-2xl">
-            <div className="absolute top-0 right-0 w-80 h-80 bg-[#ABDAC8]/10 rounded-full blur-3xl pointer-events-none" />
-
-            <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-4 max-w-3xl mx-auto leading-tight">
-              Join our community for instant updates &amp; cohort drops
+        <section id="ecosystem" className="py-16 md:py-24 border-t border-[#26262E]">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2">Developer Ecosystem</div>
+            <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-3">
+              Modern Runtime Architecture
             </h2>
-            <p className="text-zinc-300 text-base sm:text-lg max-w-xl mx-auto mb-8 leading-relaxed font-normal">
-              Meet fellow frontend builders, receive challenge alerts, and stay accountable.
+            <p className="text-zinc-300 text-base font-normal">
+              Built on industry-standard editor runtimes and high-throughput Groq LPU inference.
             </p>
+          </div>
 
-            <Link href="/challenges" className="inline-block">
-              <Button
-                size="lg"
-                className="bg-gradient-to-b from-[#ABDAC8] via-[#ABDAC8] to-[#7BC4A8] hover:from-[#c2e8dc] hover:to-[#8cd4b9] text-[#0A0A0F] font-extrabold px-10 py-7 text-lg rounded-xl shadow-2xl shadow-[#ABDAC8]/40 hover:shadow-2xl hover:shadow-[#ABDAC8]/60 border border-[#ABDAC8]/40 transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
-              >
-                <span>Join Staqor Free</span>
-                <ArrowRight className="w-5 h-5 ml-2.5" />
-              </Button>
-            </Link>
+          <Integrations />
+        </section>
+
+        {/* ========================================================================= */}
+        {/* 8. PRICING & QUOTAS */}
+        {/* ========================================================================= */}
+        <section id="pricing" className="py-16 md:py-24 border-t border-[#26262E]">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2">Transparent Tiers</div>
+            <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-3">
+              Practice for Free. Upgrade for <GSAPAnimatedBox text="Pro Speed." />
+            </h2>
+            <p className="text-zinc-300 text-base font-normal">
+              Generous lifetime free quotas with instant Pro upgrades for active job seekers.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+            {/* Free Starter */}
+            <div className="p-8 rounded-2xl bg-[#111117] border border-[#26262E] flex flex-col justify-between shadow-xl relative overflow-hidden">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-sm font-bold font-mono text-[#9CA3AF]">FREE STARTER</span>
+                  <Badge variant="outline" className="text-[10px] border-[#26262E]">
+                    $0 / FOREVER
+                  </Badge>
+                </div>
+                <div className="mb-6">
+                  <span className="text-4xl font-extrabold text-[#F5F5F7]">$0</span>
+                  <span className="text-xs text-[#9CA3AF]"> / month</span>
+                </div>
+                <ul className="space-y-3 text-xs text-[#9CA3AF] mb-8">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
+                    <span>Access all core challenges</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
+                    <span>5 Runs &amp; 3 Submits lifetime per challenge</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
+                    <span>Groq AI rubric scoring &amp; feedback</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
+                    <span>Public recruiter portfolio replay</span>
+                  </li>
+                </ul>
+              </div>
+
+              <Link href="/signup">
+                <Button variant="outline" className="w-full h-11 border-[#26262E] hover:bg-[#16161F] text-xs font-semibold">
+                  Get Started Free
+                </Button>
+              </Link>
+            </div>
+
+            {/* Staqor Pro */}
+            <div className="p-8 rounded-2xl bg-[#111614] border-2 border-[#ABDAC8] relative flex flex-col justify-between shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_30px_rgba(171,218,200,0.15)] overflow-hidden">
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                <Badge className="bg-[#ABDAC8] text-[#0A0A0F] font-bold text-[10px] px-3 py-0.5">MOST POPULAR</Badge>
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-sm font-bold font-mono text-[#ABDAC8]">STAQOR PRO</span>
+                  <Badge variant="outline" className="text-[10px] text-[#ABDAC8] border-[#ABDAC8]/30">
+                    ACTIVE DEV
+                  </Badge>
+                </div>
+                <div className="mb-6">
+                  <span className="text-4xl font-extrabold text-[#F5F5F7]">$15</span>
+                  <span className="text-xs text-[#9CA3AF]"> / month</span>
+                </div>
+                <ul className="space-y-3 text-xs text-[#F5F5F7] mb-8">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
+                    <span className="font-semibold">Unlimited Runs &amp; Submissions</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
+                    <span>Instant Model Solution Unlocking</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
+                    <span>Verified Candidate Recruiter Badge</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
+                    <span>All 8 Track Challenges Unlocked</span>
+                  </li>
+                </ul>
+              </div>
+
+              <Link href="/signup?plan=pro">
+                <Button className="w-full h-11 bg-[#ABDAC8] text-[#0A0A0F] font-bold hover:bg-[#ABDAC8]/90 text-xs">
+                  Upgrade to Pro
+                </Button>
+              </Link>
+            </div>
+
+            {/* Enterprise */}
+            <div className="p-8 rounded-2xl bg-[#111117] border border-[#26262E] flex flex-col justify-between shadow-xl relative overflow-hidden">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-sm font-bold font-mono text-[#9CA3AF]">ENTERPRISE</span>
+                  <Badge variant="outline" className="text-[10px] border-[#26262E]">
+                    HIRING TEAMS
+                  </Badge>
+                </div>
+                <div className="mb-6">
+                  <span className="text-4xl font-extrabold text-[#F5F5F7]">Custom</span>
+                </div>
+                <ul className="space-y-3 text-xs text-[#9CA3AF] mb-8">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
+                    <span>Custom company interview rubrics</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
+                    <span>Dedicated candidate assessment portals</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
+                    <span>Team grading analytics &amp; audit logs</span>
+                  </li>
+                </ul>
+              </div>
+
+              <a href="mailto:sales@staqor.dev?subject=Staqor%20Enterprise%20Inquiry">
+                <Button variant="outline" className="w-full h-11 border-[#26262E] hover:bg-[#16161F] text-xs font-semibold">
+                  Contact Sales
+                </Button>
+              </a>
+            </div>
           </div>
         </section>
 
         {/* ========================================================================= */}
-        {/* 7. WALL OF PROOF TESTIMONIALS */}
+        {/* 9. WALL OF PROOF TESTIMONIALS */}
         {/* ========================================================================= */}
         <section id="testimonials" className="py-16 md:py-24 border-t border-[#26262E]">
           <div ref={testHeaderRef} className="text-center max-w-xl mx-auto mb-12">
@@ -1274,7 +1609,6 @@ export default function HomePage() {
           </div>
 
           <div ref={testGridRef} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Quote 1 */}
             <SpotlightCard accentColor="aqua" watermark={<Quote className="w-16 h-16 opacity-30" />}>
               <div className="p-6 h-full flex flex-col justify-between">
                 <div>
@@ -1285,7 +1619,7 @@ export default function HomePage() {
                       </div>
                       <div>
                         <div className="text-sm font-bold text-white">Samridhi Gupta</div>
-                        <div className="text-xs text-zinc-400 font-medium">Frontend Engineer @ SaaS Startup</div>
+                        <div className="text-xs text-zinc-400 font-medium">Frontend Engineer @ FinTech Scaleup</div>
                       </div>
                     </div>
                   </div>
@@ -1301,14 +1635,13 @@ export default function HomePage() {
               </div>
             </SpotlightCard>
 
-            {/* Quote 2 */}
             <SpotlightCard accentColor="amber" watermark={<Quote className="w-16 h-16 opacity-30" />}>
               <div className="p-6 h-full flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-amber-500 text-[#0A0A0F] flex items-center justify-center font-bold text-sm shadow-md shadow-amber-500/30">
-                        V
+                        VN
                       </div>
                       <div>
                         <div className="text-sm font-bold text-white">Vivek Nambiar</div>
@@ -1331,7 +1664,7 @@ export default function HomePage() {
         </section>
 
         {/* ========================================================================= */}
-        {/* 8. FAQ ACCORDION */}
+        {/* 10. FAQ ACCORDION */}
         {/* ========================================================================= */}
         <section id="faq" className="py-16 md:py-24 border-t border-[#26262E]">
           <div ref={faqHeaderRef} className="text-center max-w-2xl mx-auto mb-12">
@@ -1375,10 +1708,36 @@ export default function HomePage() {
             ))}
           </div>
         </section>
+
+        {/* ========================================================================= */}
+        {/* 11. COMMUNITY CTA BAND */}
+        {/* ========================================================================= */}
+        <section id="community" className="py-12">
+          <div className="p-10 md:p-16 rounded-3xl bg-gradient-to-br from-[#ABDAC8]/20 via-[#111117] to-[#0A0A0F] border border-[#ABDAC8]/40 text-center relative overflow-hidden shadow-2xl">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-[#ABDAC8]/10 rounded-full blur-3xl pointer-events-none" />
+
+            <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-4 max-w-3xl mx-auto leading-tight">
+              Ready to prove your frontend <GSAPAnimatedBox text="craftsmanship?" />
+            </h2>
+            <p className="text-zinc-300 text-base sm:text-lg max-w-xl mx-auto mb-8 leading-relaxed font-normal">
+              Join thousands of developers solving real UI challenges, passing sub-2.5s Groq AI rubrics, and getting hired.
+            </p>
+
+            <Link href="/signup" className="inline-block">
+              <Button
+                size="lg"
+                className="bg-gradient-to-b from-[#ABDAC8] via-[#ABDAC8] to-[#7BC4A8] hover:from-[#c2e8dc] hover:to-[#8cd4b9] text-[#0A0A0F] font-extrabold px-10 py-7 text-lg rounded-xl shadow-2xl shadow-[#ABDAC8]/40 hover:shadow-2xl hover:shadow-[#ABDAC8]/60 border border-[#ABDAC8]/40 transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
+              >
+                <span>Start Free Practice Now</span>
+                <ArrowRight className="w-5 h-5 ml-2.5" />
+              </Button>
+            </Link>
+          </div>
+        </section>
       </main>
 
       {/* ========================================================================= */}
-      {/* 9. FOOTER */}
+      {/* 12. FOOTER */}
       {/* ========================================================================= */}
       <footer className="border-t border-[#26262E] bg-[#0A0A0F] py-12 text-xs text-zinc-400 relative z-10 font-medium">
         <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
