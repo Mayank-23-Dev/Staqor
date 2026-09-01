@@ -85,7 +85,7 @@ export function CapabilitiesShowcase() {
             </div>
           </SpotlightCard>
 
-          {/* Card 2: Groq LPU Multi-Criteria Rubrics */}
+          {/* Card 2: High-Speed Multi-Criteria Rubrics */}
           <SpotlightCard accentColor="emerald" watermark="AI">
             <div className="p-7 sm:p-8 h-full flex flex-col justify-between">
               <div>
@@ -94,7 +94,7 @@ export function CapabilitiesShowcase() {
                     <Cpu className="w-6 h-6" />
                   </div>
                   <span className="text-[11px] font-mono font-bold text-emerald-400 bg-[#0E1A14] border border-emerald-500/30 px-3 py-1 rounded-full">
-                    &lt; 2.5S GROQ INFERENCE
+                    &lt; 2.5S AI INFERENCE
                   </span>
                 </div>
 
@@ -102,7 +102,7 @@ export function CapabilitiesShowcase() {
                   Multi-Criteria Engineering Rubrics
                 </h3>
                 <p className="text-sm text-zinc-300 leading-relaxed mb-6 font-normal">
-                  Groq LPU judges your implementation across functional correctness (35%), performance &amp; concurrency (35%), and semantic cleanliness (30%) with targeted feedback.
+                  Our automated AI evaluation engine judges your implementation across functional correctness (35%), performance &amp; concurrency (35%), and semantic cleanliness (30%) with targeted feedback.
                 </p>
               </div>
 

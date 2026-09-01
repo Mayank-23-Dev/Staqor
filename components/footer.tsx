@@ -27,7 +27,7 @@ export function Footer() {
               <Logo />
             </Link>
             <p className="max-w-md text-zinc-400 text-xs sm:text-sm leading-relaxed">
-              The in-browser workspace for modern software development craftsmanship. Solve real Frontend UI, Backend API, Database SQL, and Distributed Systems challenges graded in &lt;2.5s by Groq AI.
+              The in-browser workspace for modern software development craftsmanship. Solve real Frontend UI, Backend API, Database SQL, and Distributed Systems challenges graded in &lt;2.5s by AI.
             </p>
             <div className="flex items-center gap-2.5 pt-2">
               {socialLinks.map((item, index) => (

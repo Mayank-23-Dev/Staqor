@@ -323,7 +323,7 @@ export default function LoginPage() {
       {/* Bottom Proof Strip */}
       <div className="mt-8 flex items-center justify-center gap-6 text-[11px] font-mono text-zinc-500 z-10">
         <span className="flex items-center gap-1.5">
-          <ShieldCheck className="w-3.5 h-3.5 text-[#ABDAC8]" /> Sub-2.5s Groq AI
+          <ShieldCheck className="w-3.5 h-3.5 text-[#ABDAC8]" /> Sub-2.5s AI Evaluation
         </span>
         <span className="hidden sm:flex items-center gap-1.5">
           <Terminal className="w-3.5 h-3.5 text-[#ABDAC8]" /> All Development Disciplines

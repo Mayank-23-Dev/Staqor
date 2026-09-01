@@ -30,7 +30,7 @@ export function FaqsSection() {
             </h2>
 
             <p className="text-zinc-300 text-sm sm:text-base font-normal leading-relaxed">
-              Everything you need to know about Staqor software development challenges across Frontend, Backend APIs, Databases, Groq AI rubrics, and verified candidate portfolios.
+              Everything you need to know about Staqor software development challenges across Frontend, Backend APIs, Databases, AI rubrics, and verified candidate portfolios.
             </p>
 
             <div className="pt-4 flex flex-col gap-3">
@@ -87,13 +87,13 @@ const questions = [
     id: "item-1",
     title: "How does Staqor evaluate code across Frontend, Backend, and Databases in <2.5s?",
     content:
-      "Staqor runs isolated client-side sandboxes and serverless execution runners with a 2000ms loop-killer. When you run or submit, zero-token AST pre-filters verify syntax in 0.02s before Groq LPU models grade layout fidelity (35%), API/state logic (35%), and semantic cleanliness (30%) in under 2.5 seconds.",
+      "Staqor runs isolated client-side sandboxes and serverless execution runners with a 2000ms loop-killer. When you run or submit, zero-token AST pre-filters verify syntax in 0.02s before specialized AI evaluation models grade layout fidelity (35%), API/state logic (35%), and semantic cleanliness (30%) in under 2.5 seconds.",
   },
   {
     id: "item-2",
     title: "Is Staqor completely free for developers and students?",
     content:
-      "Yes! Every challenge comes with a generous lifetime free quota (5 Runs & 3 Submits per challenge). You get instant sandbox execution, live Groq AI rubric feedback, and verified public portfolio replays at $0.",
+      "Yes! Every challenge comes with a generous lifetime free quota (5 Runs & 3 Submits per challenge). You get instant sandbox execution, live automated AI rubric feedback, and verified public portfolio replays at $0.",
   },
   {
     id: "item-3",

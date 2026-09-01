@@ -63,7 +63,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
                   </Badge>
                 </div>
                 <CardDescription className="text-xs text-muted-foreground">
-                  Graded by Groq AI on Design Fidelity, Event Handling, and CSS Architecture.
+                  Graded by Automated AI on Functional Correctness, Event Handling, and Architecture.
                 </CardDescription>
               </CardHeader>
               <CardContent>

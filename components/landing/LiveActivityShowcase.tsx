@@ -206,7 +206,7 @@ export function LiveActivityShowcase() {
               }`}
             >
               <Cpu className="w-3.5 h-3.5 text-amber-400" />
-              <span>groq_evaluator.ts</span>
+              <span>ai_evaluator.ts</span>
             </button>
           </div>
         </div>
@@ -248,7 +248,7 @@ export function LiveActivityShowcase() {
                   </span>
                 </div>
                 <div className="text-[11px] text-zinc-500 mt-1 font-mono">
-                  Verified Groq LPU evaluations today
+                  Verified AI rubric evaluations today
                 </div>
               </div>
             </div>
@@ -364,7 +364,7 @@ export function LiveActivityShowcase() {
               <Check className="w-3 h-3 text-[#4ADE80]" /> 0 errors, 0 warnings
             </span>
             <span className="text-zinc-500 hidden md:inline-block">
-              Groq LPU: &lt;2.5s
+              AI Latency: &lt;2.5s
             </span>
           </div>
 

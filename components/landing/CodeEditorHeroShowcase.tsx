@@ -233,7 +233,7 @@ export function CodeEditorHeroShowcase() {
                 <div className="flex items-center gap-1.5 px-2 py-1 pt-2 text-zinc-500 text-[11px]">
                   <ChevronRight className="w-3.5 h-3.5 text-zinc-600" />
                   <Folder className="w-3.5 h-3.5 text-zinc-500" />
-                  <span>groq_rubrics/</span>
+                  <span>ai_rubrics/</span>
                 </div>
               </div>
             </div>
@@ -389,7 +389,7 @@ export function CodeEditorHeroShowcase() {
               {/* Inline AI Code Lens / Code Annotation Pill */}
               <div className="mt-4 p-2 rounded-lg bg-[#16161F] border border-[#ABDAC8]/30 flex items-center justify-between text-[10px]">
                 <span className="text-[#ABDAC8] flex items-center gap-1.5 font-bold">
-                  <Sparkles className="w-3.5 h-3.5 text-[#ABDAC8]" /> Groq LPU Judge: 98/100 (Passed in 1.8s)
+                  <Sparkles className="w-3.5 h-3.5 text-[#ABDAC8]" /> AI Judge: 98/100 (Passed in 1.8s)
                 </span>
                 <span className="text-zinc-400 font-mono">
                   {activeFile === "frontend"
@@ -487,7 +487,7 @@ export function CodeEditorHeroShowcase() {
                         <span className="text-xs text-zinc-400 font-normal">/ mo</span>
                       </div>
                       <p className="text-[11px] text-zinc-400 mb-3">
-                        Sub-2.5s Groq AI evaluation &amp; verified candidate sandbox link.
+                        Sub-2.5s AI evaluation &amp; verified candidate sandbox link.
                       </p>
                       <button
                         onClick={() => setIsAnnual(!isAnnual)}
@@ -557,7 +557,7 @@ export function CodeEditorHeroShowcase() {
               <Check className="w-3 h-3 text-[#4ADE80]" /> 0 errors, 0 warnings
             </span>
             <span className="text-zinc-500 hidden sm:inline-block">
-              Groq LPU: &lt;2.5s
+              AI Latency: &lt;2.5s
             </span>
           </div>
 

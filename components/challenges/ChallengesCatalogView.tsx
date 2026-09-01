@@ -233,7 +233,7 @@ export function ChallengesCatalogView({
                 <span className="text-[#ABDAC8] font-mono font-semibold">Phase 3</span>
               </div>
               <p className="text-[10px] text-[#6B7280] leading-relaxed">
-                Live sandbox with Groq AI grading against exact rubric criteria.
+                Live sandbox with automated AI grading against exact rubric criteria.
               </p>
             </div>
           </div>

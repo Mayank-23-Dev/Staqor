@@ -58,7 +58,7 @@ export default function PricingPage() {
           </h1>
 
           <p className="text-base sm:text-xl text-zinc-300 max-w-2xl mx-auto leading-relaxed">
-            Start for free with 5 runs and 3 submits per challenge across Frontend, Backend, and Databases. Upgrade to Pro for unlimited Groq AI evaluations and verified recruiter sandboxes.
+            Start for free with 5 runs and 3 submits per challenge across Frontend, Backend, and Databases. Upgrade to Pro for unlimited AI evaluations and verified recruiter sandboxes.
           </p>
 
           {/* Billing Switcher */}
@@ -124,7 +124,7 @@ export default function PricingPage() {
                   </div>
                   <div className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                    <span>Sub-2.5s Groq AI rubric feedback</span>
+                    <span>Sub-2.5s AI rubric feedback</span>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
@@ -183,7 +183,7 @@ export default function PricingPage() {
                   </div>
                   <div className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                    <span>Priority Groq LPU inference queue (&lt;1.8s)</span>
+                    <span>Priority AI evaluation queue (&lt;1.8s)</span>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />

@@ -221,7 +221,7 @@ export default function HomePage() {
                 <Cpu className="w-4 h-4" />
               </div>
               <span className="font-extrabold text-white group-hover:text-[#ABDAC8] transition-colors font-mono">
-                Sub-2.5s Groq AI
+                Sub-2.5s AI Scoring
               </span>
             </div>
             <p className="text-[10px] text-zinc-400 font-normal pl-9 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 transition-all duration-300 overflow-hidden leading-tight">
@@ -278,7 +278,7 @@ export default function HomePage() {
             {/* Eyebrow Tag */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#111614] border border-[#26352E] text-xs font-mono text-[#ABDAC8] mb-6 shadow-sm">
               <span className="w-2 h-2 rounded-full bg-[#4ADE80] animate-pulse" />
-              <span>GROQ LPU AI GRADING • ALL DEVELOPMENT DOMAINS • SUB-2.5S INFERENCE</span>
+              <span>INSTANT AI EVALUATION • ALL DEVELOPMENT DOMAINS • SUB-2.5S INFERENCE</span>
             </div>
 
             {/* Main Headline with GSAP Animated Box */}
@@ -291,7 +291,7 @@ export default function HomePage() {
 
             {/* Sub-headline */}
             <p className="text-base sm:text-xl md:text-2xl text-zinc-300 max-w-3xl leading-relaxed mb-8 font-normal">
-              Solve real Frontend UI, Backend API, Database SQL, and Distributed Systems challenges inside a split Monaco IDE. Graded against weighted rubrics in &lt;2.5s by Groq AI.
+              Solve real Frontend UI, Backend API, Database SQL, and Distributed Systems challenges inside a split Monaco IDE. Graded against weighted rubrics in &lt;2.5s by automated AI.
             </p>
 
             {/* Primary Action Buttons */}
@@ -450,7 +450,7 @@ export default function HomePage() {
                 <div className="space-y-4 text-sm text-zinc-200 font-medium">
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-[#ABDAC8] shrink-0 mt-0.5" />
-                    <span>Real code across UI, APIs, and SQL with sub-2.5s Groq AI multi-rubric feedback</span>
+                    <span>Real code across UI, APIs, and SQL with sub-2.5s multi-rubric AI feedback</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-[#ABDAC8] shrink-0 mt-0.5" />
@@ -482,7 +482,7 @@ export default function HomePage() {
               Ready to prove your software <GSAPAnimatedBox text="craftsmanship?" />
             </h2>
             <p className="text-zinc-300 text-base sm:text-lg max-w-xl mx-auto mb-8 leading-relaxed font-normal">
-              Join thousands of developers solving real Frontend, Backend, and Database challenges, passing sub-2.5s Groq AI rubrics, and getting hired.
+              Join thousands of developers solving real Frontend, Backend, and Database challenges, passing sub-2.5s AI rubrics, and getting hired.
             </p>
 
             <Link href="/signup" className="inline-block">

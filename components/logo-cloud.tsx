@@ -23,7 +23,7 @@ export function LogoCloud() {
 const logos = [
   { name: "VERCEL", role: "Edge Hosting" },
   { name: "SUPABASE", role: "Auth & DB" },
-  { name: "GROQ LPU", role: "AI Judge" },
+  { name: "AI ENGINE", role: "Rubric Judge" },
   { name: "MONACO", role: "Code Editor" },
   { name: "TYPESCRIPT", role: "Type Safety" },
   { name: "REACT 18", role: "Component UI" },

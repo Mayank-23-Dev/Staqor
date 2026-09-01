@@ -16,7 +16,7 @@ export default function AdminSandboxTesterPage() {
               <ArrowLeft className="w-4 h-4" />
             </Link>
             <span className="font-bold text-base text-white">Sandbox Tester</span>
-            <span className="text-zinc-500 text-xs font-mono">/ groq-dry-run</span>
+            <span className="text-zinc-500 text-xs font-mono">/ ai-dry-run</span>
           </div>
         </div>
       </header>
@@ -38,7 +38,7 @@ export default function AdminSandboxTesterPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="p-4 rounded-lg bg-[#0B0B10] border border-[#26262E] font-mono text-xs text-zinc-400">
-              Ready to execute dry-run simulation against Groq LPU API.
+              Ready to execute dry-run simulation against AI evaluation pipeline.
             </div>
             <Button size="sm" className="bg-[#ABDAC8] text-[#0A0A0F] hover:bg-[#ABDAC8]/90 font-bold gap-1.5">
               <Play className="w-3.5 h-3.5" />

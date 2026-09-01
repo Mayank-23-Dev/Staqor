@@ -14,9 +14,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Staqor — In-Browser IDE & AI Rubric Platform",
+  title: "Staqor — In-Browser Software Engineering Workspace & AI Evaluation Platform",
   description:
-    "Frontend practice & provable recruiter portfolios with sub-2.5s Groq grading and zero-server execution.",
+    "Practice software development across Frontend UI, Backend APIs, and Databases with sub-2.5s AI rubric evaluation and provable recruiter portfolios.",
 };
 
 export default function RootLayout({

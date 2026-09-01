@@ -19,9 +19,9 @@ const integrationsData: Integration[] = [
   },
   {
     icon: Cpu,
-    name: "Groq LPU Inference",
+    name: "Automated AI Evaluation Engine",
     category: "AI Evaluation",
-    description: "High-throughput LPU models scoring design fidelity, DOM logic, and code quality in <2.5s.",
+    description: "High-throughput evaluation models scoring design fidelity, DOM logic, and code quality in <2.5s.",
   },
   {
     icon: ShieldCheck,

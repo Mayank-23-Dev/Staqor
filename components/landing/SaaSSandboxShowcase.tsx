@@ -4,49 +4,53 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
+  Terminal,
   CheckCircle2,
   Lock,
-  Terminal,
-  Monitor,
-  Tablet,
-  Smartphone,
-  Check,
-  Zap,
   Play,
-  Share2,
-  ExternalLink,
+  RotateCcw,
+  Zap,
+  Check,
+  Smartphone,
+  Tablet,
+  Monitor,
+  Layout,
   Code2,
+  FileCode2,
+  ExternalLink,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const CHALLENGES = [
   {
     id: "pricing",
-    label: "Pricing Switcher",
+    label: "Pricing Matrix",
     track: "HTML & CSS",
     difficulty: "EASY",
     score: 96,
     time: "1.8s",
-    title: "Interactive Pricing Table with Annual Toggle",
-    desc: "Build a responsive 3-tier card matrix with an annual switch that updates prices dynamically with zero layout shifts.",
+    title: "Responsive Pricing Matrix with Annual Switch",
+    desc: "Build a high-conversion 3-tier pricing matrix with responsive card elevation, a pill badge for popular tier, and toggle state transitions.",
     rubricDesign: "35/35%",
     rubricLogic: "34/35%",
     rubricQuality: "27/30%",
     code: {
-      html: `<!-- 3-Tier Responsive Pricing Matrix -->
+      html: `<!-- 3-Tier Responsive Pricing Matrix Scaffolding -->
 <div class="pricing-container">
-  <div class="billing-toggle">
+  <div class="billing-switch">
     <span>Monthly</span>
-    <button id="toggleBtn" class="switch active" aria-label="Toggle annual billing"></button>
-    <span>Annual <span class="badge">Save 20%</span></span>
+    <button id="toggleBtn" class="toggle-pill active" aria-label="Toggle Annual Billing">
+      <div class="knob"></div>
+    </button>
+    <span>Annual <span class="discount-badge">-20%</span></span>
   </div>
 
   <div class="pricing-grid">
     <div class="card card-popular">
       <div class="tag">MOST POPULAR</div>
       <h3 class="tier-title">Pro Candidate</h3>
-      <p class="desc">Unlimited Groq AI evaluations & verified portfolio.</p>
+      <p class="desc">Unlimited AI evaluations & verified portfolio.</p>
       <div class="price-wrap">
         <span class="currency">$</span>
         <span id="priceVal" class="amount">15</span>
@@ -214,7 +218,7 @@ export function SaaSSandboxShowcase() {
   const [logs, setLogs] = useState<string[]>([
     "[Sandbox] Client iframe initialized with 2000ms loop-killer.",
     "[Pre-Filter] Syntax & Scaffolding check: PASSED (0.02s).",
-    "[Groq LPU] Ready for diagnostic Run or official Submit.",
+    "[AI Judge] Ready for diagnostic Run or official Submit.",
   ]);
 
   const handleRun = (type: "run" | "submit") => {
@@ -231,7 +235,7 @@ export function SaaSSandboxShowcase() {
       setEvalProgress(65);
       setLogs((prev) => [
         ...prev,
-        `[Groq LPU] Analyzing visual fidelity, DOM events, and semantic cleanliness...`,
+        `[AI Judge] Analyzing visual fidelity, DOM events, and semantic cleanliness...`,
       ]);
     }, 600);
 
@@ -243,7 +247,7 @@ export function SaaSSandboxShowcase() {
       setLeftTab("feedback");
       setLogs((prev) => [
         ...prev,
-        `[Groq LPU] Evaluation Complete in ${type === "submit" ? "2.1s" : "1.8s"}. Score: ${newScore}/100 PASSED.`,
+        `[AI Judge] Evaluation Complete in ${type === "submit" ? "2.1s" : "1.8s"}. Score: ${newScore}/100 PASSED.`,
       ]);
     }, 1500);
   };
@@ -272,7 +276,7 @@ export function SaaSSandboxShowcase() {
 
           <h4 className="text-xs font-bold text-white mb-2 flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-[#ABDAC8]" />
-            <span>Groq AI Multi-Criteria Rubric</span>
+            <span>Automated Multi-Criteria Rubric</span>
           </h4>
 
           <div className="space-y-1.5 text-[11px] font-mono text-zinc-400">
@@ -442,7 +446,7 @@ export function SaaSSandboxShowcase() {
                           <span>${isAnnual ? "15" : "19"}</span>
                           <span className="text-xs text-zinc-400 font-normal">/ month</span>
                         </div>
-                        <p className="text-xs text-zinc-300 mb-4">Unlimited Groq AI evaluations &amp; verified portfolio.</p>
+                        <p className="text-xs text-zinc-300 mb-4">Unlimited AI evaluations &amp; verified portfolio.</p>
                         <button
                           onClick={() => handleRun("run")}
                           className="w-full py-2 text-xs font-bold rounded-xl bg-[#ABDAC8] text-[#0A0A0F] hover:bg-[#ABDAC8]/90 transition-all cursor-pointer shadow-md"

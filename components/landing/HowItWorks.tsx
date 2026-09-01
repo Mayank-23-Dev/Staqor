@@ -510,7 +510,7 @@ export function HowItWorks() {
                   AI Score &amp; Proof of Work
                 </h3>
                 <p className="text-sm text-zinc-300 leading-relaxed font-normal mb-4">
-                  Groq LPU evaluates logic, performance, and code quality in &lt;2.5s. Passed attempts generate interactive recruiter sandboxes.
+                  Automated AI rubrics evaluate logic, performance, and code quality in &lt;2.5s. Passed attempts generate interactive recruiter sandboxes.
                 </p>
               </div>
 
