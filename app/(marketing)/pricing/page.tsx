@@ -58,7 +58,7 @@ export default function PricingPage() {
           </h1>
 
           <p className="text-base sm:text-xl text-zinc-300 max-w-2xl mx-auto leading-relaxed">
-            Start for free with 5 runs and 3 submits per challenge. Upgrade to Pro for unlimited Groq AI evaluations and verified recruiter sandboxes.
+            Start for free with 5 runs and 3 submits per challenge across Frontend, Backend, and Databases. Upgrade to Pro for unlimited Groq AI evaluations and verified recruiter sandboxes.
           </p>
 
           {/* Billing Switcher */}
@@ -110,7 +110,7 @@ export default function PricingPage() {
                 </div>
 
                 <p className="text-xs text-zinc-300 leading-relaxed mb-6 font-normal">
-                  Ideal for students and developers getting started with core HTML/CSS and JavaScript challenges.
+                  Ideal for students and developers getting started with core Frontend UI and JavaScript DOM challenges.
                 </p>
 
                 <div className="space-y-3 text-xs text-zinc-300 border-t border-[#26262E] pt-6 mb-8 font-mono">
@@ -128,7 +128,7 @@ export default function PricingPage() {
                   </div>
                   <div className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                    <span>100% Client-side sandbox execution</span>
+                    <span>100% In-browser sandbox execution</span>
                   </div>
                 </div>
               </div>
@@ -150,7 +150,7 @@ export default function PricingPage() {
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-xs font-mono font-bold uppercase text-[#ABDAC8]">
-                    Pro Candidate
+                    Pro Engineer
                   </span>
                   <Badge className="bg-[#ABDAC8] text-[#0A0A0F] text-[10px] font-mono font-bold px-2 py-0.5">
                     MOST POPULAR
@@ -165,7 +165,7 @@ export default function PricingPage() {
                 </div>
 
                 <p className="text-xs text-zinc-300 leading-relaxed mb-6 font-normal">
-                  For active frontend job seekers building a verified, recruiter-ready engineering portfolio.
+                  For software engineers building a verified, recruiter-ready engineering portfolio across Frontend, Backend, and SQL.
                 </p>
 
                 <div className="space-y-3 text-xs text-zinc-200 border-t border-[#ABDAC8]/30 pt-6 mb-8 font-mono">
@@ -187,7 +187,7 @@ export default function PricingPage() {
                   </div>
                   <div className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-[#ABDAC8] shrink-0" />
-                    <span>Advanced React, Vue &amp; API challenges</span>
+                    <span>Advanced Backend APIs, SQL &amp; Caching challenges</span>
                   </div>
                 </div>
               </div>
@@ -196,7 +196,7 @@ export default function PricingPage() {
                 <Button
                   className="w-full bg-gradient-to-b from-[#ABDAC8] via-[#ABDAC8] to-[#7BC4A8] hover:from-[#c2e8dc] hover:to-[#8cd4b9] text-[#0A0A0F] font-extrabold text-xs h-11 rounded-xl shadow-lg shadow-[#ABDAC8]/25 hover:shadow-xl hover:shadow-[#ABDAC8]/35 border border-[#ABDAC8]/40 transition-all hover:scale-[1.02] active:scale-[0.98]"
                 >
-                  <span>Upgrade to Pro Candidate</span>
+                  <span>Upgrade to Pro Engineer</span>
                   <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
                 </Button>
               </Link>

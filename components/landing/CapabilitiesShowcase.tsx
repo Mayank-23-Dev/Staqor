@@ -15,6 +15,8 @@ import {
   Share2,
   Eye,
   Sliders,
+  Server,
+  Database,
 } from "lucide-react";
 import { SpotlightCard } from "@/components/SpotlightCard";
 import { GSAPAnimatedBox } from "@/components/gsap-company-box";
@@ -29,19 +31,19 @@ export function CapabilitiesShowcase() {
         <div className="text-center max-w-2xl mx-auto mb-14">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#ABDAC8]/10 border border-[#ABDAC8]/30 text-[#ABDAC8] text-[11px] font-mono uppercase tracking-wider mb-3">
             <Zap className="w-3.5 h-3.5 text-[#ABDAC8]" />
-            <span>Engineered for Frontend Engineers</span>
+            <span>Engineered for Software Engineers</span>
           </div>
           <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-3">
             Built for <GSAPAnimatedBox text="Real Craftsmanship." />
           </h2>
           <p className="text-zinc-300 text-base sm:text-lg font-normal">
-            Every feature is designed to replace abstract puzzle testing with real-world engineering proof.
+            Every feature is designed to replace abstract puzzle testing with real-world engineering proof across Frontend, Backend, and Databases.
           </p>
         </div>
 
         {/* 4 Graphic Feature Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Card 1: 100% In-Browser Client Sandbox */}
+          {/* Card 1: 100% In-Browser Multi-Domain Workspace */}
           <SpotlightCard accentColor="aqua" watermark="FAST">
             <div className="p-7 sm:p-8 h-full flex flex-col justify-between">
               <div>
@@ -50,15 +52,15 @@ export function CapabilitiesShowcase() {
                     <Zap className="w-6 h-6" />
                   </div>
                   <span className="text-[11px] font-mono font-bold text-[#ABDAC8] bg-[#111614] border border-[#ABDAC8]/30 px-3 py-1 rounded-full">
-                    ZERO DOCKER COLD STARTS
+                    ZERO SERVER QUEUE LAG
                   </span>
                 </div>
 
                 <h3 className="font-display text-2xl font-bold text-white mb-2.5 tracking-tight group-hover:text-[#ABDAC8] transition-colors">
-                  Instant In-Browser Compilation
+                  Instant Multi-Domain Execution
                 </h3>
                 <p className="text-sm text-zinc-300 leading-relaxed mb-6 font-normal">
-                  Code compiles 100% client-side inside an isolated iframe with hot-reload and 2000ms loop protection. Zero server queue delays or waiting for container boot times.
+                  Code compiles and runs with instant hot-reload and 2000ms loop protection. Test UI layouts, REST API route responses, and SQL query plans without container boot delays.
                 </p>
               </div>
 
@@ -66,7 +68,7 @@ export function CapabilitiesShowcase() {
               <div className="p-3.5 rounded-xl bg-[#0B0B10] border border-[#26262E] space-y-2 font-mono text-[11px]">
                 <div className="flex items-center justify-between text-zinc-400">
                   <span className="flex items-center gap-1.5 text-zinc-300">
-                    <Terminal className="w-3.5 h-3.5 text-[#ABDAC8]" /> Live Compile Latency
+                    <Terminal className="w-3.5 h-3.5 text-[#ABDAC8]" /> Runtime Execution Latency
                   </span>
                   <span className="text-[#4ADE80] font-bold">~0.02s Instant</span>
                 </div>
@@ -97,26 +99,26 @@ export function CapabilitiesShowcase() {
                 </div>
 
                 <h3 className="font-display text-2xl font-bold text-white mb-2.5 tracking-tight group-hover:text-emerald-400 transition-colors">
-                  Weighted Multi-Criteria Rubrics
+                  Multi-Criteria Engineering Rubrics
                 </h3>
                 <p className="text-sm text-zinc-300 leading-relaxed mb-6 font-normal">
-                  Groq LPU judges your solution across visual design (35%), DOM/state logic (35%), and semantic cleanliness (30%) with targeted, actionable feedback.
+                  Groq LPU judges your implementation across functional correctness (35%), performance &amp; concurrency (35%), and semantic cleanliness (30%) with targeted feedback.
                 </p>
               </div>
 
               {/* Graphic Mock: 3-Tier Rubric Bars */}
               <div className="p-3.5 rounded-xl bg-[#0B0B10] border border-[#26262E] space-y-2 font-mono text-[11px]">
                 <div className="flex justify-between items-center text-zinc-300">
-                  <span>Visual Layout Fidelity</span>
+                  <span>Logic &amp; Functional Correctness</span>
                   <span className="text-[#ABDAC8] font-bold">35/35%</span>
                 </div>
                 <div className="flex justify-between items-center text-zinc-300">
-                  <span>DOM &amp; State Logic</span>
+                  <span>Performance &amp; State Concurrency</span>
                   <span className="text-[#ABDAC8] font-bold">34/35%</span>
                 </div>
                 <div className="flex justify-between items-center text-zinc-300">
-                  <span>Semantic Cleanliness</span>
-                  <span className="text-[#ABDAC8] font-bold">28/30%</span>
+                  <span>Clean Semantics &amp; Error Handling</span>
+                  <span className="text-[#ABDAC8] font-bold">29/30%</span>
                 </div>
               </div>
             </div>
@@ -131,7 +133,7 @@ export function CapabilitiesShowcase() {
                     <Lock className="w-6 h-6" />
                   </div>
                   <span className="text-[11px] font-mono font-bold text-purple-400 bg-purple-950/40 border border-purple-500/30 px-3 py-1 rounded-full">
-                    FOCUSED PROBLEM SCOPE
+                    FOCUSED CONTRACTS
                   </span>
                 </div>
 
@@ -139,7 +141,7 @@ export function CapabilitiesShowcase() {
                   Scoped Read-Only Scaffolding
                 </h3>
                 <p className="text-sm text-zinc-300 leading-relaxed mb-6 font-normal">
-                  Targeted practice: In JavaScript challenges, HTML and CSS templates are locked read-only so you focus entirely on state transitions and event logic.
+                  Targeted engineering: In Backend or Database challenges, harness boilerplate files are locked read-only so you focus entirely on core algorithm and query execution.
                 </p>
               </div>
 
@@ -147,13 +149,10 @@ export function CapabilitiesShowcase() {
               <div className="p-3.5 rounded-xl bg-[#0B0B10] border border-[#26262E] flex items-center justify-between font-mono text-[11px]">
                 <div className="flex items-center gap-2">
                   <span className="px-2 py-1 rounded bg-[#16161F] text-zinc-400 border border-[#26262E] flex items-center gap-1">
-                    <Lock className="w-3 h-3 text-[#ABDAC8]" /> index.html
-                  </span>
-                  <span className="px-2 py-1 rounded bg-[#16161F] text-zinc-400 border border-[#26262E] flex items-center gap-1">
-                    <Lock className="w-3 h-3 text-[#ABDAC8]" /> styles.css
+                    <Lock className="w-3 h-3 text-[#ABDAC8]" /> harness.ts
                   </span>
                   <span className="px-2 py-1 rounded bg-[#ABDAC8]/20 text-[#ABDAC8] border border-[#ABDAC8]/40 font-bold">
-                    script.js (Editable)
+                    handler.ts (Editable)
                   </span>
                 </div>
                 <span className="text-[#4ADE80] text-[10px]">✔ PROTECTED</span>
@@ -170,7 +169,7 @@ export function CapabilitiesShowcase() {
                     <Share2 className="w-6 h-6" />
                   </div>
                   <span className="text-[11px] font-mono font-bold text-blue-400 bg-blue-950/40 border border-blue-500/30 px-3 py-1 rounded-full">
-                    PUBLIC CANDIDATE PROOF
+                    CANDIDATE PROOF
                   </span>
                 </div>
 
@@ -178,7 +177,7 @@ export function CapabilitiesShowcase() {
                   Interactive Recruiter Portfolios
                 </h3>
                 <p className="text-sm text-zinc-300 leading-relaxed mb-6 font-normal">
-                  Passed solutions generate shareable interactive sandboxes. Hiring teams test your live UI components and inspect your Monaco tabs directly in browser.
+                  Passed solutions generate shareable interactive sandboxes. Hiring teams test your live UI components and inspect your API route handlers directly in browser.
                 </p>
               </div>
 

@@ -22,6 +22,7 @@ import {
   Sparkles,
   Lock,
   Mail,
+  Terminal,
 } from "lucide-react";
 
 export default function SignupPage() {
@@ -204,7 +205,7 @@ export default function SignupPage() {
                 Create Staqor Account
               </h1>
               <p className="text-xs text-zinc-400 font-sans">
-                Start practicing frontend challenges with real-time Groq AI scoring.
+                Practice Frontend UI, Backend APIs, and SQL challenges with sub-2.5s AI scoring.
               </p>
             </div>
 
@@ -355,7 +356,7 @@ export default function SignupPage() {
           <ShieldCheck className="w-3.5 h-3.5 text-[#ABDAC8]" /> Sub-2.5s Groq AI
         </span>
         <span className="hidden sm:flex items-center gap-1.5">
-          <Lock className="w-3.5 h-3.5 text-[#ABDAC8]" /> 100% Client Sandbox
+          <Terminal className="w-3.5 h-3.5 text-[#ABDAC8]" /> All Engineering Domains
         </span>
         <span className="flex items-center gap-1.5">
           <Sparkles className="w-3.5 h-3.5 text-[#ABDAC8]" /> Free Forever Starter

@@ -27,7 +27,7 @@ export function Footer() {
               <Logo />
             </Link>
             <p className="max-w-md text-zinc-400 text-xs sm:text-sm leading-relaxed">
-              The in-browser IDE for modern frontend craftsmanship. Solve real UI challenges, pass sub-2.5s Groq AI rubrics, and generate verified recruiter portfolios.
+              The in-browser workspace for modern software development craftsmanship. Solve real Frontend UI, Backend API, Database SQL, and Distributed Systems challenges graded in &lt;2.5s by Groq AI.
             </p>
             <div className="flex items-center gap-2.5 pt-2">
               {socialLinks.map((item, index) => (
@@ -49,7 +49,7 @@ export function Footer() {
           {/* Col 2: Curriculum & Tracks (2 cols) */}
           <div className="md:col-span-2 md:col-start-7">
             <span className="text-white font-mono text-xs font-bold uppercase tracking-wider block mb-4">
-              Curriculum
+              Curriculum Tracks
             </span>
             <div className="flex flex-col gap-2.5">
               {curriculumLinks.map(({ href, title }) => (
@@ -108,7 +108,7 @@ export function Footer() {
       <div className="w-full bg-[#08080C] border-t border-[#26262E]/60 py-5">
         <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-zinc-500 text-[11px] font-mono">
           <p>
-            &copy; {new Date().getFullYear()} Staqor Inc. Built for Frontend Engineers worldwide.
+            &copy; {new Date().getFullYear()} Staqor Inc. Built for Software Engineers worldwide.
           </p>
           <div className="flex items-center gap-2">
             <Mail className="w-3.5 h-3.5 text-[#ABDAC8]" />
@@ -126,18 +126,21 @@ export function Footer() {
 }
 
 const curriculumLinks = [
-  { title: "HTML & CSS Layouts", href: "/challenges?track=html-css" },
-  { title: "JavaScript & DOM Events", href: "/challenges?track=javascript" },
-  { title: "React Component Architecture", href: "/challenges?track=react" },
-  { title: "Vue.js Reactive UI", href: "/challenges?track=vue" },
-  { title: "Node.js Mock APIs", href: "/challenges?track=node-api" },
-  { title: "Real-World Bug Fixes", href: "/challenges?track=bug-fix" },
+  { title: "Frontend UI & Layouts", href: "/challenges?track=frontend-ui" },
+  { title: "JavaScript & DOM Architecture", href: "/challenges?track=javascript-dom" },
+  { title: "React Component Systems", href: "/challenges?track=react-components" },
+  { title: "Backend & REST APIs", href: "/challenges?track=backend-apis" },
+  { title: "Databases & SQL Queries", href: "/challenges?track=database-sql" },
+  { title: "Distributed Systems & Caching", href: "/challenges?track=systems-caching" },
+  { title: "Real-World Bug Diagnostics", href: "/challenges?track=bug-diagnostics" },
+  { title: "End-to-End Scenarios", href: "/challenges?track=end-to-end" },
 ];
 
 const resourcesLinks = [
-  { title: "Challenges Catalog", href: "/challenges" },
-  { title: "Evaluation Rubric", href: "#how-it-works" },
+  { title: "Curriculum Tracks", href: "#tracks" },
+  { title: "How It Works", href: "#how-it-works" },
   { title: "Why Staqor", href: "#why-staqor" },
+  { title: "Transparent Pricing", href: "/pricing" },
   { title: "Developer FAQ", href: "#faq" },
 ];
 

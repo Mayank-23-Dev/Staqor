@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { UserNav } from "@/components/navigation/UserNav";
 import { MobileNav } from "@/components/mobile-nav";
-import { ChevronRight } from "lucide-react";
 
 export const navLinks = [
   {
@@ -23,6 +22,10 @@ export const navLinks = [
   {
     label: "Why Staqor",
     href: "#why-staqor",
+  },
+  {
+    label: "Pricing",
+    href: "/pricing",
   },
   {
     label: "FAQ",
@@ -80,18 +83,7 @@ export function Header() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-3">
-          <Link href="/challenges" className="hidden sm:block">
-            <Button
-              size="sm"
-              className="bg-gradient-to-b from-[#ABDAC8] via-[#ABDAC8] to-[#7BC4A8] hover:from-[#c2e8dc] hover:to-[#8cd4b9] text-[#0A0A0F] font-bold rounded-xl px-4 py-2 text-xs shadow-md shadow-[#ABDAC8]/20 hover:shadow-lg hover:shadow-[#ABDAC8]/30 border border-[#ABDAC8]/40 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
-            >
-              <span>Browse Catalog</span>
-              <ChevronRight className="w-3.5 h-3.5 ml-0.5" />
-            </Button>
-          </Link>
-
           <UserNav />
-
           <MobileNav />
         </div>
       </nav>

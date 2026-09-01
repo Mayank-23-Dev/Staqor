@@ -19,6 +19,9 @@ import {
   Server,
   Bug,
   Layout,
+  Database,
+  Layers,
+  Network,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
@@ -27,28 +30,29 @@ import { GSAPAnimatedBox } from "@/components/gsap-company-box";
 import { ScrollGlowingLine } from "@/components/ScrollGlowingLine";
 import { Header } from "@/components/header";
 import { CodeEditorHeroShowcase } from "@/components/landing/CodeEditorHeroShowcase";
+import { TrackButton } from "@/components/landing/TrackButton";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { CapabilitiesShowcase } from "@/components/landing/CapabilitiesShowcase";
 import { FaqsSection } from "@/components/faqs-page";
 import { Footer } from "@/components/footer";
 
 // ---------------------------------------------------------------------------
-// 8 Tracks Data
+// 8 Tracks Data (Covering Every Domain of Software Development)
 // ---------------------------------------------------------------------------
 const TRACKS_DATA = [
   {
-    id: "html-css",
-    title: "HTML & CSS Layouts",
+    id: "frontend-ui",
+    title: "Frontend UI & Layouts",
     tag: "UI & STYLING",
     icon: Code2,
-    desc: "Master Flexbox, CSS Grid, animations, fluid typography, and responsive micro-interactions.",
+    desc: "Master Flexbox, CSS Grid, fluid typography, responsive micro-interactions, and accessibility.",
     challengesCount: 14,
     accent: "aqua" as const,
     sample: "Responsive Pricing Matrix with Annual Switch",
   },
   {
-    id: "javascript",
-    title: "JavaScript & DOM",
+    id: "javascript-dom",
+    title: "JavaScript & DOM Architecture",
     tag: "LOGIC & EVENTS",
     icon: Terminal,
     desc: "Build interactive widgets, stateful DOM mutations, event delegations, and client-side storage.",
@@ -57,52 +61,62 @@ const TRACKS_DATA = [
     sample: "Drag-and-Drop Kanban Task Board",
   },
   {
-    id: "react",
-    title: "React Components",
+    id: "react-components",
+    title: "React & Component Systems",
     tag: "MODERN SPA",
     icon: Zap,
-    desc: "Author custom hooks, compound components, virtualized lists, and accessible modal dialogs.",
+    desc: "Author custom hooks, compound components, virtualized lists, and accessible state machines.",
     challengesCount: 16,
     accent: "aqua" as const,
     sample: "Virtualized Infinite Scroll Product Grid",
   },
   {
-    id: "vue",
-    title: "Vue.js Reactive UI",
-    tag: "COMPOSITION API",
-    icon: Sparkles,
-    desc: "Leverage Vue 3 Composition API, custom directives, computed watchers, and reactive store patterns.",
-    challengesCount: 10,
-    accent: "amber" as const,
-    sample: "Dynamic Multi-Step Form with Schema Validation",
-  },
-  {
-    id: "node-api",
-    title: "Node.js & Mock APIs",
-    tag: "DATA & REST",
+    id: "backend-apis",
+    title: "Backend & REST APIs",
+    tag: "SERVERS & ROUTING",
     icon: Server,
-    desc: "Build RESTful route handlers, request payload validation, pagination algorithms, and rate limiters.",
-    challengesCount: 8,
-    accent: "blue" as const,
+    desc: "Build RESTful route handlers, payload validation, pagination algorithms, and rate limiters.",
+    challengesCount: 12,
+    accent: "amber" as const,
     sample: "In-Memory Rate Limiter Token Bucket",
   },
   {
-    id: "bug-fix",
-    title: "Real-World Bug Fixes",
+    id: "database-sql",
+    title: "Databases & SQL Engineering",
+    tag: "DATA & SCHEMA",
+    icon: Database,
+    desc: "Author complex SQL queries, optimize composite indexes, transactions, and schema migrations.",
+    challengesCount: 10,
+    accent: "purple" as const,
+    sample: "Transactional Analytics with Covering Index",
+  },
+  {
+    id: "systems-caching",
+    title: "Systems & Distributed Caching",
+    tag: "PERFORMANCE",
+    icon: Network,
+    desc: "Design Redis caching layers, async task queues, pub/sub pipelines, and idempotency keys.",
+    challengesCount: 8,
+    accent: "blue" as const,
+    sample: "Distributed Lock with Auto-Expiring Leases",
+  },
+  {
+    id: "bug-diagnostics",
+    title: "Real-World Bug Diagnostics",
     tag: "DIAGNOSTICS",
     icon: Bug,
-    desc: "Inspect broken codebases, identify layout glitches, patch event memory leaks, and fix race conditions.",
+    desc: "Inspect broken codebases, patch memory leaks, resolve race conditions, and fix state desyncs.",
     challengesCount: 12,
     accent: "purple" as const,
     sample: "Patching Async Race Conditions in Autocomplete",
   },
   {
-    id: "full-stack",
-    title: "Full-Stack Scenarios",
-    tag: "END-TO-END",
+    id: "end-to-end",
+    title: "End-to-End System Scenarios",
+    tag: "FULL ARCHITECTURE",
     icon: Layout,
-    desc: "Connect frontend components with mock API backends, handling loading, optimistic updates, and errors.",
-    challengesCount: 7,
+    desc: "Connect client components to mock backend APIs, optimistic mutations, and offline queues.",
+    challengesCount: 9,
     accent: "emerald" as const,
     sample: "Optimistic Comment Thread with Offline Queue",
   },
@@ -188,7 +202,7 @@ export default function HomePage() {
       <div className="absolute top-24 left-1/2 -translate-x-1/2 w-[850px] h-[400px] bg-[radial-gradient(ellipse_60%_50%_at_50%_35%,#ABDAC826_0%,#ABDAC808_60%,transparent_100%)] blur-[110px] pointer-events-none z-0" />
 
       {/* ========================================================================= */}
-      {/* HEADER (@efferd/header-2 - Full Sticky Navbar) */}
+      {/* HEADER (@efferd/header-2 - Full Sticky Navbar without Browse Catalog) */}
       {/* ========================================================================= */}
       <Header />
 
@@ -224,10 +238,10 @@ export default function HomePage() {
               <div className="w-7 h-7 rounded-full bg-[#ABDAC8]/20 text-[#ABDAC8] flex items-center justify-center group-hover:scale-110 transition-transform">
                 <ShieldCheck className="w-4 h-4" />
               </div>
-              <span className="group-hover:text-[#ABDAC8] transition-colors font-mono">100% Client Sandbox</span>
+              <span className="group-hover:text-[#ABDAC8] transition-colors font-mono">Every Dev Domain</span>
             </div>
             <p className="text-[10px] text-zinc-400 font-normal pl-9 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 transition-all duration-300 overflow-hidden leading-tight">
-              Isolated iframe execution with 2000ms loop-killer
+              Frontend UI, Backend APIs, Databases &amp; Systems
             </p>
           </div>
 
@@ -238,10 +252,10 @@ export default function HomePage() {
           >
             <div className="flex items-center gap-2">
               <Lock className="w-4 h-4 text-emerald-400 shrink-0 group-hover:scale-110 transition-transform" />
-              <span className="font-mono">Locked Scaffolding</span>
+              <span className="font-mono">Scoped Contracts</span>
             </div>
             <p className="text-[10px] text-zinc-400 font-normal pl-6 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 transition-all duration-300 overflow-hidden leading-tight">
-              Scoped read-only tabs enforce focused UI practice
+              Protected templates enforce focused software engineering
             </p>
           </div>
 
@@ -252,10 +266,10 @@ export default function HomePage() {
           >
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-amber-400 shrink-0 group-hover:scale-110 transition-transform" />
-              <span className="font-mono">8 Practice Tracks</span>
+              <span className="font-mono">8 Engineering Tracks</span>
             </div>
             <p className="text-[10px] text-zinc-400 font-normal pl-6 max-h-0 opacity-0 group-hover:max-h-12 group-hover:opacity-100 transition-all duration-300 overflow-hidden leading-tight">
-              HTML/CSS, JS DOM, React, Vue, APIs &amp; Bug Fixes
+              UI, JS DOM, React, APIs, SQL, Caching &amp; Diagnostics
             </p>
           </div>
 
@@ -264,20 +278,20 @@ export default function HomePage() {
             {/* Eyebrow Tag */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#111614] border border-[#26352E] text-xs font-mono text-[#ABDAC8] mb-6 shadow-sm">
               <span className="w-2 h-2 rounded-full bg-[#4ADE80] animate-pulse" />
-              <span>GROQ LPU AI GRADING • SUB-2.5S • 100% IN-BROWSER WORKSPACE</span>
+              <span>GROQ LPU AI GRADING • ALL DEVELOPMENT DOMAINS • SUB-2.5S INFERENCE</span>
             </div>
 
             {/* Main Headline with GSAP Animated Box */}
             <div className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-[5.2rem] font-black tracking-tight text-white max-w-5xl leading-[1.08] mb-6">
               <h1 className="flex flex-col sm:block items-center">
-                <span>The in-browser IDE for modern frontend </span>
+                <span>The in-browser workspace for software </span>
                 <GSAPAnimatedBox text="craftsmanship." />
               </h1>
             </div>
 
             {/* Sub-headline */}
             <p className="text-base sm:text-xl md:text-2xl text-zinc-300 max-w-3xl leading-relaxed mb-8 font-normal">
-              Solve real HTML/CSS, JS DOM, and React component challenges inside a split Monaco IDE. Graded against weighted rubrics in &lt;2.5s by Groq AI with zero server latency.
+              Solve real Frontend UI, Backend API, Database SQL, and Distributed Systems challenges inside a split Monaco IDE. Graded against weighted rubrics in &lt;2.5s by Groq AI.
             </p>
 
             {/* Primary Action Buttons */}
@@ -292,21 +306,21 @@ export default function HomePage() {
                 </Button>
               </Link>
 
-              <Link href="/challenges" className="w-full sm:w-auto">
+              <a href="#tracks" className="w-full sm:w-auto">
                 <Button
                   size="lg"
                   variant="outline"
                   className="w-full sm:w-auto border-[#26262E] bg-[#111117] hover:bg-[#16161F] text-white font-bold px-8 py-7 text-base rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98]"
                 >
-                  Explore 8 Tracks Catalog
+                  Explore 8 Engineering Tracks
                 </Button>
-              </Link>
+              </a>
             </div>
           </div>
         </section>
 
         {/* ========================================================================= */}
-        {/* AUTHENTIC CODE EDITOR HERO SHOWCASE (VS Code / Monaco 3-Panel Card) */}
+        {/* MULTI-DOMAIN CODE EDITOR HERO SHOWCASE (VS Code / Monaco 3-Panel Card) */}
         {/* ========================================================================= */}
         <CodeEditorHeroShowcase />
 
@@ -316,18 +330,18 @@ export default function HomePage() {
         <CapabilitiesShowcase />
 
         {/* ========================================================================= */}
-        {/* 4. 8 PRACTICE TRACKS CATALOG (Curriculum Explorer) */}
+        {/* 4. 8 PRACTICE TRACKS CATALOG (Every Development Domain) */}
         {/* ========================================================================= */}
         <section id="tracks" className="py-16 md:py-24 border-t border-[#26262E]">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
             <div>
-              <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2 font-mono">Curriculum Catalog</div>
+              <div className="text-xs font-bold uppercase tracking-wider text-[#ABDAC8] mb-2 font-mono">Curriculum Tracks</div>
               <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight">
-                Practice Across <GSAPAnimatedBox text="8 Tracks" />
+                Practice Across <GSAPAnimatedBox text="Every Domain" />
               </h2>
             </div>
             <p className="text-base text-zinc-300 max-w-md font-normal">
-              From core HTML &amp; CSS fundamentals to advanced React state machines and realistic bug-fixing scenarios.
+              From Frontend UI and DOM events to Backend APIs, SQL data modeling, distributed caching, and bug diagnostics.
             </p>
           </div>
 
@@ -355,11 +369,10 @@ export default function HomePage() {
                       <div className="pt-2 border-t border-[#26262E]">
                         <span className="text-[10px] font-mono uppercase text-zinc-500 block mb-1">Example Challenge</span>
                         <p className="text-xs font-semibold text-zinc-200 truncate mb-3">{tr.sample}</p>
-                        <Link href={`/challenges?track=${tr.id}`} className="block">
-                          <Button size="sm" variant="outline" className="w-full text-xs font-mono border-[#26262E] hover:border-[#ABDAC8] hover:text-[#ABDAC8] transition-all hover:scale-[1.02] active:scale-[0.98]">
-                            Browse Track
-                          </Button>
-                        </Link>
+                        {/* Auth-Aware Track Button: redirects unauthenticated users to login */}
+                        <TrackButton trackId={tr.id}>
+                          Browse Track
+                        </TrackButton>
                       </div>
                     </CardContent>
                   </SpotlightCard>
@@ -390,7 +403,7 @@ export default function HomePage() {
               Why Staqor Wins Over <GSAPAnimatedBox text="LeetCode" />
             </h2>
             <p className="text-zinc-300 text-base sm:text-lg">
-              Stop solving abstract tree puzzles. Start building real, verified engineering portfolios that get you hired.
+              Stop grinding abstract binary tree inversions. Start building real, verified software engineering proof across Frontend, Backend, and Databases.
             </p>
           </motion.div>
 
@@ -411,7 +424,7 @@ export default function HomePage() {
                     <div className="w-5 h-5 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center shrink-0 mt-0.5 font-bold">
                       <X className="w-3.5 h-3.5" />
                     </div>
-                    <span>Abstract stdout tests that ignore responsive UI and CSS Grid</span>
+                    <span>Abstract stdout tests that ignore real APIs, SQL indexes, and responsive UI</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-5 h-5 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center shrink-0 mt-0.5 font-bold">
@@ -423,7 +436,7 @@ export default function HomePage() {
                     <div className="w-5 h-5 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center shrink-0 mt-0.5 font-bold">
                       <X className="w-3.5 h-3.5" />
                     </div>
-                    <span>Static resume PDFs with zero provable interactive work</span>
+                    <span>Static resume PDFs with zero verifiable, interactive proof of work</span>
                   </div>
                 </div>
               </div>
@@ -433,19 +446,19 @@ export default function HomePage() {
             <SpotlightCard accentColor="aqua" watermark="STAQ">
               <div className="p-8 h-full bg-gradient-to-b from-[#ABDAC8]/10 to-transparent">
                 <div className="text-xs font-bold text-[#ABDAC8] uppercase tracking-wider mb-3 font-mono">The Staqor Way</div>
-                <h3 className="font-display text-2xl font-bold text-white mb-6">Daily Frontend Proof of Work</h3>
+                <h3 className="font-display text-2xl font-bold text-white mb-6">Daily Development Proof of Work</h3>
                 <div className="space-y-4 text-sm text-zinc-200 font-medium">
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-[#ABDAC8] shrink-0 mt-0.5" />
-                    <span>Real component code with sub-2.5s Groq AI multi-rubric feedback</span>
+                    <span>Real code across UI, APIs, and SQL with sub-2.5s Groq AI multi-rubric feedback</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-[#ABDAC8] shrink-0 mt-0.5" />
-                    <span>One-click candidate sandboxes that recruiters can interact with</span>
+                    <span>One-click candidate sandboxes that recruiters can interact with and test</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-[#ABDAC8] shrink-0 mt-0.5" />
-                    <span>Direct visibility to tech recruiters and engineering leaders</span>
+                    <span>Direct visibility to tech recruiters and engineering leaders worldwide</span>
                   </div>
                 </div>
               </div>
@@ -466,10 +479,10 @@ export default function HomePage() {
             <div className="absolute top-0 right-0 w-80 h-80 bg-[#ABDAC8]/10 rounded-full blur-3xl pointer-events-none" />
 
             <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight mb-4 max-w-3xl mx-auto leading-tight">
-              Ready to prove your frontend <GSAPAnimatedBox text="craftsmanship?" />
+              Ready to prove your software <GSAPAnimatedBox text="craftsmanship?" />
             </h2>
             <p className="text-zinc-300 text-base sm:text-lg max-w-xl mx-auto mb-8 leading-relaxed font-normal">
-              Join thousands of developers solving real UI challenges, passing sub-2.5s Groq AI rubrics, and getting hired.
+              Join thousands of developers solving real Frontend, Backend, and Database challenges, passing sub-2.5s Groq AI rubrics, and getting hired.
             </p>
 
             <Link href="/signup" className="inline-block">

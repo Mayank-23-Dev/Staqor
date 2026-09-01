@@ -21,6 +21,7 @@ import {
   Sparkles,
   Lock,
   Check,
+  Terminal,
 } from "lucide-react";
 
 function LoginForm() {
@@ -166,7 +167,7 @@ function LoginForm() {
               Welcome Back
             </h1>
             <p className="text-xs text-zinc-400 font-sans">
-              Sign in to continue your frontend proof of work streak.
+              Sign in to continue your software development proof of work streak.
             </p>
           </div>
 
@@ -325,7 +326,7 @@ export default function LoginPage() {
           <ShieldCheck className="w-3.5 h-3.5 text-[#ABDAC8]" /> Sub-2.5s Groq AI
         </span>
         <span className="hidden sm:flex items-center gap-1.5">
-          <Lock className="w-3.5 h-3.5 text-[#ABDAC8]" /> 100% Client Sandbox
+          <Terminal className="w-3.5 h-3.5 text-[#ABDAC8]" /> All Development Disciplines
         </span>
         <span className="flex items-center gap-1.5">
           <Sparkles className="w-3.5 h-3.5 text-[#ABDAC8]" /> 8 Practice Tracks

@@ -50,7 +50,7 @@ export function HowItWorks() {
             How Staqor <GSAPAnimatedBox text="Works" />
           </h2>
           <p className="text-zinc-300 text-base sm:text-lg font-normal">
-            Turn consistent daily component coding into verified, career-defining proof of work.
+            Turn daily software development challenges into verified, recruiter-ready engineering proof of work.
           </p>
         </motion.div>
       </div>
@@ -146,7 +146,7 @@ export function HowItWorks() {
               className="transition-colors duration-300"
             />
 
-            {/* 2. Scroll-Revealed Branch 1 (01. Choose Challenge: Aqua Glow) */}
+            {/* 2. Scroll-Revealed Branch 1 (01. Choose Track: Aqua Glow) */}
             <motion.path
               d="M 500 360 C 500 470, 166.6 470, 166.6 580"
               fill="none"
@@ -174,7 +174,7 @@ export function HowItWorks() {
               )}
             />
 
-            {/* 3. Scroll-Revealed Branch 2 (02. Code in Split Monaco: Cyan Glow) */}
+            {/* 3. Scroll-Revealed Branch 2 (02. Code in Monaco: Cyan Glow) */}
             <motion.path
               d="M 500 360 L 500 580"
               fill="none"
@@ -246,7 +246,7 @@ export function HowItWorks() {
               <User className="w-7 h-7 text-[#ABDAC8]" />
             </motion.div>
             <span className="text-[11px] font-extrabold uppercase tracking-wider block mt-3 text-zinc-400 font-mono">
-              DEVELOPER
+              SOFTWARE ENGINEER
             </span>
           </div>
 
@@ -268,7 +268,7 @@ export function HowItWorks() {
 
           {/* Desktop 3-Step Node Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-14 items-center text-center">
-            {/* Step 1 Node (Aqua: Choose a Challenge) */}
+            {/* Step 1 Node (Aqua: Choose an Engineering Track) */}
             <div
               onMouseEnter={() => setActiveStep(0)}
               onMouseLeave={() => setActiveStep(null)}
@@ -293,11 +293,11 @@ export function HowItWorks() {
                   activeStep === 0 ? "text-[#ABDAC8]" : "text-zinc-400"
                 )}
               >
-                01. Choose Challenge
+                01. Choose Engineering Track
               </span>
             </div>
 
-            {/* Step 2 Node (Cyan: Code in Split Monaco) */}
+            {/* Step 2 Node (Cyan: Code in Monaco IDE) */}
             <div
               onMouseEnter={() => setActiveStep(1)}
               onMouseLeave={() => setActiveStep(null)}
@@ -322,7 +322,7 @@ export function HowItWorks() {
                   activeStep === 1 ? "text-cyan-400" : "text-zinc-400"
                 )}
               >
-                02. Code in Monaco
+                02. Code in Monaco IDE
               </span>
             </div>
 
@@ -399,15 +399,15 @@ export function HowItWorks() {
                   </span>
                 </div>
                 <h3 className="font-display text-xl font-extrabold text-white mb-2 tracking-tight group-hover:text-[#ABDAC8] transition-colors">
-                  Choose a Challenge
+                  Choose a Domain
                 </h3>
                 <p className="text-sm text-zinc-300 leading-relaxed font-normal mb-4">
-                  Select from 8 specialized tracks. Study Figma-aligned UI specs, user story requirements, and weighted rubric criteria.
+                  Select from 8 software engineering tracks across Frontend UI, Backend APIs, SQL Databases, and Distributed Caching.
                 </p>
               </div>
 
               <div className="pt-5 border-t border-[#26262E] flex items-center justify-between text-xs font-bold text-[#ABDAC8]">
-                <span>Explore Catalog</span>
+                <span>Explore Tracks</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
               </div>
             </CardContent>
@@ -453,15 +453,15 @@ export function HowItWorks() {
                   </span>
                 </div>
                 <h3 className="font-display text-xl font-extrabold text-white mb-2 tracking-tight group-hover:text-cyan-400 transition-colors">
-                  Code in Split Monaco
+                  Code in Monaco IDE
                 </h3>
                 <p className="text-sm text-zinc-300 leading-relaxed font-normal mb-4">
-                  Write HTML, CSS, and JS across dedicated tabs with locked scaffolding. Test in real-time inside an isolated client sandbox.
+                  Write UI components, Node.js route handlers, and SQL queries with scoped scaffolding in an isolated in-browser runtime.
                 </p>
               </div>
 
               <div className="pt-5 border-t border-[#26262E] flex items-center justify-between text-xs font-bold text-cyan-400">
-                <span>Try Sandbox Compiler</span>
+                <span>Try In-Browser Runtime</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
               </div>
             </CardContent>
@@ -510,7 +510,7 @@ export function HowItWorks() {
                   AI Score &amp; Proof of Work
                 </h3>
                 <p className="text-sm text-zinc-300 leading-relaxed font-normal mb-4">
-                  Groq LPU evaluates visual fidelity, DOM events, and semantic cleanliness in &lt;2.5s. Passed attempts generate interactive recruiter sandboxes.
+                  Groq LPU evaluates logic, performance, and code quality in &lt;2.5s. Passed attempts generate interactive recruiter sandboxes.
                 </p>
               </div>
 

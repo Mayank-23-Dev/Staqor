@@ -30,7 +30,7 @@ export function FaqsSection() {
             </h2>
 
             <p className="text-zinc-300 text-sm sm:text-base font-normal leading-relaxed">
-              Everything you need to know about Staqor challenges, sub-2.5s Groq AI rubric grading, locked scaffolding, and verified recruiter sandboxes.
+              Everything you need to know about Staqor software development challenges across Frontend, Backend APIs, Databases, Groq AI rubrics, and verified candidate portfolios.
             </p>
 
             <div className="pt-4 flex flex-col gap-3">
@@ -85,38 +85,38 @@ export function FaqsSection() {
 const questions = [
   {
     id: "item-1",
-    title: "How does Staqor evaluate frontend code in under 2.5 seconds?",
+    title: "How does Staqor evaluate code across Frontend, Backend, and Databases in <2.5s?",
     content:
-      "Staqor compiles HTML, CSS, and JS 100% client-side inside an isolated iframe with a 2000ms loop-killer. When you run or submit, a zero-token syntax pre-filter checks structural code in 0.02s before Groq LPU models grade layout fidelity (35%), DOM/state logic (35%), and semantic cleanliness (30%) in <2.5 seconds.",
+      "Staqor runs isolated client-side sandboxes and serverless execution runners with a 2000ms loop-killer. When you run or submit, zero-token AST pre-filters verify syntax in 0.02s before Groq LPU models grade layout fidelity (35%), API/state logic (35%), and semantic cleanliness (30%) in under 2.5 seconds.",
   },
   {
     id: "item-2",
     title: "Is Staqor completely free for developers and students?",
     content:
-      "Yes! Every challenge comes with a generous lifetime free quota (5 Runs & 3 Submits per challenge). You get instant client-side execution, live Groq AI rubric feedback, and verified public portfolio replays at $0.",
+      "Yes! Every challenge comes with a generous lifetime free quota (5 Runs & 3 Submits per challenge). You get instant sandbox execution, live Groq AI rubric feedback, and verified public portfolio replays at $0.",
   },
   {
     id: "item-3",
-    title: "What are the 8 specialized practice tracks covered in Staqor?",
+    title: "What development disciplines are covered in Staqor's 8 tracks?",
     content:
-      "The catalog spans HTML & CSS Layouts, JavaScript & DOM Events, React Components, Vue.js Reactive UI, Node.js & Mock APIs, Real-World Bug Fixes, Full-Stack Scenarios, and Performance Optimization across Easy, Medium, and Hard tiers.",
+      "The curriculum covers Frontend UI Layouts, JavaScript & DOM Events, React Component Systems, Backend & REST APIs (Node.js/Express), Databases & SQL Queries, Distributed Systems & Caching (Redis), Real-World Bug Diagnostics, and End-to-End Scenarios.",
   },
   {
     id: "item-4",
-    title: "How do locked scaffolding and read-only files work?",
+    title: "How do locked scaffolding and scoped contracts work?",
     content:
-      "To enforce targeted practice, challenges lock boilerplate files. For example, in a JS DOM challenge, HTML markup and CSS styling are locked read-only so you focus purely on DOM manipulation and state logic without breaking scaffolding.",
+      "To enforce focused software engineering, challenges protect boilerplate files. For example, in a Backend API challenge, routing harness files are locked read-only so you focus purely on handler logic, error handling, and performance without breaking infrastructure.",
   },
   {
     id: "item-5",
-    title: "How do recruiters and engineering leads verify candidate work?",
+    title: "How do recruiters and engineering leads verify candidate proof of work?",
     content:
-      "When you solve a challenge, Staqor generates a verified candidate showcase link. Recruiters can test your live component in an interactive sandbox and inspect your Monaco code tabs with one click—no repository cloning required.",
+      "When you solve a challenge, Staqor generates a verified candidate showcase link. Recruiters can test your live component in an interactive sandbox, inspect your API handlers, and review your Monaco code tabs with one click—no repository cloning required.",
   },
   {
     id: "item-6",
-    title: "Can I test responsive breakpoints and mobile viewports inside the IDE?",
+    title: "Can I test responsive breakpoints, API responses, and database queries in the IDE?",
     content:
-      "Yes! The workspace includes instant Desktop (100%), Tablet (768px), and Mobile (375px) viewport toggles with interactive mouse events, keyboard access, and local storage state persistence.",
+      "Yes! The workspace includes instant Desktop, Tablet, and Mobile viewport toggles for UI tasks, as well as live HTTP payload inspectors and SQL query plan analyzers for backend and database challenges.",
   },
 ];

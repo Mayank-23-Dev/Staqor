@@ -24,16 +24,18 @@ import {
   Eye,
   Sliders,
   Cpu,
+  Database,
+  Server,
+  Code2,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export function CodeEditorHeroShowcase() {
-  const [activeFile, setActiveFile] = useState<"pricing" | "kanban" | "virtual">("pricing");
+  const [activeFile, setActiveFile] = useState<"frontend" | "backend" | "database">("frontend");
   const [isAnnual, setIsAnnual] = useState(true);
   const [viewport, setViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [evalScore, setEvalScore] = useState(96);
-  const [activeTab, setActiveTab] = useState<"code" | "css" | "js">("code");
 
   // 3D Tilt Card Ref
   const cardRef = useRef<HTMLDivElement>(null);
@@ -137,25 +139,31 @@ export function CodeEditorHeroShowcase() {
               <ChevronRight className="w-3 h-3 text-zinc-600" />
               <span>src</span>
               <ChevronRight className="w-3 h-3 text-zinc-600" />
-              <span>challenges</span>
+              <span>
+                {activeFile === "frontend"
+                  ? "frontend"
+                  : activeFile === "backend"
+                  ? "backend-api"
+                  : "database"}
+              </span>
               <ChevronRight className="w-3 h-3 text-zinc-600" />
               <span className="text-[#ABDAC8] font-bold">
-                {activeFile === "pricing"
+                {activeFile === "frontend"
                   ? "PricingCard.tsx"
-                  : activeFile === "kanban"
-                  ? "KanbanBoard.tsx"
-                  : "VirtualGrid.tsx"}
+                  : activeFile === "backend"
+                  ? "rate_limiter.ts"
+                  : "schema_queries.sql"}
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-mono text-zinc-500 hidden sm:inline-block">
-              Monaco Editor v0.46
+              Multi-Domain IDE v1.0
             </span>
             <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#111614] border border-[#ABDAC8]/30 text-[#ABDAC8] text-[10px] font-mono font-bold">
               <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-pulse" />
-              <span>IN-BROWSER IDE</span>
+              <span>DEVELOPMENT WORKSPACE</span>
             </div>
           </div>
         </div>
@@ -164,61 +172,64 @@ export function CodeEditorHeroShowcase() {
         {/* 2. MAIN 3-PANEL IDE BODY */}
         {/* ========================================================================= */}
         <div className="grid grid-cols-12 min-h-[460px] bg-[#0E0E14] relative z-20">
-          {/* Panel A: Explorer Sidebar (20% on desktop) */}
+          {/* Panel A: Explorer Sidebar (25% on desktop) */}
           <div className="hidden md:flex md:col-span-3 border-r border-[#26262E] bg-[#0A0A0F] flex-col justify-between p-3 font-mono text-xs text-zinc-400">
             <div>
               <div className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-500 px-2 pb-2">
-                EXPLORER: STAQOR
+                EXPLORER: DOMAINS
               </div>
 
-              {/* Folder: challenges */}
+              {/* Folder: Development Domains */}
               <div className="space-y-0.5 pt-1">
                 <div className="flex items-center gap-1.5 px-2 py-1 text-zinc-400 text-[11px] font-semibold">
                   <ChevronDown className="w-3.5 h-3.5 text-zinc-500" />
                   <FolderOpen className="w-3.5 h-3.5 text-[#ABDAC8]" />
-                  <span>src/challenges</span>
+                  <span>src/domains</span>
                 </div>
 
-                {/* File Items */}
+                {/* File Items Across Development Disciplines */}
                 <div className="pl-4 space-y-0.5">
+                  {/* Frontend */}
                   <button
-                    onClick={() => setActiveFile("pricing")}
+                    onClick={() => setActiveFile("frontend")}
                     className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-left text-[11px] transition-all cursor-pointer ${
-                      activeFile === "pricing"
+                      activeFile === "frontend"
                         ? "bg-[#16161F] text-[#ABDAC8] font-bold border border-[#26262E]"
                         : "text-zinc-400 hover:text-white hover:bg-zinc-800/40"
                     }`}
                   >
-                    <FileCode2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                    <span className="truncate">PricingCard.tsx</span>
+                    <Code2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                    <span className="truncate">PricingCard.tsx (UI)</span>
                   </button>
 
+                  {/* Backend */}
                   <button
-                    onClick={() => setActiveFile("kanban")}
+                    onClick={() => setActiveFile("backend")}
                     className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-left text-[11px] transition-all cursor-pointer ${
-                      activeFile === "kanban"
+                      activeFile === "backend"
                         ? "bg-[#16161F] text-[#ABDAC8] font-bold border border-[#26262E]"
                         : "text-zinc-400 hover:text-white hover:bg-zinc-800/40"
                     }`}
                   >
-                    <FileCode2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                    <span className="truncate">KanbanBoard.tsx</span>
+                    <Server className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span className="truncate">rate_limiter.ts (API)</span>
                   </button>
 
+                  {/* Database */}
                   <button
-                    onClick={() => setActiveFile("virtual")}
+                    onClick={() => setActiveFile("database")}
                     className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-left text-[11px] transition-all cursor-pointer ${
-                      activeFile === "virtual"
+                      activeFile === "database"
                         ? "bg-[#16161F] text-[#ABDAC8] font-bold border border-[#26262E]"
                         : "text-zinc-400 hover:text-white hover:bg-zinc-800/40"
                     }`}
                   >
-                    <FileCode2 className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                    <span className="truncate">VirtualGrid.tsx</span>
+                    <Database className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                    <span className="truncate">queries.sql (Data)</span>
                   </button>
                 </div>
 
-                {/* Folder: rubrics */}
+                {/* Folder: Rubrics */}
                 <div className="flex items-center gap-1.5 px-2 py-1 pt-2 text-zinc-500 text-[11px]">
                   <ChevronRight className="w-3.5 h-3.5 text-zinc-600" />
                   <Folder className="w-3.5 h-3.5 text-zinc-500" />
@@ -230,45 +241,30 @@ export function CodeEditorHeroShowcase() {
             {/* Bottom Scaffolding Lock indicator */}
             <div className="p-2.5 rounded-xl bg-[#111117] border border-[#26262E] text-[10px] space-y-1">
               <div className="flex items-center gap-1.5 text-[#ABDAC8] font-bold">
-                <Lock className="w-3 h-3" /> Scaffolding Locked
+                <Lock className="w-3 h-3" /> Scaffolding Protected
               </div>
               <p className="text-zinc-500 text-[9px] leading-tight">
-                Read-only template scope protects challenge contracts.
+                Contracts locked across Frontend, Backend &amp; Database challenges.
               </p>
             </div>
           </div>
 
-          {/* Panel B: Monaco Code Editor Canvas (50% on desktop) */}
+          {/* Panel B: Monaco Code Editor Canvas (45% on desktop) */}
           <div className="col-span-12 md:col-span-5 flex flex-col border-r border-[#26262E] bg-[#0E0E14]">
-            {/* Editor File Tabs */}
+            {/* Editor File Tab */}
             <div className="h-10 border-b border-[#26262E] bg-[#0A0A0F] flex items-center px-2 text-xs font-mono">
-              <button
-                onClick={() => setActiveTab("code")}
-                className={`px-3 py-1.5 rounded-t-lg font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-                  activeTab === "code"
-                    ? "bg-[#0E0E14] text-[#ABDAC8] border-t-2 border-[#ABDAC8] border-x border-[#26262E]"
-                    : "text-zinc-500 hover:text-zinc-300"
-                }`}
-              >
-                <FileCode2 className="w-3 h-3 text-cyan-400" />
+              <div className="px-3.5 py-1.5 rounded-t-lg font-semibold flex items-center gap-1.5 bg-[#0E0E14] text-[#ABDAC8] border-t-2 border-[#ABDAC8] border-x border-[#26262E]">
+                {activeFile === "frontend" && <Code2 className="w-3.5 h-3.5 text-cyan-400" />}
+                {activeFile === "backend" && <Server className="w-3.5 h-3.5 text-amber-400" />}
+                {activeFile === "database" && <Database className="w-3.5 h-3.5 text-purple-400" />}
                 <span>
-                  {activeFile === "pricing"
+                  {activeFile === "frontend"
                     ? "PricingCard.tsx"
-                    : activeFile === "kanban"
-                    ? "KanbanBoard.tsx"
-                    : "VirtualGrid.tsx"}
+                    : activeFile === "backend"
+                    ? "rate_limiter.ts"
+                    : "schema_queries.sql"}
                 </span>
-              </button>
-              <button
-                onClick={() => setActiveTab("css")}
-                className={`px-3 py-1.5 rounded-t-lg font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-                  activeTab === "css"
-                    ? "bg-[#0E0E14] text-[#ABDAC8] border-t-2 border-[#ABDAC8] border-x border-[#26262E]"
-                    : "text-zinc-500 hover:text-zinc-300"
-                }`}
-              >
-                <span>styles.css</span>
-              </button>
+              </div>
             </div>
 
             {/* Monaco Syntax Code Canvas with Line Numbers */}
@@ -276,14 +272,14 @@ export function CodeEditorHeroShowcase() {
               <div className="flex gap-3">
                 {/* Line Numbers Gutter */}
                 <div className="select-none text-zinc-600 text-right pr-2 border-r border-zinc-800/80 space-y-0.5">
-                  {[...Array(14)].map((_, i) => (
+                  {[...Array(13)].map((_, i) => (
                     <div key={i}>{i + 1}</div>
                   ))}
                 </div>
 
                 {/* Syntax Code Body */}
                 <div className="space-y-0.5 text-zinc-300 flex-1">
-                  {activeFile === "pricing" && (
+                  {activeFile === "frontend" && (
                     <>
                       <div>
                         <span className="text-purple-400">import</span> &#123; useState &#125;{" "}
@@ -308,7 +304,7 @@ export function CodeEditorHeroShowcase() {
                         <span className="text-emerald-400">&quot;pricing-card border-mint&quot;</span>&gt;
                       </div>
                       <div className="pl-12">
-                        &lt;<span className="text-cyan-400">h3</span>&gt;Pro Candidate Plan&lt;/
+                        &lt;<span className="text-cyan-400">h3</span>&gt;Pro Engineer Plan&lt;/
                         <span className="text-cyan-400">h3</span>&gt;
                       </div>
                       <div className="pl-12">
@@ -320,60 +316,71 @@ export function CodeEditorHeroShowcase() {
                         $&#123;isAnnual ? 15 : 19&#125; / month
                       </div>
                       <div className="pl-12">&lt;/<span className="text-cyan-400">span</span>&gt;</div>
-                      <div className="pl-12">
-                        &lt;<span className="text-cyan-400">button</span>{" "}
-                        <span className="text-[#ABDAC8]">onClick</span>=&#123;() =&gt; setIsAnnual(!isAnnual)&#125;&gt;
-                      </div>
-                      <div className="pl-16 text-zinc-300">
-                        Toggle Billing Cycle
-                      </div>
-                      <div className="pl-12">&lt;/<span className="text-cyan-400">button</span>&gt;</div>
                       <div className="pl-8">&lt;/<span className="text-cyan-400">div</span>&gt;</div>
                       <div className="pl-4">);</div>
                       <div>&#125;</div>
                     </>
                   )}
 
-                  {activeFile === "kanban" && (
+                  {activeFile === "backend" && (
                     <>
                       <div>
-                        <span className="text-purple-400">const</span> board ={" "}
-                        <span className="text-yellow-300">document.querySelector</span>(
-                        <span className="text-emerald-400">&apos;.kanban-board&apos;</span>);
+                        <span className="text-purple-400">import</span> &#123; Request, Response, NextFunction &#125;{" "}
+                        <span className="text-purple-400">from</span>{" "}
+                        <span className="text-emerald-400">&apos;express&apos;</span>;
                       </div>
-                      <div className="pt-1">
-                        <span className="text-purple-400">function</span>{" "}
-                        <span className="text-yellow-300">handleDragDrop</span>(e) &#123;
-                      </div>
-                      <div className="pl-4">
-                        e.<span className="text-cyan-400">dataTransfer.setData</span>(
-                        <span className="text-emerald-400">&apos;text/plain&apos;</span>, e.target.id);
+                      <div>
+                        <span className="text-purple-400">export function</span>{" "}
+                        <span className="text-yellow-300 font-bold">tokenBucketLimiter</span>(capacity = 60) &#123;
                       </div>
                       <div className="pl-4">
-                        <span className="text-cyan-400">console.log</span>(
-                        <span className="text-emerald-400">&apos;[Drag] Task moved to In Progress&apos;</span>);
+                        <span className="text-purple-400">return async</span> (req: Request, res: Response, next: NextFunction) =&gt; &#123;
                       </div>
+                      <div className="pl-8">
+                        <span className="text-purple-400">const</span> tokens = <span className="text-cyan-400">await</span> redis.get(`rate:$&#123;req.ip&#125;`);
+                      </div>
+                      <div className="pl-8">
+                        <span className="text-purple-400">if</span> (tokens &lt;= 0) &#123;
+                      </div>
+                      <div className="pl-12">
+                        <span className="text-purple-400">return</span> res.<span className="text-cyan-400">status</span>(429).<span className="text-cyan-400">json</span>(&#123; error: &quot;Rate limit exceeded&quot; &#125;);
+                      </div>
+                      <div className="pl-8">&#125;</div>
+                      <div className="pl-8">
+                        <span className="text-cyan-400">await</span> redis.decr(`rate:$&#123;req.ip&#125;`);
+                      </div>
+                      <div className="pl-8">next();</div>
+                      <div className="pl-4">&#125;;</div>
                       <div>&#125;</div>
                     </>
                   )}
 
-                  {activeFile === "virtual" && (
+                  {activeFile === "database" && (
                     <>
                       <div>
-                        <span className="text-purple-400">export function</span>{" "}
-                        <span className="text-yellow-300 font-bold">useVirtualWindow</span>(items, itemHeight) &#123;
+                        <span className="text-purple-400">-- High-performance transactional user analytics index</span>
+                      </div>
+                      <div>
+                        <span className="text-yellow-300 font-bold">CREATE INDEX CONCURRENTLY</span> idx_submissions_user
                       </div>
                       <div className="pl-4">
-                        <span className="text-purple-400">const</span> [scroll, setScroll] ={" "}
-                        <span className="text-cyan-400">useState</span>(0);
+                        <span className="text-purple-400">ON</span> challenge_submissions (user_id, created_at <span className="text-amber-400">DESC</span>);
+                      </div>
+                      <div className="pt-1">
+                        <span className="text-yellow-300 font-bold">SELECT</span> u.id, u.username,
                       </div>
                       <div className="pl-4">
-                        <span className="text-purple-400">const</span> startIdx = Math.max(0, Math.floor(scroll / itemHeight));
+                        <span className="text-cyan-400">COUNT</span>(s.id) <span className="text-purple-400">FILTER</span> (<span className="text-purple-400">WHERE</span> s.verdict = <span className="text-emerald-400">&apos;PASSED&apos;</span>) <span className="text-purple-400">AS</span> solved_count
                       </div>
                       <div className="pl-4">
-                        <span className="text-purple-400">return</span> &#123; startIdx, visibleCount: 12 &#125;;
+                        <span className="text-purple-400">FROM</span> users u
                       </div>
-                      <div>&#125;</div>
+                      <div className="pl-4">
+                        <span className="text-purple-400">LEFT JOIN</span> challenge_submissions s <span className="text-purple-400">ON</span> s.user_id = u.id
+                      </div>
+                      <div className="pl-4">
+                        <span className="text-purple-400">GROUP BY</span> u.id;
+                      </div>
                     </>
                   )}
                 </div>
@@ -382,16 +389,22 @@ export function CodeEditorHeroShowcase() {
               {/* Inline AI Code Lens / Code Annotation Pill */}
               <div className="mt-4 p-2 rounded-lg bg-[#16161F] border border-[#ABDAC8]/30 flex items-center justify-between text-[10px]">
                 <span className="text-[#ABDAC8] flex items-center gap-1.5 font-bold">
-                  <Sparkles className="w-3.5 h-3.5 text-[#ABDAC8]" /> Groq LPU Judge: 96/100 (Passed in 1.8s)
+                  <Sparkles className="w-3.5 h-3.5 text-[#ABDAC8]" /> Groq LPU Judge: 98/100 (Passed in 1.8s)
                 </span>
-                <span className="text-zinc-500 font-mono">Pixel-Perfect ARIA</span>
+                <span className="text-zinc-400 font-mono">
+                  {activeFile === "frontend"
+                    ? "Zero Layout Shifts"
+                    : activeFile === "backend"
+                    ? "Safe Concurrency"
+                    : "Zero Full Table Scan"}
+                </span>
               </div>
             </div>
 
             {/* Terminal Drawer Bottom Bar */}
             <div className="p-2.5 bg-[#0A0A0F] flex items-center justify-between text-[11px] font-mono text-zinc-400">
               <span className="flex items-center gap-1.5 text-zinc-300">
-                <Terminal className="w-3.5 h-3.5 text-[#ABDAC8]" /> Isolated Sandbox Console
+                <Terminal className="w-3.5 h-3.5 text-[#ABDAC8]" /> Execution Sandbox Console
               </span>
               <button
                 onClick={handleRunEvaluation}
@@ -438,49 +451,87 @@ export function CodeEditorHeroShowcase() {
 
               {/* Interactive Component Live Output */}
               <div className="p-4 rounded-2xl bg-[#111117] border border-[#26262E] text-center shadow-inner">
-                {/* Billing toggle switch */}
-                <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-full bg-[#16161F] border border-[#26262E] text-[10px] font-mono">
-                  <span className="text-zinc-400">Monthly</span>
-                  <button
-                    onClick={() => setIsAnnual(!isAnnual)}
-                    className={`w-8 h-4 rounded-full p-0.5 transition-colors cursor-pointer ${
-                      isAnnual ? "bg-[#ABDAC8]" : "bg-zinc-700"
-                    }`}
-                  >
-                    <div
-                      className={`w-3 h-3 rounded-full bg-[#0A0A0F] transition-transform ${
-                        isAnnual ? "translate-x-4" : "translate-x-0"
-                      }`}
-                    />
-                  </button>
-                  <span className="text-white font-bold">
-                    Annual <span className="text-[#ABDAC8] text-[9px] font-mono px-1 py-0.5 bg-[#ABDAC8]/15 rounded">-20%</span>
-                  </span>
-                </div>
+                {activeFile === "frontend" && (
+                  <>
+                    {/* Billing toggle switch */}
+                    <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-full bg-[#16161F] border border-[#26262E] text-[10px] font-mono">
+                      <span className="text-zinc-400">Monthly</span>
+                      <button
+                        onClick={() => setIsAnnual(!isAnnual)}
+                        className={`w-8 h-4 rounded-full p-0.5 transition-colors cursor-pointer ${
+                          isAnnual ? "bg-[#ABDAC8]" : "bg-zinc-700"
+                        }`}
+                      >
+                        <div
+                          className={`w-3 h-3 rounded-full bg-[#0A0A0F] transition-transform ${
+                            isAnnual ? "translate-x-4" : "translate-x-0"
+                          }`}
+                        />
+                      </button>
+                      <span className="text-white font-bold">
+                        Annual <span className="text-[#ABDAC8] text-[9px] font-mono px-1 py-0.5 bg-[#ABDAC8]/15 rounded">-20%</span>
+                      </span>
+                    </div>
 
-                {/* Rendered Live Card */}
-                <div className="p-4 rounded-xl bg-[#111614] border-2 border-[#ABDAC8]/40 text-left relative overflow-hidden shadow-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[9px] font-mono font-bold text-[#ABDAC8] bg-[#ABDAC8]/15 px-2 py-0.5 rounded-full">
-                      PRO CANDIDATE
-                    </span>
-                    <span className="text-[9px] font-mono text-zinc-500">Live Component</span>
+                    {/* Rendered Live Card */}
+                    <div className="p-4 rounded-xl bg-[#111614] border-2 border-[#ABDAC8]/40 text-left relative overflow-hidden shadow-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[9px] font-mono font-bold text-[#ABDAC8] bg-[#ABDAC8]/15 px-2 py-0.5 rounded-full">
+                          SOFTWARE ENGINEER
+                        </span>
+                        <span className="text-[9px] font-mono text-zinc-500">Live Component</span>
+                      </div>
+                      <h4 className="text-sm font-bold text-white mb-1">Development Pro Plan</h4>
+                      <div className="text-2xl font-black text-white mb-2 font-mono flex items-baseline gap-1">
+                        <span>${isAnnual ? "15" : "19"}</span>
+                        <span className="text-xs text-zinc-400 font-normal">/ mo</span>
+                      </div>
+                      <p className="text-[11px] text-zinc-400 mb-3">
+                        Sub-2.5s Groq AI evaluation &amp; verified candidate sandbox link.
+                      </p>
+                      <button
+                        onClick={() => setIsAnnual(!isAnnual)}
+                        className="w-full py-1.5 text-xs font-bold rounded-lg bg-[#ABDAC8] text-[#0A0A0F] hover:bg-[#ABDAC8]/90 transition-all cursor-pointer"
+                      >
+                        Click to Toggle State
+                      </button>
+                    </div>
+                  </>
+                )}
+
+                {activeFile === "backend" && (
+                  <div className="p-4 rounded-xl bg-[#111614] border border-amber-500/40 text-left space-y-2 font-mono text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="text-amber-400 font-bold flex items-center gap-1.5">
+                        <Server className="w-3.5 h-3.5" /> Express 200 OK
+                      </span>
+                      <span className="text-[10px] text-zinc-400">12ms Latency</span>
+                    </div>
+                    <p className="text-zinc-300 text-[11px]">
+                      Rate limiter successfully throttled 140 bursts / sec with zero memory leaks.
+                    </p>
+                    <div className="p-2 rounded bg-[#0A0A0F] text-[10px] text-zinc-400">
+                      <code>X-RateLimit-Remaining: 58/60</code>
+                    </div>
                   </div>
-                  <h4 className="text-sm font-bold text-white mb-1">Frontend Pro Sandbox</h4>
-                  <div className="text-2xl font-black text-white mb-2 font-mono flex items-baseline gap-1">
-                    <span>${isAnnual ? "15" : "19"}</span>
-                    <span className="text-xs text-zinc-400 font-normal">/ mo</span>
+                )}
+
+                {activeFile === "database" && (
+                  <div className="p-4 rounded-xl bg-[#111614] border border-purple-500/40 text-left space-y-2 font-mono text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="text-purple-400 font-bold flex items-center gap-1.5">
+                        <Database className="w-3.5 h-3.5" /> Query Planner
+                      </span>
+                      <span className="text-[10px] text-[#4ADE80]">Index Scan (~0.4ms)</span>
+                    </div>
+                    <p className="text-zinc-300 text-[11px]">
+                      PostgreSQL query planner executed optimal Index Only Scan with zero seq scan.
+                    </p>
+                    <div className="p-2 rounded bg-[#0A0A0F] text-[10px] text-[#4ADE80]">
+                      <code>Cost: 0.28..4.29 rows=1 (PASSED)</code>
+                    </div>
                   </div>
-                  <p className="text-[11px] text-zinc-400 mb-3">
-                    Sub-2.5s Groq AI evaluation &amp; verified candidate sandbox link.
-                  </p>
-                  <button
-                    onClick={() => setIsAnnual(!isAnnual)}
-                    className="w-full py-1.5 text-xs font-bold rounded-lg bg-[#ABDAC8] text-[#0A0A0F] hover:bg-[#ABDAC8]/90 transition-all cursor-pointer"
-                  >
-                    Click to Toggle State
-                  </button>
-                </div>
+                )}
               </div>
             </div>
 
@@ -511,9 +562,9 @@ export function CodeEditorHeroShowcase() {
           </div>
 
           <div className="flex items-center gap-4">
-            <span className="text-zinc-400">TypeScript React</span>
+            <span className="text-zinc-400">Full Development Scope</span>
             <span className="text-zinc-500">UTF-8</span>
-            <span className="text-[#ABDAC8] font-bold">100% Client Sandbox</span>
+            <span className="text-[#ABDAC8] font-bold">100% In-Browser</span>
           </div>
         </div>
       </div>
