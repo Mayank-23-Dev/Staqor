@@ -12,11 +12,14 @@ import { GSAPAnimatedBox } from "@/components/gsap-company-box";
 
 export function FaqsSection() {
   return (
-    <section id="faq" className="py-16 md:py-24 border-t border-[#26262E] relative overflow-hidden">
-      <div className="mx-auto w-full max-w-6xl px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+    <section id="faq" className="py-20 md:py-28 border-t border-[#26262E] relative overflow-hidden">
+      {/* Ambient background glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-[#ABDAC8]/5 blur-[150px] pointer-events-none" />
+
+      <div className="mx-auto w-full max-w-6xl px-4 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
           {/* Left Column (Sticky Title & Help) */}
-          <div className="lg:col-span-4 space-y-4 lg:sticky lg:top-24">
+          <div className="lg:col-span-4 space-y-4 lg:sticky lg:top-28">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ABDAC8]/10 border border-[#ABDAC8]/30 text-[#ABDAC8] text-[11px] font-mono uppercase tracking-wider">
               <HelpCircle className="w-3.5 h-3.5 text-[#ABDAC8]" />
               <span>Got Questions?</span>
@@ -50,12 +53,12 @@ export function FaqsSection() {
             </div>
           </div>
 
-          {/* Right Column (Accordion List) */}
+          {/* Right Column (Accordion List - All Closed by default) */}
           <div className="lg:col-span-8">
             <Accordion
               className="w-full space-y-3"
-              type="multiple"
-              defaultValue={["item-1", "item-2", "item-3", "item-4", "item-5", "item-6"]}
+              type="single"
+              collapsible
             >
               {questions.map((item) => (
                 <AccordionItem
