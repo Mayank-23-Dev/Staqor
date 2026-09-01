@@ -16,6 +16,25 @@
 
 ---
 
+### [2026-09-01] — Landing Page: ScrollTrigger Dead-Space Fix, Scroll-Linked Glow Line & Grid Texture
+- **What was built:**
+  - **ScrollTrigger Dead-Space Bug Fix (`app/(marketing)/page.tsx`):**
+    - Reduced `y` translation offsets on section reveals and card grids to subtle values (`y: 20` and `y: 16`), preventing large empty offsets.
+    - Adjusted ScrollTrigger trigger thresholds to `start: "top 94%"` and `start: "top 92%"` with `once: true`, ensuring content becomes visible the moment it enters the viewport without dead scroll gaps.
+    - Added automated trigger refreshes on mount and resize (`ScrollTrigger.refresh()`).
+  - **Scroll-Responsive Glowing Accent Line (`app/(marketing)/page.tsx`):**
+    - Rendered an SVG glowing path spanning the entire landing page behind content, styled in Staqor's mint/aqua palette (`#ABDAC8`, `#7BC4A8`, `#D4EDE3`) with SVG blur glow filter.
+    - Linked `strokeDashoffset` dynamically with scroll position using GSAP ScrollTrigger `scrub: 0.6`.
+  - **Background Grid & Particle Texture (`app/(marketing)/page.tsx`):**
+    - Added subtle low-opacity CSS grid texture (`#26262E` on `#0A0A0F`) with radial center mask.
+    - Added multi-stop ambient aqua/mint background glow gradients and scattered floating particle dots with gentle pulse animations.
+  - **Installed @efferd UI blocks & Integrated Radix UI Accordion (`components/ui/accordion.tsx`, `components/decor-icon.tsx`):**
+    - Fixed duplicate tailwind config animation/keyframe keys.
+    - Styled FAQ section with Radix UI accordion.
+- **Known gaps / notes:**
+  - Production build compiled successfully (`next build`).
+- **Next recommended action:** Ready for git commit and review.
+
 ### [2026-09-01] — Phase 2 & Groq: Locked Code Regions & Structural Correctness Pre-Filter Gate
 - **What was built:**
   - **Locked/Read-Only Code Regions (`lib/supabase/db.ts`, `components/editor/CodeEditor.tsx`, `components/editor/WorkspaceContainer.tsx`):**
