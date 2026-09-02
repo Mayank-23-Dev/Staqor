@@ -296,14 +296,16 @@ export function ProblemWorkspace({ problem, user }: ProblemWorkspaceProps) {
       });
 
       const data = await res.json();
-      if (!res.ok || data.error) {
-        throw new Error(data.error || "Evaluation failed");
-      }
+      const evaluation = data.evaluation || {
+        score: typeof data.score === "number" ? data.score : 0,
+        passed: Boolean(data.passed),
+        breakdown: Array.isArray(data.breakdown) ? data.breakdown : [],
+        overall_feedback: data.overall_feedback || data.error || "Evaluation complete.",
+      };
 
-      const evaluation = data.evaluation || data;
       setEvaluationResult(evaluation);
 
-      if (evaluation.passed) {
+      if (evaluation.passed && evaluation.score >= 80) {
         toast.success(`🎉 Accepted! Score: ${evaluation.score}/100 (+10 Staqor Coins)`);
 
         if (user) {
@@ -340,10 +342,16 @@ export function ProblemWorkspace({ problem, user }: ProblemWorkspaceProps) {
           }
         }
       } else {
-        toast.error(`Scored ${evaluation.score}/100. Review AI feedback to polish your code.`);
+        toast.error(`Solution scored ${evaluation.score}/100. Review AI feedback to polish your code.`);
       }
     } catch (err: any) {
       toast.error(err.message || "Failed to evaluate code.");
+      setEvaluationResult({
+        score: 0,
+        passed: false,
+        breakdown: [],
+        overall_feedback: err.message || "Evaluation request failed. Please check your connection and retry.",
+      });
     } finally {
       setIsEvaluating(false);
     }
