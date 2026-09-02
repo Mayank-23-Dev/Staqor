@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>05 - Color Palette Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Fira+Code:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Top Control Bar -->
+        <header class="top-bar">
+            <div class="brand">
+                <span class="badge">Question 05 • Level 1: Basics</span>
+                <h1>Color Palette Generator</h1>
+            </div>
+            <div class="actions">
+                <span class="hint">Press <kbd>Spacebar</kbd> or click</span>
+                <button class="btn btn-primary" id="generateBtn">🎲 Generate Palette</button>
+                <button class="btn btn-secondary" id="exportBtn">Export CSS</button>
+            </div>
+        </header>
+
+        <!-- 5 Color Palette Columns -->
+        <main class="palette-container" id="paletteContainer">
+            <!-- Populated via JavaScript -->
+        </main>
+
+        <!-- Toast Notification -->
+        <div class="toast-notification hidden" id="toast">Copied HEX code!</div>
+
+        <!-- Export Modal -->
+        <div class="modal-overlay hidden" id="exportModal">
+            <div class="modal-content">
+                <h2>Export Palette CSS Variables</h2>
+                <pre><code id="exportCode"></code></pre>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" id="copyCssExportBtn">Copy CSS</button>
+                    <button class="btn btn-secondary" id="closeModalBtn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

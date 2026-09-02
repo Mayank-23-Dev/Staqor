@@ -1,0 +1,118 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #080c15;
+    color: #f8fafc;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    padding: 4rem 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    max-width: 1050px;
+    width: 100%;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+}
+
+.badge {
+    display: inline-block;
+    background: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+}
+
+.section-header h2 {
+    font-size: 2.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.section-header p {
+    color: #94a3b8;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 20px;
+    padding: 2.2rem 1.5rem;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: #6366f1;
+}
+
+.stat-icon {
+    font-size: 2.2rem;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.number-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    font-family: 'Fira Code', monospace;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #38bdf8;
+    margin-bottom: 0.4rem;
+}
+
+.suffix {
+    color: #6366f1;
+    margin-left: 2px;
+}
+
+.stat-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.4rem;
+    color: #f8fafc;
+}
+
+.stat-card p {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.replay-box {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.btn-secondary {
+    background: #1e293b;
+    color: #f8fafc;
+    border: 1px solid #334155;
+    padding: 0.75rem 1.6rem;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-secondary:hover { background: #334155; }

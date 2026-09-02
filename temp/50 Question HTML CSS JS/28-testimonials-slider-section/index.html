@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>28 - Testimonials Slider Section</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="section-header">
+            <span class="badge">Question 28 • Level 3: Sections</span>
+            <h2>Loved by Leading Engineering Teams</h2>
+            <p>See why high-growth startups and tech leaders choose our cloud framework.</p>
+        </header>
+
+        <!-- Testimonial Carousel -->
+        <div class="testimonial-wrapper">
+            <div class="testimonial-card" id="testiCard">
+                <div class="quote-stars">★★★★★</div>
+                <p class="quote-text" id="quoteText">"Migrating our microservices to NovaCloud cut our cloud infrastructure spending by 42% while simultaneously boosting our API response speed."</p>
+                <div class="author-row">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80" alt="Author" id="authorImg" class="author-avatar">
+                    <div class="author-details">
+                        <strong id="authorName">Sarah Jenkins</strong>
+                        <span id="authorRole">VP of Engineering at FinScale</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls-row">
+                <button class="control-btn" id="prevTestiBtn">‹</button>
+                <div class="dots-box" id="testiDots"></div>
+                <button class="control-btn" id="nextTestiBtn">›</button>
+            </div>
+        </div>
+
+        <!-- Client Logo Cloud -->
+        <div class="logo-cloud">
+            <span>TRUSTED BY BUILDERS AT:</span>
+            <div class="logos-row">
+                <strong>METRICPAY</strong>
+                <strong>DATALAYER</strong>
+                <strong>NEXUS_AI</strong>
+                <strong>HYPERCLOUD</strong>
+                <strong>SYNCWAVE</strong>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

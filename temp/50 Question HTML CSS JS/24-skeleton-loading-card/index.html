@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>24 - Skeleton Loading Card</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 24 • Level 2: Components</span>
+            <h1>Skeleton Shimmer Loading Card</h1>
+            <p>Fluid gradient wave animation replacing content during async network requests.</p>
+        </header>
+
+        <div class="controls-bar">
+            <button class="btn btn-primary" id="toggleStateBtn">Toggle Loading State</button>
+        </div>
+
+        <div class="card-box">
+            <!-- 1. Skeleton Placeholder -->
+            <div class="skeleton-card" id="skeletonCard">
+                <div class="skeleton skeleton-img"></div>
+                <div class="skeleton-content">
+                    <div class="skeleton skeleton-title"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text short"></div>
+                    <div class="skeleton-footer">
+                        <div class="skeleton skeleton-avatar"></div>
+                        <div class="skeleton skeleton-author"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Real Content Card -->
+            <div class="real-card hidden" id="realCard">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80" alt="Abstract 3D Art" class="real-img">
+                <div class="real-content">
+                    <h3>Generative 3D Mesh Architecture</h3>
+                    <p>Exploring high-performance algorithmic geometry pipelines and WebGL canvas rendering techniques.</p>
+                    <div class="real-footer">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" class="real-avatar" alt="Avatar">
+                        <span class="real-author">Sarah Connor • 4 min read</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

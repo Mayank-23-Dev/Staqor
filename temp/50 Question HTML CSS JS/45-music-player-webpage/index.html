@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>45 - Cyber Audio Player</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="player-card">
+        <div class="album-art-box">
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80" class="album-disc" id="albumDisc" alt="Album Cover">
+        </div>
+
+        <div class="track-info">
+            <h2 id="songTitle">Cybernetic Dreamscape</h2>
+            <p id="artistName">Nova Synthetics • Synthwave 2026</p>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar-bg" id="progressTrack">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="time-stamps">
+                <span id="currentTime">1:24</span>
+                <span id="totalTime">3:45</span>
+            </div>
+        </div>
+
+        <div class="player-controls">
+            <button class="ctrl-btn" id="prevSong">⏮</button>
+            <button class="ctrl-btn play-btn" id="playBtn">▶</button>
+            <button class="ctrl-btn" id="nextSong">⏭</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

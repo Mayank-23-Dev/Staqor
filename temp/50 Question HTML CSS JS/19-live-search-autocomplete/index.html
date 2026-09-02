@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>19 - Search Autocomplete</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Fira+Code:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 19 • Level 2: Components</span>
+            <h1>Live Search & Instant Filter</h1>
+            <p>Debounced input listening, highlight matching text chunks, and category tags.</p>
+        </header>
+
+        <div class="search-card">
+            <div class="search-box-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="liveSearchInput" placeholder="Search web technologies (e.g. React, Docker, CSS)..." autocomplete="off">
+                <button class="clear-btn hidden" id="clearSearchBtn">✕</button>
+            </div>
+
+            <!-- Autocomplete Results Dropdown -->
+            <div class="results-container" id="resultsContainer">
+                <div class="empty-state">Start typing to see matching developer topics...</div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>46 - JavaScript & Web Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="quiz-card">
+        <div class="quiz-header">
+            <span class="q-progress" id="qProgress">Question 1 of 3</span>
+            <span class="q-score">Score: <strong id="scoreVal">0</strong></span>
+        </div>
+
+        <h2 class="question-text" id="questionText">Which HTML5 element is used for the primary navigation links?</h2>
+
+        <div class="options-grid" id="optionsGrid">
+            <button class="opt-btn">nav</button>
+            <button class="opt-btn">header</button>
+            <button class="opt-btn">section</button>
+            <button class="opt-btn">main</button>
+        </div>
+
+        <button class="btn-next hidden" id="nextQBtn">Next Question →</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

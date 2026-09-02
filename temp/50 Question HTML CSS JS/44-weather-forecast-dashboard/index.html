@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>44 - Weather Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 44 • Level 4: Complete Webpage</span>
+            <h1>Global Meteorological Dashboard</h1>
+            <div class="search-box">
+                <input type="text" id="cityInput" placeholder="Search city (e.g. San Francisco, Tokyo, London)...">
+                <button id="searchCityBtn">Search</button>
+            </div>
+        </header>
+
+        <!-- Current Weather Card -->
+        <div class="current-card">
+            <div class="c-left">
+                <h2 id="cityName">San Francisco, US</h2>
+                <div class="c-temp" id="tempVal">19°C</div>
+                <div class="c-condition" id="condVal">Partly Cloudy</div>
+            </div>
+            <div class="c-right">
+                <div class="weather-icon" id="weatherIcon">⛅</div>
+                <div class="details">
+                    <span>Humidity: <strong id="humVal">68%</strong></span>
+                    <span>Wind: <strong id="windVal">14 km/h</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>15 - Custom Dropdown Select</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 15 • Level 2: Components</span>
+            <h1>Custom Searchable Dropdown</h1>
+            <p>Full control styling, live search filtering, keyboard accessibility, and outside-click dismiss.</p>
+        </header>
+
+        <div class="card">
+            <label class="form-label">Assign Project Lead</label>
+            
+            <!-- Custom Select Component -->
+            <div class="custom-select" id="customSelect">
+                <button class="select-trigger" id="selectTrigger" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="selected-val">Select a team member...</span>
+                    <span class="chevron">▾</span>
+                </button>
+
+                <div class="select-dropdown" id="selectDropdown">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Search members...">
+                    </div>
+                    <ul class="options-list" id="optionsList" role="listbox">
+                        <li class="option-item" data-value="sarah" data-name="Sarah Connor">
+                            <span class="opt-avatar">👩🏻‍💻</span>
+                            <div class="opt-info">
+                                <strong>Sarah Connor</strong>
+                                <span>Principal Architect</span>
+                            </div>
+                        </li>
+                        <li class="option-item" data-value="alex" data-name="Alex Chen">
+                            <span class="opt-avatar">👨🏻‍🎨</span>
+                            <div class="opt-info">
+                                <strong>Alex Chen</strong>
+                                <span>UI/UX Design Director</span>
+                            </div>
+                        </li>
+                        <li class="option-item" data-value="david" data-name="David Miller">
+                            <span class="opt-avatar">👨🏼‍💻</span>
+                            <div class="opt-info">
+                                <strong>David Miller</strong>
+                                <span>DevOps & Security Lead</span>
+                            </div>
+                        </li>
+                        <li class="option-item" data-value="elena" data-name="Elena Rostova">
+                            <span class="opt-avatar">👩🏼‍💼</span>
+                            <div class="opt-info">
+                                <strong>Elena Rostova</strong>
+                                <span>Product Manager</span>
+                            </div>
+                        </li>
+                        <li class="option-item" data-value="kenji" data-name="Kenji Sato">
+                            <span class="opt-avatar">👨🏻‍💻</span>
+                            <div class="opt-info">
+                                <strong>Kenji Sato</strong>
+                                <span>Full-Stack Engineer</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="result-box" id="resultBox">
+                <span>Selected Lead: <strong id="selectedResult">None</strong></span>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

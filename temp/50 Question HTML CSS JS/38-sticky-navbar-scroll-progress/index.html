@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>38 - Sticky Navbar & Scroll Progress</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Scroll Progress Indicator Bar -->
+    <div class="scroll-progress-bar" id="progressBar"></div>
+
+    <!-- Sticky Glass Navbar -->
+    <header class="sticky-nav">
+        <div class="nav-brand">⚡ NovaSticky</div>
+        <nav class="nav-items">
+            <a href="#section1">Introduction</a>
+            <a href="#section2">Features</a>
+            <a href="#section3">Architecture</a>
+            <a href="#section4">Deployment</a>
+        </nav>
+        <button class="btn-cta">Sign Up</button>
+    </header>
+
+    <!-- Page Demo Sections -->
+    <main class="content">
+        <section id="section1" class="page-sec">
+            <h2>01. Introduction & Overview</h2>
+            <p>Watch the top progress bar move as you scroll through each section.</p>
+        </section>
+        <section id="section2" class="page-sec">
+            <h2>02. Core Platform Features</h2>
+            <p>Notice the navbar background blur glassmorphism sticking smoothly to the top of your viewport.</p>
+        </section>
+        <section id="section3" class="page-sec">
+            <h2>03. Distributed Edge Architecture</h2>
+            <p>State is synchronized globally using Raft consensus and neural caching.</p>
+        </section>
+        <section id="section4" class="page-sec">
+            <h2>04. Zero-Config Deployment</h2>
+            <p>Push to Git and your edge workers deploy automatically to 300+ edge locations.</p>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #080c15; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; padding: 4rem 1.5rem; display: flex; justify-content: center; }
+.container { max-width: 650px; width: 100%; }
+.header { text-align: center; margin-bottom: 2.5rem; }
+.badge { display: inline-block; background: rgba(99,102,241,0.15); color: #818cf8; padding: 4px 12px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.6rem; }
+.header h1 { font-size: 2.2rem; margin-bottom: 1.5rem; }
+.search-box { display: flex; gap: 8px; justify-content: center; }
+.search-box input { flex: 1; max-width: 360px; background: #111827; border: 1px solid #334155; border-radius: 10px; padding: 0.75rem 1rem; color: white; outline: none; }
+.search-box button { background: #6366f1; color: white; border: none; padding: 0.75rem 1.4rem; border-radius: 10px; font-weight: 700; cursor: pointer; }
+
+.current-card { background: #111827; border: 1px solid #1f2937; border-radius: 24px; padding: 2.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+.c-left h2 { font-size: 1.6rem; margin-bottom: 0.5rem; }
+.c-temp { font-size: 3.5rem; font-weight: 800; color: #38bdf8; }
+.c-condition { color: #94a3b8; font-weight: 600; }
+.weather-icon { font-size: 4rem; text-align: right; margin-bottom: 0.5rem; }
+.details { display: flex; flex-direction: column; gap: 4px; color: #cbd5e1; font-size: 0.85rem; text-align: right; }
