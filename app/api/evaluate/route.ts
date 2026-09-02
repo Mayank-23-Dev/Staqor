@@ -134,15 +134,39 @@ export async function POST(req: NextRequest) {
         attemptType,
       });
 
-      const response = await groq.chat.completions.create({
-        model: "llama-3.3-70b-versatile",
-        temperature: 0.1,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        response_format: { type: "json_object" },
-      });
+      const candidateModels = [
+        "openai/gpt-oss-120b",
+        "qwen/qwen3.8-27b",
+        "openai/gpt-oss-20b",
+        "groq/compound",
+      ];
+
+      let response: any = null;
+      let lastErr: any = null;
+
+      for (const modelName of candidateModels) {
+        try {
+          response = await groq.chat.completions.create({
+            model: modelName,
+            temperature: 0.1,
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            response_format: { type: "json_object" },
+          });
+          if (response?.choices?.[0]?.message?.content) {
+            break;
+          }
+        } catch (e: any) {
+          lastErr = e;
+          continue;
+        }
+      }
+
+      if (!response?.choices?.[0]?.message?.content) {
+        throw lastErr || new Error("Failed to get evaluation response from AI models");
+      }
 
       const content = response.choices[0]?.message?.content || "{}";
       const rawParsed = JSON.parse(content);
