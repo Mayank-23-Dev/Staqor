@@ -59,7 +59,7 @@ export function ProblemWorkspace({ problem, user }: ProblemWorkspaceProps) {
   // Layout & Tabs state
   const [activeLeftTab, setActiveLeftTab] = useState<"description" | "target" | "preview">("description");
   const [activeEditorTab, setActiveEditorTab] = useState<"html" | "css" | "js">("html");
-  const [activeBottomTab, setActiveBottomTab] = useState<"sandbox" | "target" | "evaluation">("sandbox");
+  const [activeBottomTab, setActiveBottomTab] = useState<"sandbox" | "evaluation">("sandbox");
 
   // Resizable Split States
   const [splitRatio, setSplitRatio] = useState<number>(40); // 40% left, 60% right
@@ -749,18 +749,6 @@ export function ProblemWorkspace({ problem, user }: ProblemWorkspaceProps) {
                 </button>
 
                 <button
-                  onClick={() => setActiveBottomTab("target")}
-                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono font-medium transition-colors ${
-                    activeBottomTab === "target"
-                      ? "bg-[#1E1E2E] text-[#A7DDC9] border border-[#A7DDC9]/30"
-                      : "text-zinc-400 hover:text-white"
-                  }`}
-                >
-                  <ImageIcon className="w-3.5 h-3.5 text-sky-400" />
-                  <span>Target Screenshot</span>
-                </button>
-
-                <button
                   onClick={() => setActiveBottomTab("evaluation")}
                   className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono font-medium transition-colors ${
                     activeBottomTab === "evaluation"
@@ -797,17 +785,6 @@ export function ProblemWorkspace({ problem, user }: ProblemWorkspaceProps) {
                     </span>
                   )
                 )}
-                {activeBottomTab === "target" && (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => setIsLightboxOpen(true)}
-                    className="h-6 px-2 text-[10px] font-mono text-zinc-400 hover:text-white gap-1"
-                  >
-                    <Maximize2 className="w-3 h-3 text-[#A7DDC9]" />
-                    <span>Fullscreen</span>
-                  </Button>
-                )}
               </div>
             </div>
 
@@ -830,28 +807,6 @@ export function ProblemWorkspace({ problem, user }: ProblemWorkspaceProps) {
                       <p className="leading-snug text-[11px]">{sandboxError}</p>
                     </div>
                   )}
-                </div>
-              )}
-
-              {/* 2. Target Screenshot Reference */}
-              {activeBottomTab === "target" && (
-                <div className="w-full h-full flex flex-col items-center justify-center p-4 bg-[#0A0A0F] overflow-y-auto">
-                  <div
-                    onClick={() => setIsLightboxOpen(true)}
-                    className="cursor-pointer group relative max-w-full rounded-lg overflow-hidden border border-[#26262E] shadow-2xl"
-                    title="Click for full-screen zoom"
-                  >
-                    <img
-                      src={screenshotUrl}
-                      alt={`${problem.title} Target Screenshot`}
-                      className="max-w-full max-h-[30vh] h-auto object-contain rounded-lg transition-transform duration-200 group-hover:scale-[1.01]"
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
-                      <span className="px-3 py-1.5 rounded-lg bg-[#111117]/90 border border-[#26262E] text-xs font-mono text-white flex items-center gap-1.5 shadow-xl">
-                        <ZoomIn className="w-3.5 h-3.5 text-[#A7DDC9]" /> Click to Inspect with Zoom
-                      </span>
-                    </div>
-                  </div>
                 </div>
               )}
 
