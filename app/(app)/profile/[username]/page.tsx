@@ -1,33 +1,37 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import { createClient } from "@/utils/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { SpotlightCard } from "@/components/SpotlightCard";
 import {
-  Terminal,
-  Award,
-  CheckCircle2,
   ArrowLeft,
-  ExternalLink,
   Share2,
   ShieldCheck,
   Flame,
-  Trophy,
-  Code2,
-  Server,
-  Database,
-  Layers,
-  Sparkles,
+  Eye,
   Copy,
   Check,
-  Eye,
-  Monitor,
 } from "lucide-react";
 
 interface ProfilePageProps {
   params: { username: string };
+}
+
+// Lightweight static card to replace GSAP SpotlightCard for the profile page
+function ProfileCard({ children, watermark }: { children: React.ReactNode, watermark?: string }) {
+  return (
+    <div className="bg-[#111117] border border-[#26262E] rounded-2xl relative overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-40 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(171,218,200,0.15),transparent_100%)] pointer-events-none z-0" />
+      {watermark && (
+        <div className="absolute -bottom-4 -right-4 text-6xl sm:text-7xl font-black text-white/5 select-none pointer-events-none z-0 font-sans">
+          {watermark}
+        </div>
+      )}
+      <div className="relative z-10">{children}</div>
+    </div>
+  );
 }
 
 const VERIFIED_SOLUTIONS = [
@@ -38,7 +42,7 @@ const VERIFIED_SOLUTIONS = [
     difficulty: "EASY",
     score: 96,
     time: "1.8s",
-    completedDate: "September 2026",
+    completedDate: "Sep 2026",
     slug: "interactive-pricing-card",
     rubricBreakdown: [
       { name: "Visual Layout Fidelity", score: 35, max: 35 },
@@ -55,7 +59,7 @@ const VERIFIED_SOLUTIONS = [
     difficulty: "MEDIUM",
     score: 94,
     time: "2.1s",
-    completedDate: "September 2026",
+    completedDate: "Sep 2026",
     slug: "drag-and-drop-kanban-board",
     rubricBreakdown: [
       { name: "Drag Event Delegation", score: 34, max: 35 },
@@ -63,7 +67,7 @@ const VERIFIED_SOLUTIONS = [
       { name: "Clean DOM Mutation", score: 25, max: 30 },
     ],
     summary:
-      "Built native HTML5 Drag and Drop event delegates to dynamically transfer and reorder sprint tasks between status columns.",
+      "Built native HTML5 Drag and Drop event delegates to dynamically transfer and reorder sprint tasks.",
   },
   {
     id: "sol-3",
@@ -72,7 +76,7 @@ const VERIFIED_SOLUTIONS = [
     difficulty: "MEDIUM",
     score: 92,
     time: "1.9s",
-    completedDate: "August 2026",
+    completedDate: "Aug 2026",
     slug: "in-memory-rate-limiter",
     rubricBreakdown: [
       { name: "Concurrency Safety", score: 33, max: 35 },
@@ -80,7 +84,7 @@ const VERIFIED_SOLUTIONS = [
       { name: "HTTP 429 Headers", score: 24, max: 30 },
     ],
     summary:
-      "Implemented a token bucket algorithm to throttle burst traffic at 60 req/min with zero memory leaks and atomic state refills.",
+      "Implemented a token bucket algorithm to throttle burst traffic at 60 req/min with zero memory leaks.",
   },
   {
     id: "sol-4",
@@ -89,7 +93,7 @@ const VERIFIED_SOLUTIONS = [
     difficulty: "MEDIUM",
     score: 98,
     time: "1.6s",
-    completedDate: "August 2026",
+    completedDate: "Aug 2026",
     slug: "transactional-analytics-covering-index",
     rubricBreakdown: [
       { name: "Query Execution Plan", score: 35, max: 35 },
@@ -97,18 +101,18 @@ const VERIFIED_SOLUTIONS = [
       { name: "Aggregation Filter", score: 28, max: 30 },
     ],
     summary:
-      "Optimized PostgreSQL user submission aggregations by replacing full sequential table scans with composite covering index scans.",
+      "Optimized PostgreSQL user submission aggregations by replacing full sequential table scans.",
   },
 ];
 
 const SKILL_PILLS = [
   "React 18",
   "TypeScript",
-  "Tailwind CSS",
-  "CSS Grid & Flexbox",
-  "Node.js & Express",
+  "Tailwind",
+  "CSS Grid",
+  "Node.js",
   "PostgreSQL",
-  "Redis Caching",
+  "Redis",
   "REST APIs",
   "State Machines",
   "IntersectionObserver",
@@ -116,6 +120,84 @@ const SKILL_PILLS = [
 
 export default function ProfilePage({ params }: ProfilePageProps) {
   const [copied, setCopied] = useState(false);
+  const [stats, setStats] = useState({ solves: 47, streak: 7, avgScore: 94.8 });
+  const [difficultyStats, setDifficultyStats] = useState({ easy: 0, medium: 0, hard: 0, total: 0 });
+  const [submissions, setSubmissions] = useState<any[]>([]);
+  const [isOwnProfile, setIsOwnProfile] = useState(false);
+
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function fetchData() {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('username', params.username)
+        .single();
+        
+      let targetUserId = profile?.id;
+      
+      if (!targetUserId && user) {
+         if (user.user_metadata?.username === params.username || 
+             (user.email && user.email.split('@')[0] === params.username)) {
+           targetUserId = user.id;
+         }
+      }
+
+      if (user && targetUserId === user.id) {
+        setIsOwnProfile(true);
+      }
+
+      if (targetUserId) {
+        const { data: userStats } = await supabase
+          .from("user_stats")
+          .select("*")
+          .eq("user_id", targetUserId)
+          .single();
+          
+        if (userStats) {
+          setStats(s => ({ ...s, solves: userStats.total_solved || 0, streak: userStats.current_streak || 0 }));
+        }
+
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+        
+        const { data: subs } = await supabase
+          .from("submissions")
+          .select("created_at, problem_id")
+          .eq("user_id", targetUserId)
+          .eq("status", "solved")
+          .gte("created_at", oneYearAgo.toISOString());
+          
+        if (subs) {
+          setSubmissions(subs);
+          
+          const uniqueProblemIds = Array.from(new Set(subs.map(s => s.problem_id)));
+          if (uniqueProblemIds.length > 0) {
+             const { data: probs } = await supabase
+               .from("problems")
+               .select("id, difficulty")
+               .in("id", uniqueProblemIds);
+               
+             if (probs) {
+               let e = 0, m = 0, h = 0;
+               probs.forEach(p => {
+                 if (p.difficulty === 'Easy') e++;
+                 else if (p.difficulty === 'Medium') m++;
+                 else if (p.difficulty === 'Hard') h++;
+               });
+               setDifficultyStats({ easy: e, medium: m, hard: h, total: probs.length });
+               setStats(s => ({ ...s, solves: probs.length }));
+             }
+          }
+        }
+      }
+    }
+    
+    fetchData();
+  }, [params.username, supabase]);
 
   const handleCopyLink = () => {
     if (typeof window !== "undefined") {
@@ -125,229 +207,284 @@ export default function ProfilePage({ params }: ProfilePageProps) {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-[#0A0A0F] text-[#F5F5F7] selection:bg-[#ABDAC8] selection:text-[#0A0A0F] font-sans relative overflow-x-clip">
-      {/* Background Texture & Ambient Gradients */}
-      <div
-        className="fixed inset-0 pointer-events-none z-0 opacity-25"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, #26262E 1px, transparent 1px),
-            linear-gradient(to bottom, #26262E 1px, transparent 1px)
-          `,
-          backgroundSize: "48px 48px",
-          maskImage:
-            "radial-gradient(ellipse at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0.1) 100%)",
-          WebkitMaskImage:
-            "radial-gradient(ellipse at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0.1) 100%)",
-        }}
-      />
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[450px] bg-gradient-to-b from-[#ABDAC8]/15 via-[#ABDAC8]/5 to-transparent blur-[160px] pointer-events-none z-0" />
+  const heatmapData = useMemo(() => {
+    const data = new Map<string, number>();
+    submissions.forEach(sub => {
+      const date = new Date(sub.created_at).toISOString().split('T')[0];
+      data.set(date, (data.get(date) || 0) + 1);
+    });
+    return data;
+  }, [submissions]);
 
-      {/* Top Header Bar */}
+  const weeks = useMemo(() => {
+    const today = new Date();
+    const startDate = new Date();
+    startDate.setDate(today.getDate() - 364);
+    startDate.setDate(startDate.getDate() - startDate.getDay());
+
+    const w = [];
+    let currentDate = new Date(startDate);
+    for (let i = 0; i < 53; i++) {
+      const week = [];
+      for (let j = 0; j < 7; j++) {
+        if (currentDate > today) break;
+        const dateStr = currentDate.toISOString().split('T')[0];
+        const count = heatmapData.get(dateStr) || 0;
+        week.push({ date: dateStr, count });
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      if (week.length > 0) w.push(week);
+    }
+    return w;
+  }, [heatmapData]);
+
+  const totalSubmissions = submissions.length;
+  const activeDays = heatmapData.size;
+  const circ = 301.59;
+
+  return (
+    <div className="min-h-screen bg-[#0A0A0F] text-[#F5F5F7] selection:bg-[#ABDAC8] selection:text-[#0A0A0F] font-sans">
       <header className="border-b border-[#26262E] bg-[#0E0E14]/90 backdrop-blur-xl sticky top-0 z-40">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 h-12 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/challenges" className="text-zinc-400 hover:text-white flex items-center gap-1.5 text-xs font-mono transition-colors">
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back to challenges</span>
-            </Link>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={handleCopyLink}
-              className="h-9 px-3 text-xs font-mono border-[#26262E] hover:border-[#ABDAC8] text-zinc-300 hover:text-white bg-[#111117] gap-1.5 cursor-pointer"
-            >
-              {copied ? (
-                <>
-                  <Check className="w-3.5 h-3.5 text-[#4ADE80]" />
-                  <span className="text-[#4ADE80]">Link Copied!</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-3.5 h-3.5 text-[#ABDAC8]" />
-                  <span>Share Profile</span>
-                </>
-              )}
-            </Button>
-            <Link href="/signup">
-              <Button
-                size="sm"
-                className="bg-[#ABDAC8] text-[#0A0A0F] font-bold text-xs h-9 px-3.5 rounded-lg hover:bg-[#ABDAC8]/90 transition-all"
-              >
-                Join Staqor
-              </Button>
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Main Profile Content */}
-      <main className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-8">
-        {/* Profile Hero Spotlight Card */}
-        <SpotlightCard accentColor="aqua" watermark="DEV">
-          <div className="p-6 sm:p-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-5">
-              {/* Glowing Avatar */}
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-br from-[#ABDAC8]/25 to-[#111614] border-2 border-[#ABDAC8]/40 flex items-center justify-center text-[#ABDAC8] text-2xl sm:text-3xl font-black font-mono shadow-xl shadow-[#ABDAC8]/20 shrink-0">
+      <main className="max-w-6xl mx-auto px-4 py-6 flex flex-col lg:flex-row gap-4 items-start">
+        
+        {/* LEFT SIDEBAR COLUMN */}
+        <div className="w-full lg:w-[250px] shrink-0 space-y-4">
+          <ProfileCard>
+            <div className="p-4 flex flex-col items-center text-center space-y-3">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#ABDAC8]/25 to-[#111614] border-2 border-[#ABDAC8]/40 flex items-center justify-center text-[#ABDAC8] text-2xl font-black font-mono shadow-md shrink-0">
                 {params.username.slice(0, 2).toUpperCase()}
               </div>
 
-              <div className="space-y-1.5">
-                <div className="flex flex-wrap items-center gap-2.5">
-                  <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-sans">
+              <div className="space-y-1 flex flex-col items-center">
+                <div className="flex flex-col items-center gap-1">
+                  <h1 className="text-xl font-extrabold text-white tracking-tight font-sans">
                     {params.username}
                   </h1>
-                  <Badge className="bg-[#ABDAC8] text-[#0A0A0F] font-mono text-[10px] font-extrabold px-2.5 py-0.5 shadow-sm">
+                  <Badge className="bg-[#ABDAC8] text-[#0A0A0F] font-mono text-[9px] font-extrabold px-2 py-0.5 shadow-sm">
                     VERIFIED CANDIDATE
                   </Badge>
                 </div>
-                <p className="text-xs sm:text-sm text-zinc-300 font-normal">
-                  Software Engineer • Full-Domain Proof of Work Portfolio
+                <p className="text-[11px] text-zinc-400 font-normal mt-1">
+                  Software Engineer
                 </p>
-                <p className="text-[11px] text-zinc-500 font-mono">
-                  All solutions verified with automated sub-2.5s AI rubrics
-                </p>
+              </div>
+
+              <div className="w-full pt-3 space-y-1.5 border-t border-[#26262E]">
+                <div className="flex justify-between items-center px-1">
+                  <span className="text-zinc-400 font-mono text-[10px]">SOLVES</span>
+                  <span className="text-white text-xs font-extrabold">{stats.solves}</span>
+                </div>
+                <div className="flex justify-between items-center px-1">
+                  <span className="text-zinc-400 font-mono text-[10px]">AVG SCORE</span>
+                  <span className="text-[#ABDAC8] text-xs font-extrabold">{stats.avgScore}</span>
+                </div>
+                <div className="flex justify-between items-center px-1">
+                  <span className="text-zinc-400 font-mono text-[10px]">STREAK</span>
+                  <span className="text-amber-400 text-xs font-extrabold flex items-center gap-0.5">
+                    <Flame className="w-3 h-3" /> {stats.streak}
+                  </span>
+                </div>
+              </div>
+
+              <div className="w-full pt-3 space-y-2 border-t border-[#26262E]">
+                {isOwnProfile ? (
+                  <Button className="w-full bg-[#ABDAC8] text-[#0A0A0F] font-bold text-[11px] h-8 hover:bg-[#ABDAC8]/90 transition-all rounded-lg">
+                    Edit Profile
+                  </Button>
+                ) : (
+                  <Link href="/signup" className="w-full block">
+                    <Button className="w-full bg-[#ABDAC8] text-[#0A0A0F] font-bold text-[11px] h-8 hover:bg-[#ABDAC8]/90 transition-all rounded-lg">
+                      Join Staqor
+                    </Button>
+                  </Link>
+                )}
+                <Button
+                  variant="outline"
+                  onClick={handleCopyLink}
+                  className="w-full h-8 text-[11px] font-mono border-[#26262E] hover:border-[#ABDAC8] text-zinc-300 hover:text-white bg-[#111117] rounded-lg"
+                >
+                  {copied ? (
+                    <><Check className="w-3 h-3 mr-1.5 text-[#4ADE80]" /> Copied!</>
+                  ) : (
+                    <><Copy className="w-3 h-3 mr-1.5 text-[#ABDAC8]" /> Share</>
+                  )}
+                </Button>
               </div>
             </div>
+          </ProfileCard>
 
-            {/* Quick Proof Stat Chips */}
-            <div className="flex items-center gap-3 bg-[#0B0B10] p-3 rounded-2xl border border-[#26262E] font-mono text-xs">
-              <div className="px-3 py-1 text-center border-r border-[#26262E]">
-                <span className="block text-white font-extrabold text-lg">47</span>
-                <span className="text-[10px] text-zinc-500 uppercase">Solves</span>
-              </div>
-              <div className="px-3 py-1 text-center border-r border-[#26262E]">
-                <span className="block text-[#ABDAC8] font-extrabold text-lg">94.8</span>
-                <span className="text-[10px] text-zinc-500 uppercase">Avg Score</span>
-              </div>
-              <div className="px-3 py-1 text-center">
-                <span className="block text-amber-400 font-extrabold text-lg flex items-center justify-center gap-0.5">
-                  <Flame className="w-4 h-4" /> 7d
+          <div className="p-4 rounded-2xl bg-[#111117] border border-[#26262E] space-y-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#ABDAC8] block">
+              Verified Competencies
+            </span>
+            <div className="flex flex-wrap gap-1.5 pt-1">
+              {SKILL_PILLS.map((skill) => (
+                <span
+                  key={skill}
+                  className="px-2 py-0.5 rounded-lg bg-[#0B0B10] border border-[#26262E] text-[9px] font-mono text-zinc-300 hover:border-[#ABDAC8]/40 hover:text-white transition-colors"
+                >
+                  {skill}
                 </span>
-                <span className="text-[10px] text-zinc-500 uppercase">Streak</span>
-              </div>
+              ))}
             </div>
-          </div>
-        </SpotlightCard>
-
-        {/* Skills & Disciplines Matrix */}
-        <div className="p-6 rounded-3xl bg-[#111117] border border-[#26262E] space-y-3">
-          <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#ABDAC8] block">
-            Verified Competencies
-          </span>
-          <div className="flex flex-wrap gap-2 pt-1">
-            {SKILL_PILLS.map((skill) => (
-              <span
-                key={skill}
-                className="px-3 py-1.5 rounded-xl bg-[#0B0B10] border border-[#26262E] text-xs font-mono text-zinc-300 hover:border-[#ABDAC8]/40 hover:text-white transition-colors"
-              >
-                {skill}
-              </span>
-            ))}
           </div>
         </div>
 
-        {/* Verified Interactive Solutions Showcase */}
-        <div className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div>
-              <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[#ABDAC8] mb-1">
-                <ShieldCheck className="w-4 h-4 text-[#ABDAC8]" />
-                <span>Verified Proof of Work (4 Showcases)</span>
-              </div>
-              <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight font-display">
-                Live Interactive Solutions
-              </h2>
-            </div>
-            <p className="text-xs text-zinc-400 font-mono">
-              Click &quot;Live Sandbox Replay&quot; to test code directly in-browser
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {VERIFIED_SOLUTIONS.map((sol) => (
-              <SpotlightCard key={sol.id} accentColor="aqua" watermark={sol.difficulty}>
-                <div className="p-6 h-full flex flex-col justify-between space-y-5">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <Badge
-                        variant="outline"
-                        className="text-[10px] font-mono text-[#ABDAC8] border-[#ABDAC8]/30 bg-[#111614]"
-                      >
-                        {sol.track}
-                      </Badge>
-                      <Badge
-                        variant="outline"
-                        className="text-[10px] font-mono text-[#4ADE80] border-[#4ADE80]/30 bg-[#4ADE80]/10 font-bold"
-                      >
-                        SCORE: {sol.score}/100 PASSED
-                      </Badge>
-                    </div>
-
-                    <h3 className="text-base font-bold text-white group-hover:text-[#ABDAC8] transition-colors leading-snug">
-                      {sol.title}
-                    </h3>
-
-                    <p className="text-xs text-zinc-300 leading-relaxed font-normal">
-                      {sol.summary}
-                    </p>
-
-                    {/* Rubric Breakdown Progress Bars */}
-                    <div className="p-3 rounded-xl bg-[#0B0B10] border border-[#26262E] space-y-2 font-mono text-[11px]">
-                      {sol.rubricBreakdown.map((r) => (
-                        <div key={r.name} className="flex items-center justify-between text-zinc-400">
-                          <span>{r.name}</span>
-                          <span className="text-[#ABDAC8] font-bold">
-                            {r.score}/{r.max}%
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="pt-3 border-t border-[#26262E] flex items-center justify-between">
-                    <span className="text-[10px] font-mono text-zinc-500">
-                      Evaluated in {sol.time} • {sol.completedDate}
-                    </span>
-                    <Link href={`/challenges/${sol.slug}`}>
-                      <Button
-                        size="sm"
-                        className="h-8 px-3 text-xs font-mono font-bold bg-[#ABDAC8] text-[#0A0A0F] hover:bg-[#ABDAC8]/90 transition-all gap-1.5 shadow-sm"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                        <span>Live Replay</span>
-                      </Button>
-                    </Link>
+        {/* RIGHT MAIN COLUMN */}
+        <div className="flex-1 space-y-4 min-w-0">
+          
+          <ProfileCard>
+            <div className="p-4 flex flex-col sm:flex-row items-center gap-6">
+              <div className="w-full sm:w-1/3 flex flex-col items-center">
+                <h3 className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400 mb-2 self-start w-full text-center sm:text-left">Problems Solved</h3>
+                <div className="relative w-24 h-24 shrink-0">
+                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 128 128">
+                    <circle cx="64" cy="64" r="48" fill="none" stroke="#26262E" strokeWidth="8" />
+                    <circle cx="64" cy="64" r="48" fill="none" stroke="#4ADE80" strokeWidth="8" strokeDasharray={`${(difficultyStats.easy / Math.max(difficultyStats.total, 1)) * circ} ${circ}`} strokeDashoffset="0" />
+                    <circle cx="64" cy="64" r="48" fill="none" stroke="#FBBF24" strokeWidth="8" strokeDasharray={`${(difficultyStats.medium / Math.max(difficultyStats.total, 1)) * circ} ${circ}`} strokeDashoffset={`${-((difficultyStats.easy / Math.max(difficultyStats.total, 1)) * circ)}`} />
+                    <circle cx="64" cy="64" r="48" fill="none" stroke="#F87171" strokeWidth="8" strokeDasharray={`${(difficultyStats.hard / Math.max(difficultyStats.total, 1)) * circ} ${circ}`} strokeDashoffset={`${-(((difficultyStats.easy + difficultyStats.medium) / Math.max(difficultyStats.total, 1)) * circ)}`} />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-xl font-black text-white leading-none">{difficultyStats.total}</span>
+                    <span className="text-[9px] text-zinc-500 font-mono mt-0.5">Solved</span>
                   </div>
                 </div>
-              </SpotlightCard>
-            ))}
-          </div>
-        </div>
+              </div>
+              
+              <div className="w-full sm:w-2/3 flex flex-col gap-2 justify-center">
+                <div className="flex justify-between items-center bg-[#0B0B10] p-2 rounded-lg border border-[#26262E]">
+                  <span className="text-[#4ADE80] text-[11px] font-bold font-mono">Easy</span>
+                  <span className="text-white text-xs font-bold">{difficultyStats.easy}</span>
+                </div>
+                <div className="flex justify-between items-center bg-[#0B0B10] p-2 rounded-lg border border-[#26262E]">
+                  <span className="text-[#FBBF24] text-[11px] font-bold font-mono">Medium</span>
+                  <span className="text-white text-xs font-bold">{difficultyStats.medium}</span>
+                </div>
+                <div className="flex justify-between items-center bg-[#0B0B10] p-2 rounded-lg border border-[#26262E]">
+                  <span className="text-[#F87171] text-[11px] font-bold font-mono">Hard</span>
+                  <span className="text-white text-xs font-bold">{difficultyStats.hard}</span>
+                </div>
+              </div>
+            </div>
+          </ProfileCard>
 
-        {/* Recruiter Trust & Verification Guarantee Banner */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-[#111117] border border-[#26262E] flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-          <div className="space-y-1">
-            <h4 className="text-sm font-bold text-white flex items-center justify-center sm:justify-start gap-2">
-              <ShieldCheck className="w-4 h-4 text-[#ABDAC8]" />
-              <span>Cryptographic Proof-of-Work Guarantee</span>
-            </h4>
-            <p className="text-xs text-zinc-400 leading-relaxed max-w-2xl font-normal">
-              Every solution on this profile was authored 100% in-browser in an isolated sandbox, verified against strict multi-criteria rubrics in &lt;2.5s by automated AI evaluation.
-            </p>
+          <ProfileCard>
+            <div className="p-4 flex flex-col">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-1">
+                <h3 className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
+                  {totalSubmissions} submissions in the past year
+                </h3>
+                <div className="flex gap-3 text-right">
+                  <p className="text-[9px] text-zinc-500 font-mono">Active days: <span className="text-white font-bold ml-1">{activeDays}</span></p>
+                  <p className="text-[9px] text-zinc-500 font-mono">Max streak: <span className="text-white font-bold ml-1">{stats.streak}</span></p>
+                </div>
+              </div>
+              
+              <div className="w-full overflow-x-auto scrollbar-none pb-1">
+                <div className="flex gap-[3px] min-w-max">
+                  {weeks.map((week, i) => (
+                    <div key={i} className="flex flex-col gap-[3px] shrink-0">
+                      {week.map((day, j) => (
+                        <div
+                          key={day.date}
+                          title={`${day.count} submissions on ${day.date}`}
+                          className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-[2px] transition-colors ${
+                            day.count === 0 ? 'bg-[#26262E]' : 
+                            day.count < 2 ? 'bg-[#ABDAC8]/30' : 
+                            day.count < 4 ? 'bg-[#ABDAC8]/60' : 'bg-[#ABDAC8]'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </ProfileCard>
+
+          <div className="space-y-3 pt-1">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+              <div>
+                <div className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-wider text-[#ABDAC8] mb-0.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#ABDAC8]" />
+                  <span>Verified Proof of Work (4 Showcases)</span>
+                </div>
+                <h2 className="text-lg font-black text-white tracking-tight font-display">
+                  Live Interactive Solutions
+                </h2>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {VERIFIED_SOLUTIONS.map((sol) => (
+                <ProfileCard key={sol.id} watermark={sol.difficulty}>
+                  <div className="p-4 h-full flex flex-col justify-between space-y-3">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Badge
+                          variant="outline"
+                          className="text-[9px] font-mono text-[#ABDAC8] border-[#ABDAC8]/30 bg-[#111614] px-1.5 py-0"
+                        >
+                          {sol.track}
+                        </Badge>
+                        <Badge
+                          variant="outline"
+                          className="text-[9px] font-mono text-[#4ADE80] border-[#4ADE80]/30 bg-[#4ADE80]/10 font-bold px-1.5 py-0"
+                        >
+                          SCORE: {sol.score}/100 PASSED
+                        </Badge>
+                      </div>
+
+                      <h3 className="text-sm font-bold text-white leading-snug">
+                        {sol.title}
+                      </h3>
+
+                      <p className="text-[11px] text-zinc-300 leading-relaxed font-normal line-clamp-2">
+                        {sol.summary}
+                      </p>
+
+                      <div className="p-2 rounded-lg bg-[#0B0B10] border border-[#26262E] space-y-1 font-mono text-[9px]">
+                        {sol.rubricBreakdown.map((r) => (
+                          <div key={r.name} className="flex items-center justify-between text-zinc-400">
+                            <span>{r.name}</span>
+                            <span className="text-[#ABDAC8] font-bold">
+                              {r.score}/{r.max}%
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="pt-2 border-t border-[#26262E] flex items-center justify-between">
+                      <span className="text-[9px] font-mono text-zinc-500">
+                        {sol.time} • {sol.completedDate}
+                      </span>
+                      <Link href={`/challenges/${sol.slug}`}>
+                        <Button
+                          size="sm"
+                          className="h-7 px-2 text-[10px] font-mono font-bold bg-[#ABDAC8] text-[#0A0A0F] hover:bg-[#ABDAC8]/90 transition-all gap-1 shadow-sm"
+                        >
+                          <Eye className="w-3 h-3" />
+                          <span>Replay</span>
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </ProfileCard>
+              ))}
+            </div>
           </div>
-          <Link href="/signup">
-            <Button
-              variant="outline"
-              className="border-[#26262E] hover:border-[#ABDAC8] text-xs font-mono shrink-0 h-10 px-4"
-            >
-              Start Your Own Portfolio →
-            </Button>
-          </Link>
+          
         </div>
       </main>
     </div>
