@@ -5,7 +5,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Plus, Terminal, Edit3, ArrowLeft } from "lucide-react";
+import { Plus, Edit3, ArrowLeft } from "lucide-react";
+import { LogoIcon } from "@/components/logo";
 
 export default function AdminChallengesPage() {
   return (
@@ -13,8 +14,8 @@ export default function AdminChallengesPage() {
       <header className="border-b border-[#26262E] bg-[#111117] sticky top-0 z-40">
         <div className="container mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center gap-2">
-              <Terminal className="w-5 h-5 text-[#ABDAC8]" />
+            <Link href="/" className="flex items-center gap-2 group select-none">
+              <LogoIcon variant="aqua" className="w-5 h-5 group-hover:scale-105 transition-transform" />
               <span className="font-bold text-base text-white">Staqor Admin</span>
             </Link>
             <span className="text-zinc-500 text-xs font-mono">/ challenge-studio</span>

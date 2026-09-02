@@ -28,7 +28,7 @@ export function TrackButton({
         data: { user },
       } = await supabase.auth.getUser();
 
-      const targetUrl = `/challenges?track=${encodeURIComponent(trackId)}`;
+      const targetUrl = `/problems?track=${encodeURIComponent(trackId)}`;
 
       if (user) {
         // User is logged in -> proceed directly
@@ -38,7 +38,7 @@ export function TrackButton({
         router.push(`/login?redirectTo=${encodeURIComponent(targetUrl)}`);
       }
     } catch (err) {
-      router.push(`/login?redirectTo=/challenges?track=${encodeURIComponent(trackId)}`);
+      router.push(`/login?redirectTo=/problems?track=${encodeURIComponent(trackId)}`);
     } finally {
       setLoading(false);
     }

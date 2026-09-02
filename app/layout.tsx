@@ -17,6 +17,11 @@ export const metadata: Metadata = {
   title: "Staqor — In-Browser Software Engineering Workspace & AI Evaluation Platform",
   description:
     "Practice software development across Frontend UI, Backend APIs, and Databases with sub-2.5s AI rubric evaluation and provable recruiter portfolios.",
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/logo-aqua.svg",
+  },
 };
 
 export default function RootLayout({

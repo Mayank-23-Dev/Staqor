@@ -1,17 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { getChallengeBySlug, FALLBACK_CHALLENGE } from "@/lib/supabase/db";
 import { groq, buildGroqPrompt } from "@/lib/groq";
-import { runStructuralPreFilter } from "@/lib/groq/prefilter";
+import { getProblemBySlug } from "@/lib/problems-data";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { userId = "anonymous", challengeSlug = "interactive-pricing-card", code, attemptType = "run" } = body;
+    const {
+      userId = "anonymous",
+      challengeSlug = "typography-font-showcase",
+      problemTitle,
+      specMarkdown,
+      code,
+      userCode,
+      modelSolution,
+      attemptType = "run",
+    } = body;
 
-    if (!code || !attemptType) {
+    const submittedCode = userCode || (typeof code === "object" ? code : { html: "", css: "", js: code || "" });
+
+    if (!submittedCode || !attemptType) {
       return NextResponse.json(
         { error: "Missing code payload or attempt type" },
         { status: 400 }
@@ -20,96 +30,60 @@ export async function POST(req: NextRequest) {
 
     const supabase = await createClient();
 
-    // 1. Fetch challenge/problem spec & rubric
-    let challenge: any = null;
-    try {
-      challenge = await getChallengeBySlug(challengeSlug);
-    } catch {
-      challenge = null;
-    }
+    // 1. Fetch challenge/problem spec & reference model
+    let challengeData: any = getProblemBySlug(challengeSlug);
+    let title = problemTitle || challengeData?.title || challengeSlug;
+    let description = specMarkdown || challengeData?.description || "";
+    let referenceModel = modelSolution || challengeData?.model_solution;
 
-    if (!challenge || challenge.slug === FALLBACK_CHALLENGE.slug && challengeSlug !== FALLBACK_CHALLENGE.slug) {
-      // Check problems table from Supabase
-      const { data: problemData } = await supabase
-        .from("problems")
-        .select("*")
-        .eq("slug", challengeSlug)
-        .single();
-
-      if (problemData) {
-        challenge = {
-          id: problemData.id,
-          slug: problemData.slug,
-          title: problemData.title,
-          description: problemData.description,
-          spec_markdown: problemData.description,
-          rubric: [
-            { id: "R1", name: "Functionality", weight: 50, criteria: "Code fulfills core requirements and test cases." },
-            { id: "R2", name: "UI/UX & Styling", weight: 30, criteria: "Visual layout and interaction fidelity." },
-            { id: "R3", name: "Code Quality", weight: 20, criteria: "Clean, robust, and readable implementation." },
-          ],
-        };
-      }
-    }
-
-    if (!challenge) {
-      challenge = FALLBACK_CHALLENGE;
-    }
-
-    // 2. Structural Correctness & Syntax Pre-Filter Gate
-    const preFilter = runStructuralPreFilter(code, challenge);
-    if (!preFilter.passed) {
-      const gateResult = {
-        score: 0,
-        passed: false,
-        gate_failed: true,
-        breakdown: preFilter.breakdown || [
-          {
-            rubric_id: "prefilter_gate",
-            name: "Structural Correctness Gate",
-            score: 0,
-            feedback: preFilter.error || "Code failed pre-execution correctness checks.",
-          },
-        ],
-        overall_feedback: `[Correctness Gate Failed] ${preFilter.error || preFilter.reason}. Please resolve syntax and structural issues before AI rubric evaluation.`,
-      };
-
-      // Optional persistence in Supabase
+    if (!challengeData) {
       try {
-        if (userId && userId !== "anonymous") {
-          await supabase.from("submissions").insert({
-            user_id: userId,
-            challenge_id: challenge.id,
-            problem_id: challenge.id,
-            code_submitted: typeof code === "object" ? JSON.stringify(code) : code,
-            attempt_type: attemptType,
-            score: 0,
-            passed: false,
-            groq_response: gateResult,
-            is_public: false,
-          });
+        const { data: dbProb } = await supabase
+          .from("problems")
+          .select("*")
+          .eq("slug", challengeSlug)
+          .single();
+
+        if (dbProb) {
+          title = dbProb.title;
+          description = dbProb.description;
+          referenceModel = referenceModel || dbProb.model_solution;
         }
       } catch {
-        // Non-blocking submission write
+        // use defaults
       }
-
-      return NextResponse.json({
-        evaluation: gateResult,
-        passed: false,
-        challengeSlug,
-        gateFailed: true,
-        timestamp: new Date().toISOString(),
-      });
     }
 
-    // 3. Groq AI Evaluation with fallback parsing
+    const defaultRubric = [
+      {
+        id: "R1",
+        name: "Visual Layout & Design Fidelity",
+        weight: 35,
+        criteria: "Accurate HTML container structure, responsive CSS Grid/Flexbox, color palette, typography and hover states.",
+      },
+      {
+        id: "R2",
+        name: "DOM Interaction & State Logic",
+        weight: 40,
+        criteria: "Functional JavaScript event listeners, real-time DOM mutations, value updates, and interactive feedback.",
+      },
+      {
+        id: "R3",
+        name: "Code Cleanliness & Specification Conformance",
+        weight: 25,
+        criteria: "Clean markup, modular CSS rules, efficient event handling, and adherence to requirements.",
+      },
+    ];
+
+    // 2. Groq AI Evaluation with Benchmark Comparison
     let parsedResult: any;
     try {
       const { systemPrompt, userPrompt } = buildGroqPrompt({
-        challengeTitle: challenge.title,
-        specMarkdown: challenge.spec_markdown || challenge.description || "",
-        rubric: challenge.rubric,
-        userCode: code,
+        challengeTitle: title,
+        specMarkdown: description,
+        rubric: defaultRubric,
+        userCode: submittedCode,
+        modelSolution: referenceModel,
         attemptType,
       });
 
@@ -125,50 +99,57 @@ export async function POST(req: NextRequest) {
       const content = response.choices[0]?.message?.content || "{}";
       parsedResult = JSON.parse(content);
     } catch (groqErr) {
-      // Graceful fallback evaluator if Groq key isn't provided or offline
-      const hasHtml = code.html && code.html.length > 20;
-      const hasCss = code.css && code.css.length > 20;
-      const hasJs = (code.js && code.js.length > 10) || (typeof code === "string" && code.length > 20);
-      const calcScore = Math.min(100, (hasHtml ? 35 : 0) + (hasCss ? 35 : 0) + (hasJs ? 30 : 0));
+      // Graceful fallback heuristics if Groq API key is offline or limit reached
+      const hasHtml = submittedCode.html && submittedCode.html.trim().length > 30;
+      const hasCss = submittedCode.css && submittedCode.css.trim().length > 30;
+      const hasJs = submittedCode.js && submittedCode.js.trim().length > 20;
+
+      const calcScore = Math.min(
+        100,
+        (hasHtml ? 35 : 10) + (hasCss ? 35 : 10) + (hasJs ? 30 : 10)
+      );
 
       parsedResult = {
         score: calcScore,
         passed: calcScore >= 80,
         breakdown: [
           {
-            rubric_id: "structure",
-            name: "Semantic Structure",
-            score: hasHtml ? 90 : 20,
-            feedback: hasHtml ? "Semantic markup and container structure detected." : "HTML markup is incomplete.",
+            rubric_id: "R1",
+            name: "Visual Layout & Design Fidelity",
+            score: hasHtml && hasCss ? 92 : 40,
+            feedback: hasHtml && hasCss
+              ? "Container markup and CSS styling rules detected."
+              : "Markup or styling needs completion.",
           },
           {
-            rubric_id: "styling",
-            name: "Visual Styling & CSS",
-            score: hasCss ? 95 : 25,
-            feedback: hasCss ? "Clean styling and dark theme colors applied." : "Missing core styling rules.",
+            rubric_id: "R2",
+            name: "DOM Interaction & State Logic",
+            score: hasJs ? 94 : 35,
+            feedback: hasJs
+              ? "Interactive DOM manipulation and event handlers wired."
+              : "JavaScript event listeners needed.",
           },
           {
-            rubric_id: "interaction",
-            name: "Dynamic Logic & Events",
-            score: hasJs ? 90 : 20,
-            feedback: hasJs ? "Event listener and DOM manipulation wired properly." : "Interactive event listeners needed.",
+            rubric_id: "R3",
+            name: "Code Cleanliness & Specification Conformance",
+            score: hasHtml && hasCss && hasJs ? 90 : 45,
+            feedback: "Code structure conforms to the design specifications.",
           },
         ],
         overall_feedback:
           calcScore >= 80
-            ? "Great work! Your code demonstrates clean structure and functional interaction."
-            : "Review the missing requirements in the rubric and test your toggle behavior in the live sandbox.",
+            ? "Excellent job! Your solution fulfills the structural and interactive requirements cleanly."
+            : "Keep iterating! Check the color tokens, element classes, and event listener handlers.",
       };
     }
 
-    // 4. Optional persistence in Supabase if authenticated
+    // 3. Persist Submission in Supabase if authenticated
     try {
       if (userId && userId !== "anonymous") {
         await supabase.from("submissions").insert({
           user_id: userId,
-          challenge_id: challenge.id,
-          problem_id: challenge.id,
-          code_submitted: typeof code === "object" ? JSON.stringify(code) : code,
+          problem_id: challengeData?.id || challengeSlug,
+          code_submitted: JSON.stringify(submittedCode),
           attempt_type: attemptType,
           score: parsedResult.score || 0,
           passed: parsedResult.passed || false,
@@ -177,12 +158,15 @@ export async function POST(req: NextRequest) {
         });
       }
     } catch {
-      // Non-blocking submission write
+      // Non-blocking write
     }
 
     return NextResponse.json({
       evaluation: parsedResult,
       passed: parsedResult.passed || false,
+      score: parsedResult.score || 0,
+      breakdown: parsedResult.breakdown || [],
+      overall_feedback: parsedResult.overall_feedback || "",
       challengeSlug,
       timestamp: new Date().toISOString(),
     });

@@ -2,9 +2,11 @@
 
 import React, { useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { createClient } from "@/lib/supabase/client";
 import {
   ArrowRight,
   Sparkles,
@@ -123,6 +125,30 @@ const TRACKS_DATA = [
 ];
 
 export default function HomePage() {
+  const router = useRouter();
+
+  // Autologin redirect if user is already authenticated
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        router.replace("/problems");
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        router.replace("/problems");
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [router]);
+
   // GSAP Animation Refs
   const pageContainerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);

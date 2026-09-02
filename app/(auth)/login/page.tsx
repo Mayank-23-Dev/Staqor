@@ -33,8 +33,36 @@ function LoginForm() {
 
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") || "/problems";
+  const redirectToParam = searchParams.get("redirectTo");
+  const redirectTo =
+    redirectToParam &&
+    redirectToParam.startsWith("/") &&
+    !redirectToParam.startsWith("/login") &&
+    !redirectToParam.startsWith("/signup")
+      ? redirectToParam
+      : "/problems";
   const supabase = createClient();
+
+  // Autologin redirect if user is already authenticated
+  React.useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        router.replace(redirectTo);
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        router.replace(redirectTo);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [router, redirectTo, supabase]);
 
   // 3D GSAP Tilt Ref
   const cardRef = useRef<HTMLDivElement>(null);
