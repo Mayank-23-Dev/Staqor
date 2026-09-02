@@ -223,20 +223,25 @@ export async function POST(req: NextRequest) {
 
     // 5. Persist Submission in Supabase if authenticated
     try {
-      if (userId && userId !== "anonymous") {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      const effectiveUserId = authUser?.id || (userId && userId !== "anonymous" ? userId : null);
+
+      if (effectiveUserId) {
         await supabase.from("submissions").insert({
-          user_id: userId,
-          problem_id: challengeData?.id || challengeSlug,
-          code_submitted: JSON.stringify(submittedCode),
+          user_id: effectiveUserId,
+          problem_id: String(challengeData?.id || challengeSlug),
+          challenge_id: challengeData?.slug || challengeSlug,
+          code_submitted: typeof submittedCode === "object" ? submittedCode : JSON.stringify(submittedCode),
           attempt_type: attemptType,
           score: parsedResult.score,
           passed: parsedResult.passed,
+          status: parsedResult.passed ? "solved" : "attempted",
           groq_response: parsedResult,
           is_public: parsedResult.passed && attemptType === "submit",
         });
       }
-    } catch {
-      // Non-blocking write
+    } catch (dbErr) {
+      console.warn("[Server DB Persist Warning]:", dbErr);
     }
 
     return NextResponse.json({

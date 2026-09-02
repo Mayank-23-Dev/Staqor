@@ -308,37 +308,70 @@ export function ProblemWorkspace({ problem, user }: ProblemWorkspaceProps) {
       if (evaluation.passed && evaluation.score >= 80) {
         toast.success(`🎉 Accepted! Score: ${evaluation.score}/100 (+10 Staqor Coins)`);
 
+        // Instant local storage sync for problems list tick & offline fallback
+        if (typeof window !== "undefined") {
+          try {
+            const solved = JSON.parse(localStorage.getItem("staqor_solved_problems") || "[]");
+            const newSolved = Array.from(new Set([
+              ...solved,
+              String(problem.id),
+              problem.slug,
+              problem.slug.toLowerCase().replace(/^\d+-/, ""),
+            ]));
+            localStorage.setItem("staqor_solved_problems", JSON.stringify(newSolved));
+          } catch {}
+        }
+
         if (user) {
-          const { data: statsData } = await supabase
-            .from("user_stats")
-            .select("*")
-            .eq("user_id", user.id)
-            .single();
-
-          const today = new Date().toISOString().split("T")[0];
-
-          if (!statsData) {
-            await supabase.from("user_stats").insert({
+          try {
+            // Write to submissions table
+            await supabase.from("submissions").insert({
               user_id: user.id,
-              current_streak: 1,
-              total_solved: 1,
-              coins: 10,
-              last_active_date: today,
+              problem_id: String(problem.id),
+              challenge_id: problem.slug,
+              code_submitted: { html: htmlCode, css: cssCode, js: jsCode },
+              attempt_type: "submit",
+              score: evaluation.score,
+              passed: true,
+              status: "solved",
+              groq_response: evaluation,
+              is_public: true,
             });
-          } else {
-            let newStreak = statsData.current_streak || 1;
-            if (statsData.last_active_date !== today) {
-              newStreak += 1;
-            }
-            await supabase
+
+            // Update user stats & streak
+            const { data: statsData } = await supabase
               .from("user_stats")
-              .update({
-                current_streak: newStreak,
-                total_solved: (statsData.total_solved || 0) + 1,
-                coins: (statsData.coins || 0) + 10,
+              .select("*")
+              .eq("user_id", user.id)
+              .single();
+
+            const today = new Date().toISOString().split("T")[0];
+
+            if (!statsData) {
+              await supabase.from("user_stats").insert({
+                user_id: user.id,
+                current_streak: 1,
+                total_solved: 1,
+                coins: 10,
                 last_active_date: today,
-              })
-              .eq("user_id", user.id);
+              });
+            } else {
+              let newStreak = statsData.current_streak || 1;
+              if (statsData.last_active_date !== today) {
+                newStreak += 1;
+              }
+              await supabase
+                .from("user_stats")
+                .update({
+                  current_streak: newStreak,
+                  total_solved: (statsData.total_solved || 0) + 1,
+                  coins: (statsData.coins || 0) + 10,
+                  last_active_date: today,
+                })
+                .eq("user_id", user.id);
+            }
+          } catch (dbErr) {
+            console.warn("Could not sync solve to Supabase:", dbErr);
           }
         }
       } else {

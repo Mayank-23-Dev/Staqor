@@ -17,6 +17,7 @@ import {
   Check,
   Mail
 } from "lucide-react";
+import { PROBLEMS_DATA, getProblemBySlug } from "@/lib/problems-data";
 
 interface ProfilePageProps {
   params: { username: string };
@@ -172,37 +173,48 @@ export default function ProfilePage({ params }: ProfilePageProps) {
         
         const { data: subs } = await supabase
           .from("submissions")
-          .select("created_at, problem_id, score")
+          .select("created_at, problem_id, challenge_id, score, passed, status")
           .eq("user_id", targetUserId)
-          .eq("status", "solved")
-          .gte("created_at", oneYearAgo.toISOString());
+          .gte("created_at", oneYearAgo.toISOString())
+          .order("created_at", { ascending: false });
           
-        if (subs) {
+        if (subs && subs.length > 0) {
           setSubmissions(subs);
           
-          if (subs.length > 0) {
-            const calculatedAvg = (subs.reduce((acc: number, s: any) => acc + (s.score || 100), 0) / subs.length).toFixed(1);
+          const solvedSubs = subs.filter((s: any) => s.passed === true || s.status === "solved" || (typeof s.score === "number" && s.score >= 80));
+          
+          if (solvedSubs.length > 0) {
+            const calculatedAvg = (solvedSubs.reduce((acc: number, s: any) => acc + (s.score || 100), 0) / solvedSubs.length).toFixed(1);
             setStats(s => ({ ...s, avgScore: parseFloat(calculatedAvg) }));
           }
 
-          const uniqueProblemIds = Array.from(new Set(subs.map(s => s.problem_id)));
-          if (uniqueProblemIds.length > 0) {
-             const { data: probs } = await supabase
-               .from("problems")
-               .select("id, difficulty")
-               .in("id", uniqueProblemIds);
-               
-             if (probs) {
-               let e = 0, m = 0, h = 0;
-               probs.forEach(p => {
-                 if (p.difficulty === 'Easy') e++;
-                 else if (p.difficulty === 'Medium') m++;
-                 else if (p.difficulty === 'Hard') h++;
-               });
-               setDifficultyStats({ easy: e, medium: m, hard: h, total: probs.length });
-               setStats(s => ({ ...s, solves: probs.length }));
-             }
-          }
+          // Count unique solved problems
+          const solvedProblemSet = new Set<string>();
+          solvedSubs.forEach((s: any) => {
+            if (s.problem_id) solvedProblemSet.add(String(s.problem_id));
+            if (s.challenge_id) solvedProblemSet.add(String(s.challenge_id));
+          });
+
+          let e = 0, m = 0, h = 0;
+          solvedProblemSet.forEach((idOrSlug) => {
+            const p = getProblemBySlug(idOrSlug) || PROBLEMS_DATA.find(prob => String(prob.id) === idOrSlug || prob.slug === idOrSlug);
+            if (p) {
+              if (p.difficulty === 'Easy') e++;
+              else if (p.difficulty === 'Medium') m++;
+              else if (p.difficulty === 'Hard') h++;
+            } else {
+              e++;
+            }
+          });
+
+          const totalSolvedCount = Math.max(solvedProblemSet.size, userStats?.total_solved || 0);
+          setDifficultyStats({
+            easy: e,
+            medium: m,
+            hard: h,
+            total: totalSolvedCount
+          });
+          setStats(s => ({ ...s, solves: totalSolvedCount }));
         }
       }
     }
