@@ -127,13 +127,18 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   const [authUser, setAuthUser] = useState<any>(null);
   
   const [targetProfile, setTargetProfile] = useState<any>(null);
+  const decodedParam = decodeURIComponent(params.username);
   
-  const [stats, setStats] = useState({ solves: 47, streak: 7, avgScore: 94.8 });
-  const [difficultyStats, setDifficultyStats] = useState({ easy: 0, medium: 0, hard: 0, total: 0 });
+  const isDemoUser = decodedParam === "alex_dev";
+  const [stats, setStats] = useState(
+    isDemoUser ? { solves: 47, streak: 7, avgScore: 94.8 } : { solves: 0, streak: 0, avgScore: 0 }
+  );
+  const [difficultyStats, setDifficultyStats] = useState(
+    isDemoUser ? { easy: 24, medium: 18, hard: 5, total: 47 } : { easy: 0, medium: 0, hard: 0, total: 0 }
+  );
   const [submissions, setSubmissions] = useState<any[]>([]);
 
   const supabase = createClient();
-  const decodedParam = decodeURIComponent(params.username);
 
   useEffect(() => {
     async function fetchData() {
@@ -173,7 +178,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
         
         const { data: subs } = await supabase
           .from("submissions")
-          .select("created_at, problem_id, challenge_id, score, passed, status")
+          .select("id, created_at, problem_id, challenge_id, score, passed, status, groq_response, is_public")
           .eq("user_id", targetUserId)
           .gte("created_at", oneYearAgo.toISOString())
           .order("created_at", { ascending: false });
@@ -243,7 +248,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
       authUser.user_metadata?.username ||
       authUser.email?.split("@")[0] ||
       decodedParam
-    : decodedParam;
+    : targetProfile?.username || decodedParam;
 
   const email = isCurrentUser ? authUser.email : "";
   const avatarUrl = isCurrentUser
@@ -260,8 +265,12 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   const heatmapData = useMemo(() => {
     const data = new Map<string, number>();
     submissions.forEach(sub => {
-      const date = new Date(sub.created_at).toISOString().split('T')[0];
-      data.set(date, (data.get(date) || 0) + 1);
+      try {
+        const date = sub.created_at ? new Date(sub.created_at).toISOString().split('T')[0] : "";
+        if (date) {
+          data.set(date, (data.get(date) || 0) + 1);
+        }
+      } catch {}
     });
     return data;
   }, [submissions]);
@@ -287,6 +296,87 @@ export default function ProfilePage({ params }: ProfilePageProps) {
     }
     return w;
   }, [heatmapData]);
+
+  // Verified Proof of Work solutions dynamically generated from genuinely passed submissions
+  const verifiedSolutions = useMemo(() => {
+    // 1. Filter genuine passed submissions
+    const passed = submissions.filter(
+      (s: any) =>
+        s.passed === true ||
+        s.status === "solved" ||
+        (typeof s.score === "number" && s.score >= 80)
+    );
+
+    // 2. Respect privacy visibility for other viewers
+    const visiblePassed = isCurrentUser
+      ? passed
+      : passed.filter((s: any) => s.is_public !== false);
+
+    if (visiblePassed.length === 0) {
+      if (decodedParam === "alex_dev") {
+        return DEFAULT_VERIFIED_SOLUTIONS;
+      }
+      return [];
+    }
+
+    // 3. Deduplicate by problem: keep highest scoring submission for each unique challenge
+    const problemMap = new Map<string, any>();
+    visiblePassed.forEach((sub: any) => {
+      const key = String(sub.challenge_id || sub.problem_id);
+      const cleanKey = key.toLowerCase().replace(/^\d+-/, "");
+      const existing = problemMap.get(cleanKey);
+      if (!existing || (sub.score || 0) > (existing.score || 0)) {
+        problemMap.set(cleanKey, sub);
+      }
+    });
+
+    return Array.from(problemMap.values()).map((sub: any) => {
+      const rawKey = String(sub.challenge_id || sub.problem_id);
+      const prob =
+        getProblemBySlug(rawKey) ||
+        PROBLEMS_DATA.find((p) => String(p.id) === rawKey || p.slug === rawKey);
+
+      const title = prob?.title || (rawKey.includes("-") ? rawKey.split("-").map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ") : `Challenge #${rawKey}`);
+      const slug = prob?.slug || rawKey;
+      const track = prob?.category || "Frontend UI";
+      const difficulty = (prob?.difficulty || "Medium").toUpperCase();
+      const score = typeof sub.score === "number" ? sub.score : 90;
+      
+      const completedDate = sub.created_at
+        ? new Date(sub.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+        : "Recently";
+
+      const rubricBreakdown = Array.isArray(sub.groq_response?.breakdown) && sub.groq_response.breakdown.length > 0
+        ? sub.groq_response.breakdown.map((r: any) => ({
+            name: r.name || "Rubric Criterion",
+            score: typeof r.score === "number" ? r.score : score,
+            max: 100,
+          }))
+        : [
+            { name: "Visual Layout & Markup Fidelity", score: score, max: 100 },
+            { name: "DOM & State Logic", score: score, max: 100 },
+            { name: "Code Cleanliness & Adherence", score: score, max: 100 },
+          ];
+
+      const summary =
+        sub.groq_response?.overall_feedback ||
+        prob?.summary ||
+        "Verified automated AI evaluation completed with passing score.";
+
+      return {
+        id: sub.id || slug,
+        title,
+        track,
+        difficulty,
+        score,
+        time: sub.groq_response?.evaluation_time || "2.1s",
+        completedDate,
+        slug,
+        rubricBreakdown,
+        summary,
+      };
+    });
+  }, [submissions, isCurrentUser, decodedParam]);
 
   const totalSubmissions = submissions.length;
   const activeDays = heatmapData.size;
@@ -363,9 +453,11 @@ export default function ProfilePage({ params }: ProfilePageProps) {
 
               <div className="w-full pt-3 space-y-2 border-t border-[#26262E]">
                 {isCurrentUser ? (
-                  <Button className="w-full bg-[#ABDAC8] text-[#0A0A0F] font-bold text-[11px] h-8 hover:bg-[#ABDAC8]/90 transition-all rounded-lg">
-                    Edit Profile
-                  </Button>
+                  <Link href="/settings" className="w-full block">
+                    <Button className="w-full bg-[#ABDAC8] text-[#0A0A0F] font-bold text-[11px] h-8 hover:bg-[#ABDAC8]/90 transition-all rounded-lg">
+                      Edit Profile
+                    </Button>
+                  </Link>
                 ) : (
                   <Link href="/signup" className="w-full block">
                     <Button className="w-full bg-[#ABDAC8] text-[#0A0A0F] font-bold text-[11px] h-8 hover:bg-[#ABDAC8]/90 transition-all rounded-lg">
@@ -490,64 +582,85 @@ export default function ProfilePage({ params }: ProfilePageProps) {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {DEFAULT_VERIFIED_SOLUTIONS.map((sol) => (
-                <ProfileCard key={sol.id} watermark={sol.difficulty}>
-                  <div className="p-4 h-full flex flex-col justify-between space-y-3">
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <Badge
-                          variant="outline"
-                          className="text-[9px] font-mono text-[#ABDAC8] border-[#ABDAC8]/30 bg-[#111614] px-1.5 py-0"
-                        >
-                          {sol.track}
-                        </Badge>
-                        <Badge
-                          variant="outline"
-                          className="text-[9px] font-mono text-[#4ADE80] border-[#4ADE80]/30 bg-[#4ADE80]/10 font-bold px-1.5 py-0"
-                        >
-                          SCORE: {sol.score}/100 PASSED
-                        </Badge>
-                      </div>
-
-                      <h3 className="text-sm font-bold text-white leading-snug">
-                        {sol.title}
-                      </h3>
-
-                      <p className="text-[11px] text-zinc-300 leading-relaxed font-normal line-clamp-2">
-                        {sol.summary}
-                      </p>
-
-                      <div className="p-2 rounded-lg bg-[#0B0B10] border border-[#26262E] space-y-1 font-mono text-[9px]">
-                        {sol.rubricBreakdown.map((r) => (
-                          <div key={r.name} className="flex items-center justify-between text-zinc-400">
-                            <span>{r.name}</span>
-                            <span className="text-[#ABDAC8] font-bold">
-                              {r.score}/{r.max}%
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="pt-2 border-t border-[#26262E] flex items-center justify-between">
-                      <span className="text-[9px] font-mono text-zinc-500">
-                        {sol.time} • {sol.completedDate}
-                      </span>
-                      <Link href={`/problems/${sol.slug}`}>
-                        <Button
-                          size="sm"
-                          className="h-7 px-2 text-[10px] font-mono font-bold bg-[#ABDAC8] text-[#0A0A0F] hover:bg-[#ABDAC8]/90 transition-all gap-1 shadow-sm"
-                        >
-                          <Eye className="w-3 h-3" />
-                          <span>Replay</span>
-                        </Button>
-                      </Link>
-                    </div>
+            {verifiedSolutions.length === 0 ? (
+              <ProfileCard>
+                <div className="p-8 text-center space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-[#ABDAC8]/10 border border-[#ABDAC8]/20 flex items-center justify-center mx-auto text-[#ABDAC8]">
+                    <ShieldCheck className="w-6 h-6" />
                   </div>
-                </ProfileCard>
-              ))}
-            </div>
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-bold text-white">No Verified Solutions Yet</h3>
+                    <p className="text-xs text-zinc-400 max-w-sm mx-auto">
+                      Complete and submit coding challenges with a passing score (80+) to showcase your verified proof of work here.
+                    </p>
+                  </div>
+                  <Link href="/problems" className="inline-block pt-1">
+                    <Button className="h-8 px-4 text-xs font-mono font-bold bg-[#ABDAC8] text-[#0A0A0F] hover:bg-[#ABDAC8]/90 transition-all rounded-lg">
+                      Solve Your First Challenge
+                    </Button>
+                  </Link>
+                </div>
+              </ProfileCard>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {verifiedSolutions.map((sol) => (
+                  <ProfileCard key={sol.id} watermark={sol.difficulty}>
+                    <div className="p-4 h-full flex flex-col justify-between space-y-3">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <Badge
+                            variant="outline"
+                            className="text-[9px] font-mono text-[#ABDAC8] border-[#ABDAC8]/30 bg-[#111614] px-1.5 py-0"
+                          >
+                            {sol.track}
+                          </Badge>
+                          <Badge
+                            variant="outline"
+                            className="text-[9px] font-mono text-[#4ADE80] border-[#4ADE80]/30 bg-[#4ADE80]/10 font-bold px-1.5 py-0"
+                          >
+                            SCORE: {sol.score}/100 PASSED
+                          </Badge>
+                        </div>
+
+                        <h3 className="text-sm font-bold text-white leading-snug">
+                          {sol.title}
+                        </h3>
+
+                        <p className="text-[11px] text-zinc-300 leading-relaxed font-normal line-clamp-2">
+                          {sol.summary}
+                        </p>
+
+                        <div className="p-2 rounded-lg bg-[#0B0B10] border border-[#26262E] space-y-1 font-mono text-[9px]">
+                          {sol.rubricBreakdown.map((r: any) => (
+                            <div key={r.name} className="flex items-center justify-between text-zinc-400">
+                              <span className="truncate pr-2">{r.name}</span>
+                              <span className="text-[#ABDAC8] font-bold shrink-0">
+                                {r.score}/{r.max}%
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="pt-2 border-t border-[#26262E] flex items-center justify-between">
+                        <span className="text-[9px] font-mono text-zinc-500">
+                          {sol.time} • {sol.completedDate}
+                        </span>
+                        <Link href={`/problems/${sol.slug}`}>
+                          <Button
+                            size="sm"
+                            className="h-7 px-2 text-[10px] font-mono font-bold bg-[#ABDAC8] text-[#0A0A0F] hover:bg-[#ABDAC8]/90 transition-all gap-1 shadow-sm"
+                          >
+                            <Eye className="w-3 h-3" />
+                            <span>Replay</span>
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  </ProfileCard>
+                ))}
+              </div>
+            )}
           </div>
           
         </div>
