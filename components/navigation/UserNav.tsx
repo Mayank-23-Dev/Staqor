@@ -85,7 +85,7 @@ export function UserNav() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full border border-border">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user.user_metadata?.avatar_url} alt={username} />
+            <AvatarImage src={user.user_metadata?.avatar_url || user.user_metadata?.picture} alt={username} />
             <AvatarFallback className="bg-[#181824] text-[#ABDAC8] font-mono text-xs font-semibold">
               {initials}
             </AvatarFallback>

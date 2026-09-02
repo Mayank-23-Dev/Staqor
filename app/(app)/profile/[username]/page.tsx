@@ -125,6 +125,8 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   const [copied, setCopied] = useState(false);
   const [authUser, setAuthUser] = useState<any>(null);
   
+  const [targetProfile, setTargetProfile] = useState<any>(null);
+  
   const [stats, setStats] = useState({ solves: 47, streak: 7, avgScore: 94.8 });
   const [difficultyStats, setDifficultyStats] = useState({ easy: 0, medium: 0, hard: 0, total: 0 });
   const [submissions, setSubmissions] = useState<any[]>([]);
@@ -143,6 +145,8 @@ export default function ProfilePage({ params }: ProfilePageProps) {
         .eq('username', decodedParam)
         .single();
         
+      if (profile) setTargetProfile(profile);
+      
       let targetUserId = profile?.id;
       
       if (!targetUserId && user) {
@@ -232,7 +236,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   const email = isCurrentUser ? authUser.email : "";
   const avatarUrl = isCurrentUser
     ? authUser.user_metadata?.avatar_url || authUser.user_metadata?.picture || ""
-    : "";
+    : targetProfile?.avatar_url || "";
 
   const initials = displayName
     .split(" ")
