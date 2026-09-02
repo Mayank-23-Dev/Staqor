@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { LogoIcon } from "@/components/logo";
 import { getProblemBySlug } from "@/lib/problems-data";
 import IDEClient from "./IDEClient";
+import { ProblemSpecView } from "@/components/problems/ProblemSpecView";
 
 export default async function ProblemIDEPage({ params }: { params: { slug: string } }) {
   const supabase = createClient();
@@ -31,9 +32,12 @@ export default async function ProblemIDEPage({ params }: { params: { slug: strin
         id: localProblem.id,
         title: `${localProblem.number}. ${localProblem.title}`,
         slug: localProblem.slug,
+        folder: localProblem.folder,
+        screenshot_url: localProblem.screenshot_url,
         difficulty: localProblem.difficulty,
         topic: localProblem.category,
         category: localProblem.category,
+        summary: localProblem.summary,
         description: localProblem.description,
         starter_code: localProblem.starter_code,
         model_solution: localProblem.model_solution,
@@ -83,12 +87,9 @@ export default async function ProblemIDEPage({ params }: { params: { slug: strin
 
       {/* Main Two-Pane IDE Layout */}
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-        {/* Left Specification Pane */}
+        {/* Left Specification Pane with Interactive Lightbox & Design Specs */}
         <div className="w-full lg:w-5/12 border-b lg:border-b-0 lg:border-r border-border/80 p-5 lg:p-6 overflow-y-auto bg-[#0D0D12] scrollbar-thin">
-          <div
-            className="prose prose-invert max-w-none text-zinc-300"
-            dangerouslySetInnerHTML={{ __html: problem.description }}
-          />
+          <ProblemSpecView problem={problem} />
         </div>
 
         {/* Right Code Editor & Sandbox Preview Pane */}

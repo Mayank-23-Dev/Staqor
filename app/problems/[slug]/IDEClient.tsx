@@ -5,7 +5,7 @@ import Editor from "@monaco-editor/react";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import {
   Loader2,
   Play,
@@ -18,10 +18,12 @@ import {
   RotateCcw,
   Eye,
   Image as ImageIcon,
-  Columns,
+  ArrowLeft,
   Maximize2,
+  ZoomIn,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { ImageLightboxModal } from "@/components/problems/ImageLightboxModal";
 
 interface IDEClientProps {
   problem: any;
@@ -51,6 +53,7 @@ export default function IDEClient({ problem, user }: IDEClientProps) {
 
   const [activeTab, setActiveTab] = useState<"html" | "css" | "js">("html");
   const [previewTab, setPreviewTab] = useState<"sandbox" | "target">("sandbox");
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [evaluationResult, setEvaluationResult] = useState<any>(null);
@@ -355,12 +358,12 @@ export default function IDEClient({ problem, user }: IDEClientProps) {
 
         {/* Live Sandbox Preview & AI Evaluation Pane */}
         <div className="w-full md:w-1/2 flex flex-col h-full bg-[#0D0D12] overflow-hidden">
-          {/* Sandbox & Target Mode Selector */}
+          {/* Sandbox & Target Mode Selector Bar */}
           <div className="px-3 py-1.5 bg-[#14141E] border-b border-border/70 flex items-center justify-between text-xs font-mono text-zinc-400">
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setPreviewTab("sandbox")}
-                className={`flex items-center gap-1.5 px-2 py-1 rounded text-[11px] font-medium transition-colors ${
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-medium transition-colors ${
                   previewTab === "sandbox"
                     ? "bg-[#1E1E2E] text-[#A7DDC9] border border-[#A7DDC9]/30"
                     : "text-zinc-400 hover:text-white"
@@ -372,7 +375,7 @@ export default function IDEClient({ problem, user }: IDEClientProps) {
 
               <button
                 onClick={() => setPreviewTab("target")}
-                className={`flex items-center gap-1.5 px-2 py-1 rounded text-[11px] font-medium transition-colors ${
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-medium transition-colors ${
                   previewTab === "target"
                     ? "bg-[#1E1E2E] text-[#A7DDC9] border border-[#A7DDC9]/30"
                     : "text-zinc-400 hover:text-white"
@@ -394,14 +397,23 @@ export default function IDEClient({ problem, user }: IDEClientProps) {
                 </span>
               )
             ) : (
-              <a
-                href={screenshotUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-zinc-400 hover:text-white text-[10px] flex items-center gap-1 font-mono"
-              >
-                <Maximize2 className="w-3 h-3" /> Full Screen
-              </a>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setIsLightboxOpen(true)}
+                  className="h-6 px-2 text-[10px] font-mono border-border bg-[#0A0A0F] text-zinc-300 hover:text-white gap-1"
+                >
+                  <Maximize2 className="w-2.5 h-2.5 text-[#A7DDC9]" /> Inspect
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => setPreviewTab("sandbox")}
+                  className="h-6 px-2 text-[10px] font-mono font-bold bg-[#A7DDC9] text-[#0A0A0F] hover:bg-[#A7DDC9]/90 gap-1 shadow-sm"
+                >
+                  <ArrowLeft className="w-2.5 h-2.5" /> Back to Sandbox
+                </Button>
+              </div>
             )}
           </div>
 
@@ -415,20 +427,47 @@ export default function IDEClient({ problem, user }: IDEClientProps) {
                 sandbox="allow-scripts allow-same-origin allow-modals"
               />
             ) : (
-              <div className="w-full h-full flex flex-col items-center justify-start p-4 bg-[#0A0A0F] overflow-y-auto">
-                <a
-                  href={screenshotUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block cursor-zoom-in group"
-                  title="Click to view full image in new tab"
+              <div className="w-full h-full flex flex-col items-center justify-between p-4 bg-[#0A0A0F] overflow-y-auto space-y-4">
+                {/* Top Return Reminder */}
+                <div className="w-full flex items-center justify-between px-3 py-1.5 rounded-lg bg-[#111117] border border-[#26262E] text-xs">
+                  <span className="text-zinc-300 font-mono text-[11px]">
+                    Expected Design Benchmark
+                  </span>
+                  <Button
+                    size="sm"
+                    onClick={() => setPreviewTab("sandbox")}
+                    className="h-6 px-2.5 text-[10px] font-mono font-bold bg-[#A7DDC9] text-[#0A0A0F] hover:bg-[#A7DDC9]/90 gap-1"
+                  >
+                    <ArrowLeft className="w-3 h-3" /> Return to Live Editor
+                  </Button>
+                </div>
+
+                {/* Main Screenshot with Click-to-Zoom */}
+                <div
+                  onClick={() => setIsLightboxOpen(true)}
+                  className="cursor-pointer group relative max-w-full rounded-lg overflow-hidden border border-border shadow-2xl"
+                  title="Click for full-screen zoomable lightbox"
                 >
                   <img
                     src={screenshotUrl}
                     alt={`${problem.title} Target Screenshot`}
-                    className="max-w-full h-auto rounded-lg border border-border shadow-2xl transition-transform duration-200 group-hover:scale-[1.01]"
+                    className="max-w-full h-auto rounded-lg transition-transform duration-200 group-hover:scale-[1.01]"
                   />
-                </a>
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
+                    <span className="px-3 py-1.5 rounded-lg bg-[#111117]/90 border border-[#26262E] text-xs font-mono text-white flex items-center gap-1.5 shadow-xl">
+                      <ZoomIn className="w-3.5 h-3.5 text-[#A7DDC9]" /> Click to Inspect with Zoom
+                    </span>
+                  </div>
+                </div>
+
+                {/* Bottom Return Button */}
+                <Button
+                  onClick={() => setPreviewTab("sandbox")}
+                  className="h-8 px-4 text-xs font-mono font-bold bg-[#A7DDC9] text-[#0A0A0F] hover:bg-[#A7DDC9]/90 gap-1.5 shadow-xl shrink-0"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>Back to Live Sandbox Editor</span>
+                </Button>
               </div>
             )}
           </div>
@@ -526,6 +565,14 @@ export default function IDEClient({ problem, user }: IDEClientProps) {
           </Button>
         </div>
       </div>
+
+      {/* Fullscreen Interactive Lightbox Modal with explicit Back button */}
+      <ImageLightboxModal
+        isOpen={isLightboxOpen}
+        onClose={() => setIsLightboxOpen(false)}
+        imageUrl={screenshotUrl}
+        title={problem.title}
+      />
     </div>
   );
 }
