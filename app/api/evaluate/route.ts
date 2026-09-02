@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { groq, buildGroqPrompt } from "@/lib/groq";
+import { runStructuralPreFilter } from "@/lib/groq/prefilter";
 import { getProblemBySlug } from "@/lib/problems-data";
 
 export const dynamic = "force-dynamic";
@@ -28,6 +29,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Payload size safety check (< 1MB)
+    const totalPayloadBytes =
+      (submittedCode.html || "").length +
+      (submittedCode.css || "").length +
+      (submittedCode.js || "").length;
+
+    if (totalPayloadBytes > 1000000) {
+      return NextResponse.json(
+        { error: "Payload exceeds 1MB limit" },
+        { status: 413 }
+      );
+    }
+
     const supabase = await createClient();
 
     // 1. Fetch challenge/problem spec & reference model
@@ -50,32 +64,65 @@ export async function POST(req: NextRequest) {
           referenceModel = referenceModel || dbProb.model_solution;
         }
       } catch {
-        // use defaults
+        // use fallback data
       }
     }
 
+    // 2. Run Structural Pre-Filter Gate (Checks empty code, starter boilerplate, JS syntax errors)
+    const preFilterResult = runStructuralPreFilter(submittedCode, {
+      title,
+      track: challengeData?.category || "HTML & CSS",
+      spec_markdown: description,
+      starter_code: challengeData?.starter_code,
+    });
+
+    if (!preFilterResult.passed) {
+      const failScore = preFilterResult.score ?? 0;
+      return NextResponse.json({
+        evaluation: {
+          score: failScore,
+          passed: false,
+          breakdown: preFilterResult.breakdown || [],
+          overall_feedback:
+            preFilterResult.overall_feedback ||
+            preFilterResult.reason ||
+            "Your code did not pass the structural pre-filter checks.",
+        },
+        passed: false,
+        score: failScore,
+        breakdown: preFilterResult.breakdown || [],
+        overall_feedback:
+          preFilterResult.overall_feedback ||
+          preFilterResult.reason ||
+          "Your code did not pass the structural pre-filter checks.",
+        challengeSlug,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    // 3. Define Rubric
     const defaultRubric = [
       {
         id: "R1",
-        name: "Visual Layout & Design Fidelity",
+        name: "Visual Layout & Markup Fidelity",
         weight: 35,
-        criteria: "Accurate HTML container structure, responsive CSS Grid/Flexbox, color palette, typography and hover states.",
+        criteria: "Accurate HTML semantic container structure, CSS Flexbox/Grid alignment, typography specifications, colors, and responsive card styling.",
       },
       {
         id: "R2",
         name: "DOM Interaction & State Logic",
         weight: 40,
-        criteria: "Functional JavaScript event listeners, real-time DOM mutations, value updates, and interactive feedback.",
+        criteria: "Functional JavaScript event listeners, dynamic DOM updates, real-time value changes, input binding, and responsive controls.",
       },
       {
         id: "R3",
         name: "Code Cleanliness & Specification Conformance",
         weight: 25,
-        criteria: "Clean markup, modular CSS rules, efficient event handling, and adherence to requirements.",
+        criteria: "Clean modular code, proper naming, no broken syntax or runtime exceptions, and adherence to requirements.",
       },
     ];
 
-    // 2. Groq AI Evaluation with Benchmark Comparison
+    // 4. Groq AI Evaluation with Model Solution Benchmark
     let parsedResult: any;
     try {
       const { systemPrompt, userPrompt } = buildGroqPrompt({
@@ -87,63 +134,94 @@ export async function POST(req: NextRequest) {
         attemptType,
       });
 
-      const response = await groq.chat.completions.create({
-        model: "llama-3.3-70b-versatile",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        response_format: { type: "json_object" },
-      });
+      const candidateModels = [
+        "openai/gpt-oss-120b",
+        "qwen/qwen3.8-27b",
+        "openai/gpt-oss-20b",
+        "groq/compound",
+      ];
+
+      let response: any = null;
+      let lastErr: any = null;
+
+      for (const modelName of candidateModels) {
+        try {
+          response = await groq.chat.completions.create({
+            model: modelName,
+            temperature: 0.1,
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            response_format: { type: "json_object" },
+          });
+          if (response?.choices?.[0]?.message?.content) {
+            break;
+          }
+        } catch (e: any) {
+          lastErr = e;
+          continue;
+        }
+      }
+
+      if (!response?.choices?.[0]?.message?.content) {
+        throw lastErr || new Error("Failed to get evaluation response from AI models");
+      }
 
       const content = response.choices[0]?.message?.content || "{}";
-      parsedResult = JSON.parse(content);
-    } catch (groqErr) {
-      // Graceful fallback heuristics if Groq API key is offline or limit reached
-      const hasHtml = submittedCode.html && submittedCode.html.trim().length > 30;
-      const hasCss = submittedCode.css && submittedCode.css.trim().length > 30;
-      const hasJs = submittedCode.js && submittedCode.js.trim().length > 20;
+      const rawParsed = JSON.parse(content);
 
-      const calcScore = Math.min(
-        100,
-        (hasHtml ? 35 : 10) + (hasCss ? 35 : 10) + (hasJs ? 30 : 10)
-      );
+      // Server-Side Score & Pass Verification
+      let validatedScore = typeof rawParsed.score === "number" ? Math.round(rawParsed.score) : 0;
+      validatedScore = Math.max(0, Math.min(100, validatedScore));
+
+      // Strictly enforce passed criteria: score >= 80 ONLY
+      const validatedPassed = Boolean(validatedScore >= 80);
+
+      // Validate Breakdown
+      const validatedBreakdown = Array.isArray(rawParsed.breakdown)
+        ? rawParsed.breakdown.map((item: any) => ({
+            rubric_id: String(item.rubric_id || "R1"),
+            name: String(item.name || "Rubric Criterion"),
+            score: typeof item.score === "number" ? Math.max(0, Math.min(100, Math.round(item.score))) : 0,
+            feedback: String(item.feedback || ""),
+          }))
+        : [];
 
       parsedResult = {
-        score: calcScore,
-        passed: calcScore >= 80,
-        breakdown: [
-          {
-            rubric_id: "R1",
-            name: "Visual Layout & Design Fidelity",
-            score: hasHtml && hasCss ? 92 : 40,
-            feedback: hasHtml && hasCss
-              ? "Container markup and CSS styling rules detected."
-              : "Markup or styling needs completion.",
-          },
-          {
-            rubric_id: "R2",
-            name: "DOM Interaction & State Logic",
-            score: hasJs ? 94 : 35,
-            feedback: hasJs
-              ? "Interactive DOM manipulation and event handlers wired."
-              : "JavaScript event listeners needed.",
-          },
-          {
-            rubric_id: "R3",
-            name: "Code Cleanliness & Specification Conformance",
-            score: hasHtml && hasCss && hasJs ? 90 : 45,
-            feedback: "Code structure conforms to the design specifications.",
-          },
-        ],
+        score: validatedScore,
+        passed: validatedPassed,
+        breakdown: validatedBreakdown,
         overall_feedback:
-          calcScore >= 80
-            ? "Excellent job! Your solution fulfills the structural and interactive requirements cleanly."
-            : "Keep iterating! Check the color tokens, element classes, and event listener handlers.",
+          String(rawParsed.overall_feedback || "").trim() ||
+          (validatedPassed
+            ? "Great job! Your implementation satisfies the challenge requirements."
+            : "Review the feedback and refine your markup, styles, or event listeners."),
       };
+    } catch (groqErr: any) {
+      // Fail safely if AI service is unavailable - NEVER award pass on failure
+      console.error("[Groq Evaluation Error]:", groqErr?.message || groqErr);
+      return NextResponse.json(
+        {
+          error: "Evaluation service encountered an issue. Please try again.",
+          evaluation: {
+            score: 0,
+            passed: false,
+            breakdown: [],
+            overall_feedback: "AI Evaluation service is temporarily unavailable. Your submission was not marked as passed. Please retry in a few moments.",
+          },
+          passed: false,
+          score: 0,
+          breakdown: [],
+          overall_feedback: "AI Evaluation service is temporarily unavailable. Your submission was not marked as passed. Please retry in a few moments.",
+          challengeSlug,
+          timestamp: new Date().toISOString(),
+        },
+        { status: 503 }
+      );
     }
 
-    // 3. Persist Submission in Supabase if authenticated
+    // 5. Persist Submission in Supabase if authenticated
     try {
       if (userId && userId !== "anonymous") {
         await supabase.from("submissions").insert({
@@ -151,8 +229,8 @@ export async function POST(req: NextRequest) {
           problem_id: challengeData?.id || challengeSlug,
           code_submitted: JSON.stringify(submittedCode),
           attempt_type: attemptType,
-          score: parsedResult.score || 0,
-          passed: parsedResult.passed || false,
+          score: parsedResult.score,
+          passed: parsedResult.passed,
           groq_response: parsedResult,
           is_public: parsedResult.passed && attemptType === "submit",
         });
@@ -163,16 +241,20 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       evaluation: parsedResult,
-      passed: parsedResult.passed || false,
-      score: parsedResult.score || 0,
-      breakdown: parsedResult.breakdown || [],
-      overall_feedback: parsedResult.overall_feedback || "",
+      passed: parsedResult.passed,
+      score: parsedResult.score,
+      breakdown: parsedResult.breakdown,
+      overall_feedback: parsedResult.overall_feedback,
       challengeSlug,
       timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
     return NextResponse.json(
-      { error: error?.message || "Internal evaluation server error" },
+      {
+        error: error?.message || "Internal evaluation server error",
+        passed: false,
+        score: 0,
+      },
       { status: 500 }
     );
   }

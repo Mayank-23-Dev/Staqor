@@ -102,38 +102,18 @@ for idx, folder in enumerate(folders, 1):
     
     screenshot_url = f"/screenshots/{folder}.png"
     
-    # Build detailed HTML formatted description including the screenshot
-    description_html = f"""<div class="space-y-6">
+    # Build clean HTML formatted description WITHOUT embedded screenshots
+    description_html = f"""<div class="space-y-5">
   <div>
     <span class="text-xs font-mono font-bold text-[#A7DDC9] uppercase tracking-wider">Question {num} • {category}</span>
     <h1 class="text-2xl font-black text-white tracking-tight mt-1">{title}</h1>
     <p class="text-sm text-zinc-300 mt-2 leading-relaxed">{summary}</p>
   </div>
 
-  <!-- Target Visual Screenshot Preview -->
-  <div class="space-y-2">
-    <div class="flex items-center justify-between">
-      <span class="text-xs font-bold font-mono text-[#A7DDC9] uppercase tracking-wide flex items-center gap-1.5">
-        🖼️ Target Visual Output (Screenshot)
-      </span>
-      <span class="text-[10px] font-mono text-zinc-400">Click to view full image</span>
-    </div>
-    <div class="rounded-xl overflow-hidden border border-[#26262E] bg-[#0A0A0F] shadow-lg group relative">
-      <a href="{screenshot_url}" target="_blank" rel="noopener noreferrer" class="block cursor-zoom-in">
-        <img
-          src="{screenshot_url}"
-          alt="{title} Target Output Screenshot"
-          class="w-full h-auto object-cover rounded-xl transition-transform duration-300 group-hover:scale-[1.01]"
-          loading="lazy"
-        />
-      </a>
-    </div>
-  </div>
-
   <div class="p-4 rounded-xl bg-[#111117] border border-[#26262E] space-y-2">
     <h3 class="text-xs font-bold font-mono text-[#A7DDC9] uppercase tracking-wide">🛠️ What to Build</h3>
     <ul class="text-xs text-zinc-300 list-disc list-inside space-y-1.5 leading-relaxed">
-      <li><strong>Structure & Markup:</strong> Implement semantic container structure and interactive control elements matching the screenshot.</li>
+      <li><strong>Structure & Markup:</strong> Implement semantic container structure and interactive control elements matching the specification.</li>
       <li><strong>Responsive UI:</strong> Ensure clean Flexbox/CSS Grid alignment, card padding, and button styling.</li>
       <li><strong>Interaction Logic:</strong> Wire up JavaScript event listeners for real-time state updates.</li>
     </ul>
@@ -162,7 +142,7 @@ for idx, folder in enumerate(folders, 1):
     <ul class="text-xs text-zinc-300 list-disc list-inside space-y-1 leading-relaxed">
       <li>Handle user click and input events smoothly.</li>
       <li>Update display values and CSS styles dynamically without page reload.</li>
-      <li>Match the behavior and visual output shown in the target screenshot.</li>
+      <li>Match the behavior and visual output shown in the target design.</li>
     </ul>
   </div>
 </div>"""
@@ -173,7 +153,7 @@ for idx, folder in enumerate(folders, 1):
 <div class="container">
   <div class="card">
     <h2>{title}</h2>
-    <p>Write your markup matching the target screenshot...</p>
+    <p>Write your markup matching the target specifications...</p>
   </div>
 </div>"""
 
@@ -273,4 +253,4 @@ os.makedirs(os.path.dirname(output_file), exist_ok=True)
 with open(output_file, "w", encoding="utf-8") as f:
     f.write(ts_content)
 
-print(f"Successfully generated {len(problems)} problems with screenshots into {output_file}")
+print(f"Successfully generated {len(problems)} clean problem specifications into {output_file}")

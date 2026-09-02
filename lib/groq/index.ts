@@ -46,28 +46,33 @@ export function buildGroqPrompt(payload: EvaluationPayload): {
   systemPrompt: string;
   userPrompt: string;
 } {
-  const systemPrompt = `You are the Staqor AI Code Judge. You evaluate frontend component and web app implementations (HTML, CSS, JavaScript) against problem specifications and reference model solutions.
-Your job is to compare the user's submission with the reference solution and criteria, providing accurate scoring and actionable feedback.
+  const systemPrompt = `You are the Staqor AI Code Judge. You perform rigorous, objective technical evaluations of frontend implementations (HTML, CSS, JavaScript) against specifications and reference model solutions.
 
-SCORING RULES:
-- Compare the user's code with the reference model solution and specifications.
-- If the user's code achieves the required functionality, structure, and styling (even with minor stylistic variations or creative enhancements), award a passing score (80 to 100).
-- If the code is almost correct or a close call, provide constructive feedback on what small adjustment is needed and score appropriately (70 to 90).
-- If key markup or interaction logic is missing or broken, point out specifically what to fix.
+STRICT EVALUATION & SCORING PRINCIPLES:
+1. Objectively evaluate whether the user's submitted code actually implements the requirements described in the challenge specification.
+2. Incomplete / Starter Code / Placeholders (Score: 0 - 35, passed: false):
+   - If the code is just the initial placeholder template, boilerplate comments ("Write your code here"), or lacks the required DOM elements and styles, you MUST assign a failing score (0 - 35) and set "passed": false.
+3. Partial Implementation (Score: 36 - 74, passed: false):
+   - If only static layout is present but interactive JavaScript logic is missing, or styling is severely incomplete, assign a failing score (36 - 74) and set "passed": false.
+4. Near Complete / Close Call (Score: 75 - 79, passed: false):
+   - Minor bugs or slight missing requirements. Set "passed": false.
+5. Accepted / Complete (Score: 80 - 100, passed: true):
+   - ONLY award score >= 80 and "passed": true if the implementation genuinely satisfies the structural markup, visual styling (colors/typography/layout), and interactive event handling requirements.
 
-You MUST output valid JSON matching this schema:
+OUTPUT FORMAT:
+You MUST output valid JSON conforming exactly to this structure:
 {
-  "score": number (0 to 100),
-  "passed": boolean (true if score >= 80, else false),
+  "score": <number between 0 and 100>,
+  "passed": <boolean, MUST be true ONLY if score >= 80, else false>,
   "breakdown": [
     {
-      "rubric_id": string,
-      "name": string,
-      "score": number (0 to 100 for this criterion),
-      "feedback": string (concise explanation of what passed or what to improve)
+      "rubric_id": "<string matching criterion id, e.g. R1>",
+      "name": "<string criterion name>",
+      "score": <number between 0 and 100>,
+      "feedback": "<concise explanation of what was implemented or what is missing>"
     }
   ],
-  "overall_feedback": string (1-3 sentences summarising code quality and next steps)
+  "overall_feedback": "<2-3 sentences explaining strengths and required improvements>"
 }`;
 
   const sanitizedHtml = (payload.userCode.html || "").replace(/```/g, "'''");
@@ -82,12 +87,12 @@ You MUST output valid JSON matching this schema:
 
   let modelSolutionSection = "";
   if (payload.modelSolution) {
-    const modelHtml = (payload.modelSolution.html || "").slice(0, 1500).replace(/```/g, "'''");
-    const modelCss = (payload.modelSolution.css || "").slice(0, 1500).replace(/```/g, "'''");
-    const modelJs = (payload.modelSolution.js || "").slice(0, 1500).replace(/```/g, "'''");
+    const modelHtml = (payload.modelSolution.html || "").slice(0, 2000).replace(/```/g, "'''");
+    const modelCss = (payload.modelSolution.css || "").slice(0, 2000).replace(/```/g, "'''");
+    const modelJs = (payload.modelSolution.js || "").slice(0, 2000).replace(/```/g, "'''");
 
     modelSolutionSection = `
-REFERENCE MODEL SOLUTION (FOR BENCHMARK):
+REFERENCE MODEL SOLUTION (BENCHMARK):
 --- HTML ---
 ${modelHtml}
 
@@ -120,7 +125,7 @@ ${sanitizedCss}
 --- JAVASCRIPT ---
 ${sanitizedJs}
 
-Compare the user's submission with the reference model and rubric. Output valid JSON only.`;
+Carefully evaluate the user submission against the specification and reference solution. Output valid JSON only.`;
 
   return { systemPrompt, userPrompt };
 }

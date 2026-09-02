@@ -34,7 +34,6 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isCheckedIn, setIsCheckedIn] = useState(false);
   const [companySearch, setCompanySearch] = useState("");
-  const [companyPage, setCompanyPage] = useState(0);
 
   const [activeSolveDays, setActiveSolveDays] = useState<number[]>([]);
   const [streak, setStreak] = useState(0);
@@ -106,12 +105,6 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
   // Filtered companies
   const filteredCompanies = MOCK_COMPANIES.filter((c) =>
     c.name.toLowerCase().includes(companySearch.toLowerCase())
-  );
-  const companiesPerPage = 6;
-  const totalCompanyPages = Math.ceil(filteredCompanies.length / companiesPerPage);
-  const displayedCompanies = filteredCompanies.slice(
-    companyPage * companiesPerPage,
-    (companyPage + 1) * companiesPerPage
   );
 
   const handleCheckIn = () => {
@@ -320,29 +313,12 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
                 Trending Companies
               </CardTitle>
             </div>
-            <div className="flex items-center gap-0.5">
-              <Button
-                variant="ghost"
-                size="icon"
-                disabled={companyPage === 0}
-                className="h-5 w-5 text-muted-foreground hover:text-foreground disabled:opacity-40"
-                onClick={() => setCompanyPage((p) => Math.max(0, p - 1))}
-              >
-                <ChevronLeft className="w-3 h-3" />
-              </Button>
-              <span className="text-[10px] text-muted-foreground font-mono px-1">
-                {companyPage + 1}/{totalCompanyPages || 1}
-              </span>
-              <Button
-                variant="ghost"
-                size="icon"
-                disabled={companyPage >= totalCompanyPages - 1}
-                className="h-5 w-5 text-muted-foreground hover:text-foreground disabled:opacity-40"
-                onClick={() => setCompanyPage((p) => Math.min(totalCompanyPages - 1, p + 1))}
-              >
-                <ChevronRight className="w-3 h-3" />
-              </Button>
-            </div>
+            <Badge
+              variant="outline"
+              className="text-[10px] font-mono font-normal text-muted-foreground border-border/80 bg-background/50 px-1.5 py-0"
+            >
+              {filteredCompanies.length} Total
+            </Badge>
           </div>
 
           {/* Company Search Input */}
@@ -351,17 +327,14 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
             <Input
               placeholder="Search companies..."
               value={companySearch}
-              onChange={(e) => {
-                setCompanySearch(e.target.value);
-                setCompanyPage(0);
-              }}
+              onChange={(e) => setCompanySearch(e.target.value)}
               className="h-7 pl-8 pr-3 text-xs bg-background border-border"
             />
           </div>
         </CardHeader>
 
         <CardContent className="p-3.5 pt-1 space-y-1">
-          {displayedCompanies.map((company) => {
+          {filteredCompanies.map((company) => {
             const isSelected = selectedCompany === company.name;
             return (
               <button
@@ -387,7 +360,7 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
             );
           })}
 
-          {displayedCompanies.length === 0 && (
+          {filteredCompanies.length === 0 && (
             <p className="text-xs text-muted-foreground py-3 text-center">
               No matching companies found.
             </p>
