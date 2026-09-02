@@ -305,6 +305,13 @@ export function Navbar({ onSelectList, onSelectTag, onSelectCompany }: NavbarPro
                       <span>Public Portfolio</span>
                     </Link>
                     <Link
+                      href="/settings"
+                      className="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-zinc-300 hover:text-white hover:bg-secondary/70 transition-colors"
+                    >
+                      <Shield className="w-3.5 h-3.5 text-primary" />
+                      <span>Settings</span>
+                    </Link>
+                    <Link
                       href="/pricing"
                       className="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-primary font-medium hover:bg-primary/10 transition-colors"
                     >

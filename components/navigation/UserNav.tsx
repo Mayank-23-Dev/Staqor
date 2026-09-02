@@ -118,6 +118,12 @@ export function UserNav() {
             <span>Public Profile</span>
           </Link>
         </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/settings" className="cursor-pointer flex items-center gap-2 text-xs">
+            <Shield className="w-3.5 h-3.5 text-primary" />
+            <span>Settings</span>
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator className="bg-border/60" />
         <DropdownMenuItem
           onClick={handleSignOut}
