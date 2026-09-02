@@ -23,12 +23,7 @@ import {
   Maximize2,
   ZoomIn,
   FileText,
-  CheckCircle2,
-  ListOrdered,
-  GripVertical,
-  GripHorizontal,
   Terminal,
-  Columns,
   RefreshCw,
 } from "lucide-react";
 import { ImageLightboxModal } from "./ImageLightboxModal";
@@ -62,7 +57,7 @@ export function ProblemWorkspace({ problem, user }: ProblemWorkspaceProps) {
   const [jsCode, setJsCode] = useState(initialJs);
 
   // Layout & Tabs state
-  const [activeLeftTab, setActiveLeftTab] = useState<"description" | "submissions">("description");
+  const [activeLeftTab, setActiveLeftTab] = useState<"description" | "target" | "preview">("description");
   const [activeEditorTab, setActiveEditorTab] = useState<"html" | "css" | "js">("html");
   const [activeBottomTab, setActiveBottomTab] = useState<"sandbox" | "target" | "evaluation">("sandbox");
 
@@ -80,6 +75,7 @@ export function ProblemWorkspace({ problem, user }: ProblemWorkspaceProps) {
   const [sandboxError, setSandboxError] = useState<string | null>(null);
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const leftIframeRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const rightPaneRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
@@ -109,53 +105,58 @@ export function ProblemWorkspace({ problem, user }: ProblemWorkspaceProps) {
     }
   }, [htmlCode, cssCode, jsCode, problem.slug]);
 
-  // Update Sandbox Iframe
+  // Update Sandbox Iframes (both bottom and left preview)
   const updateSandbox = useCallback((showToast = false) => {
-    if (!iframeRef.current) return;
-    const doc = iframeRef.current.contentDocument || iframeRef.current.contentWindow?.document;
-    if (!doc) return;
+    const renderToIframe = (iframe: HTMLIFrameElement | null) => {
+      if (!iframe) return;
+      const doc = iframe.contentDocument || iframe.contentWindow?.document;
+      if (!doc) return;
+
+      const source = `
+        <!DOCTYPE html>
+        <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;800&family=Merriweather:ital,wght@0,300;0,700;1,400&family=Outfit:wght@400;700;900&family=Playfair+Display:ital,wght@0,600;0,900;1,400&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+            <style>
+              ${cssCode}
+            </style>
+          </head>
+          <body>
+            ${htmlCode}
+            <script>
+              window.onerror = function(msg, url, line) {
+                window.parent.postMessage({ type: 'SANDBOX_ERROR', message: msg, line: line }, '*');
+              };
+              try {
+                ${jsCode}
+                window.parent.postMessage({ type: 'SANDBOX_SUCCESS' }, '*');
+              } catch (err) {
+                window.parent.postMessage({ type: 'SANDBOX_ERROR', message: err.message || err.toString() }, '*');
+              }
+            </script>
+          </body>
+        </html>
+      `;
+
+      try {
+        doc.open();
+        doc.write(source);
+        doc.close();
+      } catch (e: any) {
+        setSandboxError(e.message || "Failed to render sandbox.");
+      }
+    };
 
     setSandboxError(null);
+    renderToIframe(iframeRef.current);
+    renderToIframe(leftIframeRef.current);
 
-    const source = `
-      <!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <link rel="preconnect" href="https://fonts.googleapis.com">
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-          <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;800&family=Merriweather:ital,wght@0,300;0,700;1,400&family=Outfit:wght@400;700;900&family=Playfair+Display:ital,wght@0,600;0,900;1,400&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-          <style>
-            ${cssCode}
-          </style>
-        </head>
-        <body>
-          ${htmlCode}
-          <script>
-            window.onerror = function(msg, url, line) {
-              window.parent.postMessage({ type: 'SANDBOX_ERROR', message: msg, line: line }, '*');
-            };
-            try {
-              ${jsCode}
-              window.parent.postMessage({ type: 'SANDBOX_SUCCESS' }, '*');
-            } catch (err) {
-              window.parent.postMessage({ type: 'SANDBOX_ERROR', message: err.message || err.toString() }, '*');
-            }
-          </script>
-        </body>
-      </html>
-    `;
-
-    try {
-      doc.open();
-      doc.write(source);
-      doc.close();
-      if (showToast) {
-        toast.success("Sandbox reloaded with latest code changes.");
-      }
-    } catch (e: any) {
-      setSandboxError(e.message || "Failed to render sandbox.");
+    if (showToast) {
+      toast.success("Sandbox reloaded with latest code changes.");
     }
   }, [htmlCode, cssCode, jsCode]);
 
@@ -260,7 +261,6 @@ export function ProblemWorkspace({ problem, user }: ProblemWorkspaceProps) {
   // Run & Preview
   const handleRun = () => {
     setIsRunning(true);
-    setActiveBottomTab("sandbox");
     updateSandbox(true);
     setTimeout(() => setIsRunning(false), 300);
   };
@@ -352,7 +352,7 @@ export function ProblemWorkspace({ problem, user }: ProblemWorkspaceProps) {
   return (
     <div className="h-screen max-h-screen w-screen bg-[#0A0A0F] text-[#F5F5F7] flex flex-col overflow-hidden select-none font-sans">
       {/* ========================================================================= */}
-      {/* 1. TOP FIXED HEADER (Dense LeetCode Style Bar)                            */}
+      {/* 1. TOP FIXED HEADER                                                       */}
       {/* ========================================================================= */}
       <header className="h-12 border-b border-[#26262E] bg-[#111117] px-3.5 flex items-center justify-between shrink-0 z-30">
         {/* Left: Back Link & Problem Title / Difficulty */}
@@ -455,7 +455,7 @@ export function ProblemWorkspace({ problem, user }: ProblemWorkspaceProps) {
         className="flex-1 flex flex-col lg:flex-row overflow-hidden relative"
       >
         {/* ======================================================================= */}
-        {/* LEFT PANEL (~40%): Spec, Target Screenshot, Typography & Colors        */}
+        {/* LEFT PANEL: Description | Target Screenshot | Live Preview              */}
         {/* ======================================================================= */}
         <div
           style={{ width: `${splitRatio}%` }}
@@ -475,56 +475,108 @@ export function ProblemWorkspace({ problem, user }: ProblemWorkspaceProps) {
                 <FileText className="w-3.5 h-3.5 text-[#A7DDC9]" />
                 <span>Description</span>
               </button>
+
+              <button
+                onClick={() => setActiveLeftTab("target")}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono font-medium transition-colors ${
+                  activeLeftTab === "target"
+                    ? "bg-[#1E1E2E] text-[#A7DDC9] border border-[#A7DDC9]/30"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                <ImageIcon className="w-3.5 h-3.5 text-sky-400" />
+                <span>Target Screenshot</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setActiveLeftTab("preview");
+                  setTimeout(() => updateSandbox(), 50);
+                }}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono font-medium transition-colors ${
+                  activeLeftTab === "preview"
+                    ? "bg-[#1E1E2E] text-[#A7DDC9] border border-[#A7DDC9]/30"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                <Eye className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Live Preview</span>
+              </button>
             </div>
 
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsLightboxOpen(true)}
-              className="h-6 px-2 text-[10px] font-mono text-zinc-400 hover:text-white gap-1"
-              title="Inspect Design Target"
-            >
-              <ZoomIn className="w-3 h-3 text-[#A7DDC9]" />
-              <span>Inspect UI</span>
-            </Button>
+            {activeLeftTab === "target" && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsLightboxOpen(true)}
+                className="h-6 px-2 text-[10px] font-mono text-zinc-400 hover:text-white gap-1"
+                title="Open in Zoomable Lightbox"
+              >
+                <Maximize2 className="w-3 h-3 text-[#A7DDC9]" />
+                <span>Fullscreen</span>
+              </Button>
+            )}
           </div>
 
-          {/* Left Panel Scrollable Content */}
-          <div className="flex-1 p-4 lg:p-5 overflow-y-auto scrollbar-none text-zinc-300 space-y-6 select-text">
-            {/* Target Screenshot Card */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold font-mono text-[#A7DDC9] uppercase tracking-wide flex items-center gap-1.5">
-                  🖼️ Target Visual Output (Screenshot)
-                </span>
-                <span className="text-[10px] font-mono text-zinc-500">Click to zoom</span>
+          {/* Left Panel Content */}
+          <div className="flex-1 overflow-y-auto scrollbar-none text-zinc-300 select-text">
+            {/* 1. Description View (Clean text specifications without duplicate screenshot) */}
+            {activeLeftTab === "description" && (
+              <div className="p-4 lg:p-5 space-y-4">
+                {problem.description && (
+                  <div
+                    className="prose prose-invert max-w-none text-zinc-300 text-xs"
+                    dangerouslySetInnerHTML={{ __html: problem.description }}
+                  />
+                )}
               </div>
+            )}
 
-              <div
-                onClick={() => setIsLightboxOpen(true)}
-                className="rounded-xl overflow-hidden border border-[#26262E] bg-[#0A0A0F] shadow-lg group relative cursor-pointer hover:border-[#A7DDC9]/50 transition-all"
-                title="Click for zoomable inspection"
-              >
-                <img
-                  src={screenshotUrl}
-                  alt={`${problem.title} Target Screenshot`}
-                  className="w-full h-auto object-cover rounded-xl transition-transform duration-300 group-hover:scale-[1.01]"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
-                  <span className="px-3 py-1.5 rounded-lg bg-[#111117]/90 border border-[#26262E] text-xs font-mono text-white flex items-center gap-1.5 shadow-xl">
-                    <Maximize2 className="w-3.5 h-3.5 text-[#A7DDC9]" /> Click to Inspect Design
-                  </span>
+            {/* 2. Target Screenshot Dedicated View */}
+            {activeLeftTab === "target" && (
+              <div className="h-full flex flex-col items-center justify-start p-4 bg-[#0A0A0F] overflow-y-auto space-y-3">
+                <div className="w-full flex items-center justify-between px-3 py-1.5 rounded-lg bg-[#111117] border border-[#26262E] text-xs font-mono">
+                  <span className="text-zinc-400 text-[11px]">Expected Design Benchmark</span>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setIsLightboxOpen(true)}
+                    className="h-5 px-2 text-[10px] text-[#A7DDC9] hover:bg-[#A7DDC9]/10 gap-1"
+                  >
+                    <ZoomIn className="w-3 h-3" /> Zoom & Inspect
+                  </Button>
+                </div>
+
+                <div
+                  onClick={() => setIsLightboxOpen(true)}
+                  className="rounded-xl overflow-hidden border border-[#26262E] bg-[#000] shadow-2xl group relative cursor-pointer"
+                  title="Click to open interactive lightbox"
+                >
+                  <img
+                    src={screenshotUrl}
+                    alt={`${problem.title} Target Screenshot`}
+                    className="w-full h-auto object-contain rounded-xl transition-transform duration-200 group-hover:scale-[1.01]"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
+                    <span className="px-3 py-1.5 rounded-lg bg-[#111117]/90 border border-[#26262E] text-xs font-mono text-white flex items-center gap-1.5 shadow-xl">
+                      <Maximize2 className="w-3.5 h-3.5 text-[#A7DDC9]" /> Click to Inspect in Fullscreen
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
-            {/* Rich Specification Description Body */}
-            {problem.description && (
-              <div
-                className="prose prose-invert max-w-none text-zinc-300 text-xs"
-                dangerouslySetInnerHTML={{ __html: problem.description }}
-              />
+            {/* 3. Left Live Preview View */}
+            {activeLeftTab === "preview" && (
+              <div className="h-full w-full flex flex-col relative bg-white">
+                <iframe
+                  ref={leftIframeRef}
+                  title="Left Live Sandbox Preview"
+                  className="w-full h-full border-none bg-white"
+                  sandbox="allow-scripts allow-same-origin allow-modals"
+                />
+              </div>
             )}
           </div>
         </div>

@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    webpackBuildWorker: false,
-  },
   images: {
     remotePatterns: [
       {
@@ -23,4 +20,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-
