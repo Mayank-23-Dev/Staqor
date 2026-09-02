@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>43 - Kanban Task Board</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="kanban-app">
+        <header class="top-bar">
+            <h1>📋 Sprint Kanban Board</h1>
+            <button class="btn btn-primary" id="addTaskBtn">+ Add New Task</button>
+        </header>
+
+        <div class="board-columns">
+            <!-- Col 1 -->
+            <div class="kanban-col" data-status="todo">
+                <div class="col-header">
+                    <span>To Do</span>
+                    <span class="count" id="todoCount">2</span>
+                </div>
+                <div class="tasks-list" id="todoList">
+                    <div class="task-card" draggable="true">
+                        <span class="p-tag high">High</span>
+                        <h4>Implement OAuth2 Login</h4>
+                        <p>Configure JWT token refreshing on edge gateway.</p>
+                    </div>
+                    <div class="task-card" draggable="true">
+                        <span class="p-tag med">Medium</span>
+                        <h4>Design Hero Section</h4>
+                        <p>Create high fidelity mockup with WebGL background.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Col 2 -->
+            <div class="kanban-col" data-status="inprogress">
+                <div class="col-header">
+                    <span>In Progress</span>
+                    <span class="count" id="progCount">1</span>
+                </div>
+                <div class="tasks-list" id="progList">
+                    <div class="task-card" draggable="true">
+                        <span class="p-tag high">High</span>
+                        <h4>Raft Consensus Testing</h4>
+                        <p>Simulate node network partitions across regions.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Col 3 -->
+            <div class="kanban-col" data-status="done">
+                <div class="col-header">
+                    <span>Done</span>
+                    <span class="count" id="doneCount">1</span>
+                </div>
+                <div class="tasks-list" id="doneList">
+                    <div class="task-card" draggable="true">
+                        <span class="p-tag low">Low</span>
+                        <h4>Update Documentation</h4>
+                        <p>Write API endpoints specs for v2.4 release.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

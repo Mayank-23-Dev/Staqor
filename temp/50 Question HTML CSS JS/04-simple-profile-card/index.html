@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>04 - Simple Profile Card</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="page-container">
+        <header class="header">
+            <span class="badge">Question 04 • Level 1: Basics</span>
+            <h1>Developer Profile Card</h1>
+            <p>CSS Box Model, rounded avatars, status badges, skill tags, and interactive follow state.</p>
+        </header>
+
+        <div class="card-container">
+            <div class="profile-card" id="profileCard">
+                <!-- Card Header Cover -->
+                <div class="card-banner">
+                    <button class="theme-btn" id="themeToggleBtn" title="Toggle Card Theme">🌙</button>
+                </div>
+
+                <!-- Avatar with Online Status -->
+                <div class="avatar-wrapper">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80" alt="Sarah Chen" class="avatar-img">
+                    <span class="status-badge" title="Online for collaboration"></span>
+                </div>
+
+                <!-- User Info -->
+                <div class="profile-info">
+                    <h2 class="user-name">Sarah Chen</h2>
+                    <p class="user-title">Senior Full-Stack Developer</p>
+                    <p class="user-location">📍 San Francisco, CA</p>
+                    <p class="user-bio">Passionate about architecting performant front-end systems, design tokens, and scalable cloud microservices.</p>
+                </div>
+
+                <!-- Skills Tags -->
+                <div class="skills-list">
+                    <span class="skill-tag">HTML5 / CSS3</span>
+                    <span class="skill-tag">TypeScript</span>
+                    <span class="skill-tag">React.js</span>
+                    <span class="skill-tag">Node.js</span>
+                    <span class="skill-tag">UI/UX</span>
+                </div>
+
+                <!-- Numerical Stats -->
+                <div class="stats-row">
+                    <div class="stat-col">
+                        <strong id="followersCount">1,420</strong>
+                        <span>Followers</span>
+                    </div>
+                    <div class="stat-col">
+                        <strong>348</strong>
+                        <span>Following</span>
+                    </div>
+                    <div class="stat-col">
+                        <strong>52</strong>
+                        <span>Projects</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="actions-row">
+                    <button class="btn btn-follow" id="followBtn">Follow +</button>
+                    <button class="btn btn-message" id="messageBtn">Message</button>
+                </div>
+
+                <!-- Social Links -->
+                <div class="social-links">
+                    <a href="#" class="social-icon" title="GitHub">🐙</a>
+                    <a href="#" class="social-icon" title="Twitter / X">🐦</a>
+                    <a href="#" class="social-icon" title="LinkedIn">💼</a>
+                    <a href="#" class="social-icon" title="Portfolio">🌐</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="notification-toast hidden" id="toastMsg">Message sent to Sarah!</div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

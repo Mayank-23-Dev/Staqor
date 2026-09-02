@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>14 - Tabs Navigation Component</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 14 • Level 2: Components</span>
+            <h1>Sliding Indicator Tabs Component</h1>
+            <p>Dynamic bounding box pill indicator calculation, smooth content transitions, and tab switching.</p>
+        </header>
+
+        <div class="tabs-card">
+            <!-- Tabs Navigation Header -->
+            <div class="tabs-header-wrapper">
+                <div class="tabs-nav" id="tabsNav">
+                    <button class="tab-btn active" data-tab="overview">📊 Overview</button>
+                    <button class="tab-btn" data-tab="analytics">📈 Analytics</button>
+                    <button class="tab-btn" data-tab="integrations">🔌 Integrations</button>
+                    <button class="tab-btn" data-tab="settings">⚙️ Settings</button>
+                    <!-- Active Indicator Pill -->
+                    <span class="tab-indicator" id="tabIndicator"></span>
+                </div>
+            </div>
+
+            <!-- Tab Content Panels -->
+            <div class="tabs-body">
+                <!-- 1. Overview -->
+                <div class="tab-panel active" id="overview">
+                    <h3>Project Ecosystem Overview</h3>
+                    <p>Antigravity Engine provides real-time state visualization, automated test pipelines, and distributed edge deployment.</p>
+                    <div class="metric-row">
+                        <div class="metric-box">
+                            <strong>1.2M</strong>
+                            <span>Requests / Min</span>
+                        </div>
+                        <div class="metric-box">
+                            <strong>99.98%</strong>
+                            <span>Availability</span>
+                        </div>
+                        <div class="metric-box">
+                            <strong>14ms</strong>
+                            <span>P99 Latency</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Analytics -->
+                <div class="tab-panel" id="analytics">
+                    <h3>Traffic & User Telemetry</h3>
+                    <p>Inspect real-time telemetry metrics, geographically distributed edge caches, and query execution times.</p>
+                    <div class="metric-row">
+                        <div class="metric-box">
+                            <strong>+34.2%</strong>
+                            <span>Monthly Growth</span>
+                        </div>
+                        <div class="metric-box">
+                            <strong>48.5k</strong>
+                            <span>Active Sessions</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Integrations -->
+                <div class="tab-panel" id="integrations">
+                    <h3>Connected Developer Tools</h3>
+                    <p>Seamless bidirectional synchronization with GitHub, GitLab, Slack, and AWS CloudWatch.</p>
+                    <div class="metric-row">
+                        <div class="metric-box">
+                            <strong>8 Active</strong>
+                            <span>Webhooks</span>
+                        </div>
+                        <div class="metric-box">
+                            <strong>OAuth 2.0</strong>
+                            <span>Auth Protocol</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Settings -->
+                <div class="tab-panel" id="settings">
+                    <h3>Workspace Preferences</h3>
+                    <p>Configure notifications, API authentication tokens, and granular permission access controls.</p>
+                    <div class="metric-row">
+                        <div class="metric-box">
+                            <strong>Production</strong>
+                            <span>Cluster Mode</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

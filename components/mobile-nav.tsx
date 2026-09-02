@@ -48,7 +48,7 @@ export function MobileNav() {
               ))}
             </div>
             <div className="mt-6 flex flex-col gap-2 pt-4 border-t border-[#26262E]">
-              <Link href="/challenges" onClick={() => setOpen(false)}>
+              <Link href="/problems" onClick={() => setOpen(false)}>
                 <Button className="w-full bg-gradient-to-b from-[#ABDAC8] to-[#7BC4A8] text-[#0A0A0F] font-bold rounded-xl py-2 text-xs">
                   Browse Challenges Catalog
                 </Button>

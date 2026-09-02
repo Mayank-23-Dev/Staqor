@@ -1,0 +1,12 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #080c15; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; padding: 3rem 1.5rem; display: flex; justify-content: center; }
+.habit-app { max-width: 750px; width: 100%; }
+.app-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+.btn-add { background: #6366f1; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 700; cursor: pointer; }
+.habits-table { background: #111827; border: 1px solid #1f2937; border-radius: 18px; padding: 1.5rem; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
+.table-header { display: flex; justify-content: space-between; color: #94a3b8; font-weight: 700; font-size: 0.85rem; border-bottom: 1px solid #1f2937; padding-bottom: 0.8rem; margin-bottom: 1rem; }
+.week-days { display: flex; gap: 12px; }
+.week-days span { width: 24px; text-align: center; }
+.habit-row { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; border-bottom: 1px solid #1f2937; }
+.day-boxes { display: flex; gap: 12px; }
+.day-boxes input { width: 24px; height: 24px; accent-color: #6366f1; cursor: pointer; }

@@ -355,7 +355,10 @@ export function ChallengesCatalogView({
           </div>
 
           {/* Challenges Table */}
-          <div className="flex-1 p-4 lg:p-6 overflow-x-auto">
+          <div
+            className="flex-1 p-4 lg:p-6 overflow-x-auto scrollbar-none"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
             {paginatedChallenges.length === 0 ? (
               <div className="py-16 text-center space-y-3 bg-[#111117] rounded-xl border border-[#26262E] p-6">
                 <Terminal className="w-8 h-8 text-[#6B7280] mx-auto" />

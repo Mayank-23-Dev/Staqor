@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>01 - Typography & Font Showcase</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;800&family=Merriweather:ital,wght@0,300;0,700;1,400&family=Outfit:wght@400;700;900&family=Playfair+Display:ital,wght@0,600;0,900;1,400&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 01 • Level 1: Basics</span>
+            <h1>Typography & Font Studio</h1>
+            <p>Master CSS font families, weights, sizing, line-height, letter spacing, and text transformations in real-time.</p>
+        </header>
+
+        <div class="studio-grid">
+            <!-- Control Panel -->
+            <div class="panel controls-panel">
+                <h2>Controls & Settings</h2>
+
+                <div class="control-group">
+                    <label for="fontSelect">Font Family</label>
+                    <select id="fontSelect">
+                        <option value="'Inter', sans-serif" selected>Inter (Modern Sans-Serif)</option>
+                        <option value="'Playfair Display', serif">Playfair Display (Editorial Serif)</option>
+                        <option value="'Outfit', sans-serif">Outfit (Geometric Display)</option>
+                        <option value="'Fira Code', monospace">Fira Code (Monospace Code)</option>
+                        <option value="'Merriweather', serif">Merriweather (Literary Serif)</option>
+                        <option value="'Caveat', cursive">Caveat (Handwritten Script)</option>
+                        <option value="'Poppins', sans-serif">Poppins (Clean Rounded)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="fontSize">Font Size: <span id="fontSizeVal">36px</span></label>
+                    <input type="range" id="fontSize" min="16" max="72" value="36">
+                </div>
+
+                <div class="control-group">
+                    <label for="fontWeight">Font Weight</label>
+                    <div class="btn-group" id="weightGroup">
+                        <button class="btn-option" data-weight="300">Light 300</button>
+                        <button class="btn-option active" data-weight="400">Regular 400</button>
+                        <button class="btn-option" data-weight="600">Semi 600</button>
+                        <button class="btn-option" data-weight="800">Bold 800</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label for="lineHeight">Line Height: <span id="lineHeightVal">1.4</span></label>
+                    <input type="range" id="lineHeight" min="1.0" max="2.5" step="0.1" value="1.4">
+                </div>
+
+                <div class="control-group">
+                    <label for="letterSpacing">Letter Spacing: <span id="letterSpacingVal">0px</span></label>
+                    <input type="range" id="letterSpacing" min="-3" max="15" step="0.5" value="0">
+                </div>
+
+                <div class="control-group">
+                    <label>Text Transform</label>
+                    <div class="btn-group" id="transformGroup">
+                        <button class="btn-option active" data-transform="none">None</button>
+                        <button class="btn-option" data-transform="uppercase">UPPERCASE</button>
+                        <button class="btn-option" data-transform="lowercase">lowercase</button>
+                        <button class="btn-option" data-transform="capitalize">Capitalize</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Text Alignment</label>
+                    <div class="btn-group" id="alignGroup">
+                        <button class="btn-option active" data-align="left">Left</button>
+                        <button class="btn-option" data-align="center">Center</button>
+                        <button class="btn-option" data-align="right">Right</button>
+                        <button class="btn-option" data-align="justify">Justify</button>
+                    </div>
+                </div>
+
+                <button id="copyCssBtn" class="btn-primary">📋 Copy Generated CSS</button>
+                <span id="copyToast" class="toast hidden">CSS Copied to Clipboard!</span>
+            </div>
+
+            <!-- Preview Panel -->
+            <div class="panel preview-panel">
+                <div class="preview-header">
+                    <h2>Live Typography Canvas</h2>
+                    <button id="resetTextBtn" class="btn-secondary">Reset Text</button>
+                </div>
+
+                <div class="editable-area" contenteditable="true" id="previewText">
+                    <h2>The Quick Brown Fox Jumps Over The Lazy Dog</h2>
+                    <p>Typography is the art and technique of arranging type to make written language legible, readable, and appealing when displayed. The arrangement of type involves selecting typefaces, point sizes, line lengths, line-spacing, and letter-spacing.</p>
+                    <p>Great design starts with great hierarchy, contrast, rhythm, and clarity.</p>
+                </div>
+
+                <div class="css-output-box">
+                    <h3>Generated CSS Rule</h3>
+                    <pre><code id="cssCode">font-family: 'Inter', sans-serif;
+font-size: 36px;
+font-weight: 400;
+line-height: 1.4;
+letter-spacing: 0px;
+text-transform: none;
+text-align: left;</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

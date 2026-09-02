@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>07 - Dark & Light Mode Toggle</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <header class="navbar">
+            <div class="brand">
+                <span class="brand-logo">⚡</span>
+                <span class="brand-name">ThemeCraft</span>
+            </div>
+            <!-- Theme Toggle Switch -->
+            <div class="theme-switch-wrapper">
+                <span class="mode-label" id="modeLabel">Dark Mode</span>
+                <label class="switch" for="themeToggle">
+                    <input type="checkbox" id="themeToggle">
+                    <div class="slider round">
+                        <span class="icon-sun">☀️</span>
+                        <span class="icon-moon">🌙</span>
+                    </div>
+                </label>
+            </div>
+        </header>
+
+        <main class="content-container">
+            <div class="badge">Question 07 • Level 1: Basics</div>
+            <h1 class="hero-title">Seamless CSS Variable Theme Switcher</h1>
+            <p class="hero-subtitle">Learn how to declare custom color properties, handle smooth property transitions, and persist user preferences in localStorage.</p>
+
+            <div class="showcase-grid">
+                <!-- Card 1 -->
+                <div class="card">
+                    <div class="card-icon">🚀</div>
+                    <h3>Instant Switching</h3>
+                    <p>CSS variables update in milliseconds without triggering full document re-renders.</p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="card">
+                    <div class="card-icon">💾</div>
+                    <h3>Storage Persistence</h3>
+                    <p>Remembers user preference across tabs and sessions using the browser's localStorage.</p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="card">
+                    <div class="card-icon">🎨</div>
+                    <h3>Semantic Palette</h3>
+                    <p>Clean tokens like <code>--bg-primary</code> and <code>--text-primary</code> ensure maintainability.</p>
+                </div>
+            </div>
+
+            <div class="sample-box">
+                <h3>Live Theme Status</h3>
+                <p id="statusDesc">Current active theme: <strong>Dark Theme (data-theme="dark")</strong></p>
+                <button class="btn btn-accent" id="testAlertBtn">Test Interaction</button>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

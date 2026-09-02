@@ -1,9 +1,23 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import { Terminal, Flame, Coins, Bell, Menu, PanelRight, Sparkles, User } from "lucide-react";
+import {
+  Flame,
+  Coins,
+  Bell,
+  Menu,
+  PanelRight,
+  Sparkles,
+  User as UserIcon,
+  LogOut,
+  LayoutDashboard,
+  Shield,
+  Code,
+} from "lucide-react";
+import { LogoIcon } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -23,32 +37,89 @@ interface NavbarProps {
 }
 
 export function Navbar({ onSelectList, onSelectTag, onSelectCompany }: NavbarProps) {
-  const [streak, setStreak] = React.useState(0);
-  const [coins, setCoins] = React.useState(0);
+  const [user, setUser] = useState<any>(null);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [streak, setStreak] = useState(0);
+  const [coins, setCoins] = useState(0);
+  const router = useRouter();
   const supabase = createClient();
 
-  React.useEffect(() => {
-    async function fetchStats() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data } = await supabase.from("user_stats").select("*").eq("user_id", user.id).single();
-        if (data) {
-          setStreak(data.current_streak);
-          setCoins(data.coins);
+  useEffect(() => {
+    async function fetchUserData() {
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        setUser(user);
+
+        if (user) {
+          const { data } = await supabase
+            .from("user_stats")
+            .select("*")
+            .eq("user_id", user.id)
+            .single();
+
+          if (data) {
+            setStreak(data.current_streak || 0);
+            setCoins(data.coins || 0);
+          }
         }
+      } catch (err) {
+        setUser(null);
+      } finally {
+        setLoadingUser(false);
       }
     }
-    fetchStats();
-  }, []);
+
+    fetchUserData();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    router.push("/login");
+    router.refresh();
+  };
 
   const navItems = [
-    { label: "Explore", href: "/explore", active: false },
-    { label: "Problems", href: "/problem", active: true },
-    { label: "Contest", href: "/contest", active: false },
-    { label: "Discuss", href: "/discuss", active: false },
-    { label: "Interview", href: "/interview", active: false },
-    { label: "Store", href: "/store", active: false },
+    { label: "Explore", href: "/problems", active: false },
+    { label: "Problems", href: "/problems", active: true },
+    { label: "Contest", href: "/problems", active: false },
+    { label: "Discuss", href: "/problems", active: false },
+    { label: "Store", href: "/pricing", active: false },
   ];
+
+  // User Profile Properties
+  const email = user?.email || "";
+  const avatarUrl =
+    user?.user_metadata?.avatar_url ||
+    user?.user_metadata?.picture ||
+    "";
+  const fullName =
+    user?.user_metadata?.full_name ||
+    user?.user_metadata?.name ||
+    "";
+  const username =
+    user?.user_metadata?.username ||
+    user?.user_metadata?.user_name ||
+    (email ? email.split("@")[0] : "developer");
+  const displayName = fullName || username || "Developer";
+  const initials = displayName
+    .split(" ")
+    .map((n: string) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase() || "SQ";
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border/80 bg-[#0A0A0F]/90 backdrop-blur-md">
@@ -66,7 +137,7 @@ export function Navbar({ onSelectList, onSelectTag, onSelectCompany }: NavbarPro
               <SheetContent side="left" className="p-0 w-[280px] bg-[#0D0D12] border-r border-border">
                 <SheetHeader className="p-4 border-b border-border text-left">
                   <SheetTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
-                    <Terminal className="w-4 h-4 text-primary" /> Staqor Navigation
+                    <LogoIcon variant="aqua" className="w-4 h-4" /> Staqor Navigation
                   </SheetTitle>
                 </SheetHeader>
                 <div className="h-[calc(100vh-65px)]">
@@ -80,14 +151,11 @@ export function Navbar({ onSelectList, onSelectTag, onSelectCompany }: NavbarPro
           </div>
 
           {/* Staqor Brand Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-              <Terminal className="w-4 h-4" />
-            </div>
-            <div className="flex items-baseline gap-1">
-              <span className="font-bold text-base tracking-tight text-foreground">Staqor</span>
-              <span className="text-[10px] font-mono text-primary font-semibold">2.0</span>
-            </div>
+          <Link href="/" className="flex items-center gap-2 group select-none">
+            <LogoIcon variant="aqua" className="w-6 h-6 group-hover:scale-105 transition-transform" />
+            <span className="font-extrabold text-base tracking-tight text-white group-hover:text-white/90 transition-colors">
+              Staqor
+            </span>
           </Link>
 
           {/* Desktop Navigation Links */}
@@ -175,54 +243,103 @@ export function Navbar({ onSelectList, onSelectTag, onSelectCompany }: NavbarPro
             </Sheet>
           </div>
 
-          {/* User Avatar with Popover */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <button className="flex items-center gap-2 p-0.5 rounded-full hover:ring-2 hover:ring-primary/40 transition-all">
-                <Avatar className="w-8 h-8 border border-border">
-                  <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=64&h=64&fit=crop&crop=faces" />
-                  <AvatarFallback className="bg-secondary text-primary text-xs font-mono">
-                    SQ
-                  </AvatarFallback>
-                </Avatar>
-              </button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="w-60 p-3 bg-card border-border shadow-xl">
-              <div className="space-y-3">
-                <div className="flex items-center gap-2.5 pb-2 border-b border-border/80">
-                  <Avatar className="w-9 h-9 border border-border">
-                    <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=64&h=64&fit=crop&crop=faces" />
-                    <AvatarFallback className="bg-secondary text-primary text-xs">SQ</AvatarFallback>
+          {/* User Profile Avatar with Popover or Sign In / Sign Up */}
+          {loadingUser ? (
+            <div className="w-8 h-8 rounded-full bg-secondary/60 animate-pulse" />
+          ) : user ? (
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  className="flex items-center gap-2 p-0.5 rounded-full hover:ring-2 hover:ring-primary/40 transition-all outline-none"
+                  aria-label="User account menu"
+                >
+                  <Avatar className="w-8 h-8 border border-border">
+                    {avatarUrl ? (
+                      <AvatarImage src={avatarUrl} alt={displayName} />
+                    ) : null}
+                    <AvatarFallback className="bg-[#181824] text-[#A7DDC9] text-xs font-mono font-bold">
+                      {initials}
+                    </AvatarFallback>
                   </Avatar>
-                  <div className="text-left">
-                    <div className="text-xs font-semibold text-foreground">alex_dev</div>
-                    <div className="text-[10px] text-muted-foreground font-mono">Rank: #1,420</div>
+                </button>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-64 p-3 bg-[#0E0E14] border-border text-foreground shadow-2xl">
+                <div className="space-y-3">
+                  {/* User Info Header with Gmail Sync */}
+                  <div className="flex items-center gap-3 pb-2.5 border-b border-border/80">
+                    <Avatar className="w-10 h-10 border border-border shrink-0">
+                      {avatarUrl ? (
+                        <AvatarImage src={avatarUrl} alt={displayName} />
+                      ) : null}
+                      <AvatarFallback className="bg-[#181824] text-[#A7DDC9] text-sm font-bold font-mono">
+                        {initials}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0 text-left">
+                      <div className="text-xs font-bold text-white truncate flex items-center gap-1.5">
+                        <span className="truncate">{displayName}</span>
+                      </div>
+                      <div className="text-[11px] text-zinc-400 truncate" title={email}>
+                        {email}
+                      </div>
+                      <div className="text-[10px] text-primary font-mono font-medium mt-0.5">
+                        Verified Developer
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Popover Navigation Links */}
+                  <div className="space-y-1 text-xs">
+                    <Link
+                      href="/problems"
+                      className="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-zinc-300 hover:text-white hover:bg-secondary/70 transition-colors"
+                    >
+                      <LayoutDashboard className="w-3.5 h-3.5 text-primary" />
+                      <span>Problems Workspace</span>
+                    </Link>
+                    <Link
+                      href={`/profile/${encodeURIComponent(username)}`}
+                      className="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-zinc-300 hover:text-white hover:bg-secondary/70 transition-colors"
+                    >
+                      <UserIcon className="w-3.5 h-3.5 text-primary" />
+                      <span>Public Portfolio</span>
+                    </Link>
+                    <Link
+                      href="/pricing"
+                      className="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-primary font-medium hover:bg-primary/10 transition-colors"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Upgrade to Pro</span>
+                    </Link>
+                  </div>
+
+                  {/* Sign Out Action */}
+                  <div className="pt-2 border-t border-border/80">
+                    <button
+                      onClick={handleSignOut}
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 transition-colors text-left"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>Sign Out</span>
+                    </button>
                   </div>
                 </div>
-
-                <div className="space-y-1 text-xs">
-                  <Link
-                    href="/problems"
-                    className="block px-2.5 py-1.5 rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-                  >
-                    Problems
-                  </Link>
-                  <Link
-                    href="/profile/alex_dev"
-                    className="block px-2.5 py-1.5 rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-                  >
-                    Public Portfolio
-                  </Link>
-                  <Link
-                    href="/pricing"
-                    className="block px-2.5 py-1.5 rounded text-primary font-medium hover:bg-primary/10 transition-colors"
-                  >
-                    Upgrade to Pro ($15/mo)
-                  </Link>
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
+              </PopoverContent>
+            </Popover>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Link href="/login">
+                <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-foreground h-8 px-3">
+                  Sign In
+                </Button>
+              </Link>
+              <Link href="/signup">
+                <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-semibold h-8 px-3">
+                  Sign Up
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </header>

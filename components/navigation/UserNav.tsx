@@ -101,13 +101,13 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="bg-border/60" />
         <DropdownMenuItem asChild>
-          <Link href="/dashboard" className="cursor-pointer flex items-center gap-2 text-xs">
+          <Link href="/problems" className="cursor-pointer flex items-center gap-2 text-xs">
             <LayoutDashboard className="w-3.5 h-3.5 text-primary" />
-            <span>Dashboard</span>
+            <span>Problems Dashboard</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/challenges" className="cursor-pointer flex items-center gap-2 text-xs">
+          <Link href="/problems" className="cursor-pointer flex items-center gap-2 text-xs">
             <Code className="w-3.5 h-3.5 text-primary" />
             <span>Challenges Catalog</span>
           </Link>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>02 - Gradient Text & Glowing Card</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="badge">Question 02 • Level 1: Basics</div>
+        <h1 class="page-title">Gradient Text & Neon Glow Studio</h1>
+        <p class="subtitle">Experience CSS background-clip text masking and multi-layer neon box-shadow glows.</p>
+
+        <!-- Studio Layout -->
+        <div class="studio-layout">
+            <!-- Glow Card Showcase -->
+            <div class="card-wrapper">
+                <div class="glow-card" id="glowCard">
+                    <div class="card-inner">
+                        <span class="card-tag">⚡ Neon Edition</span>
+                        <h2 class="gradient-text" id="gradientHeading">Cybernetic Future</h2>
+                        <p class="card-desc">Modern web interfaces utilize dynamic gradients and glowing accents to evoke futuristic immersion and user engagement.</p>
+                        <div class="card-stats">
+                            <div class="stat-item">
+                                <span class="stat-val gradient-text" id="stat1">99.9%</span>
+                                <span class="stat-lbl">Uptime</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-val gradient-text" id="stat2">10x</span>
+                                <span class="stat-lbl">Speed</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-val gradient-text" id="stat3">4.9★</span>
+                                <span class="stat-lbl">Rating</span>
+                            </div>
+                        </div>
+                        <button class="glow-btn" id="exploreBtn">Explore Quantum</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customizer Controls -->
+            <div class="controls-card">
+                <h3>Customizer Settings</h3>
+
+                <div class="control-row">
+                    <label>Color Stop 1</label>
+                    <input type="color" id="color1" value="#ff007f">
+                </div>
+
+                <div class="control-row">
+                    <label>Color Stop 2</label>
+                    <input type="color" id="color2" value="#7928ca">
+                </div>
+
+                <div class="control-row">
+                    <label>Color Stop 3</label>
+                    <input type="color" id="color3" value="#00f2fe">
+                </div>
+
+                <div class="control-row">
+                    <label>Gradient Angle: <span id="angleVal">135°</span></label>
+                    <input type="range" id="gradientAngle" min="0" max="360" value="135">
+                </div>
+
+                <div class="control-row">
+                    <label>Glow Blur: <span id="glowVal">30px</span></label>
+                    <input type="range" id="glowBlur" min="0" max="80" value="30">
+                </div>
+
+                <div class="preset-group">
+                    <label>Preset Palettes</label>
+                    <div class="presets">
+                        <button class="preset-btn" data-c1="#ff0844" data-c2="#ffb199" data-c3="#fbc2eb">Sunset</button>
+                        <button class="preset-btn" data-c1="#00f2fe" data-c2="#4facfe" data-c3="#000046">Ocean</button>
+                        <button class="preset-btn" data-c1="#38ef7d" data-c2="#11998e" data-c3="#0575e6">Emerald</button>
+                        <button class="preset-btn" data-c1="#f12711" data-c2="#f5af19" data-c3="#ff007f">Solar Flare</button>
+                    </div>
+                </div>
+
+                <button class="copy-css-btn" id="copySnippetBtn">📋 Copy CSS Snippet</button>
+                <div class="copy-alert hidden" id="copyAlert">Copied to clipboard!</div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

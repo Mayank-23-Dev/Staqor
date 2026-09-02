@@ -5,6 +5,8 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { LogoIcon } from "@/components/logo";
 import {
   ArrowLeft,
   Share2,
@@ -13,6 +15,7 @@ import {
   Eye,
   Copy,
   Check,
+  Mail
 } from "lucide-react";
 
 interface ProfilePageProps {
@@ -34,7 +37,7 @@ function ProfileCard({ children, watermark }: { children: React.ReactNode, water
   );
 }
 
-const VERIFIED_SOLUTIONS = [
+const DEFAULT_VERIFIED_SOLUTIONS = [
   {
     id: "sol-1",
     title: "Responsive Pricing Matrix with Annual Switch",
@@ -42,8 +45,8 @@ const VERIFIED_SOLUTIONS = [
     difficulty: "EASY",
     score: 96,
     time: "1.8s",
-    completedDate: "Sep 2026",
-    slug: "interactive-pricing-card",
+    completedDate: "August 2026",
+    slug: "responsive-pricing-matrix",
     rubricBreakdown: [
       { name: "Visual Layout Fidelity", score: 35, max: 35 },
       { name: "DOM & State Logic", score: 34, max: 35 },
@@ -59,7 +62,7 @@ const VERIFIED_SOLUTIONS = [
     difficulty: "MEDIUM",
     score: 94,
     time: "2.1s",
-    completedDate: "Sep 2026",
+    completedDate: "August 2026",
     slug: "drag-and-drop-kanban-board",
     rubricBreakdown: [
       { name: "Drag Event Delegation", score: 34, max: 35 },
@@ -67,7 +70,7 @@ const VERIFIED_SOLUTIONS = [
       { name: "Clean DOM Mutation", score: 25, max: 30 },
     ],
     summary:
-      "Built native HTML5 Drag and Drop event delegates to dynamically transfer and reorder sprint tasks.",
+      "Built native HTML5 Drag and Drop event delegates to dynamically transfer and reorder sprint tasks between status columns.",
   },
   {
     id: "sol-3",
@@ -76,7 +79,7 @@ const VERIFIED_SOLUTIONS = [
     difficulty: "MEDIUM",
     score: 92,
     time: "1.9s",
-    completedDate: "Aug 2026",
+    completedDate: "August 2026",
     slug: "in-memory-rate-limiter",
     rubricBreakdown: [
       { name: "Concurrency Safety", score: 33, max: 35 },
@@ -84,7 +87,7 @@ const VERIFIED_SOLUTIONS = [
       { name: "HTTP 429 Headers", score: 24, max: 30 },
     ],
     summary:
-      "Implemented a token bucket algorithm to throttle burst traffic at 60 req/min with zero memory leaks.",
+      "Implemented a token bucket algorithm to throttle burst traffic at 60 req/min with zero memory leaks and atomic state refills.",
   },
   {
     id: "sol-4",
@@ -93,7 +96,7 @@ const VERIFIED_SOLUTIONS = [
     difficulty: "MEDIUM",
     score: 98,
     time: "1.6s",
-    completedDate: "Aug 2026",
+    completedDate: "August 2026",
     slug: "transactional-analytics-covering-index",
     rubricBreakdown: [
       { name: "Query Execution Plan", score: 35, max: 35 },
@@ -101,7 +104,7 @@ const VERIFIED_SOLUTIONS = [
       { name: "Aggregation Filter", score: 28, max: 30 },
     ],
     summary:
-      "Optimized PostgreSQL user submission aggregations by replacing full sequential table scans.",
+      "Optimized PostgreSQL user submission aggregations by replacing full sequential table scans with composite covering index scans.",
   },
 ];
 
@@ -115,39 +118,38 @@ const SKILL_PILLS = [
   "Redis",
   "REST APIs",
   "State Machines",
-  "IntersectionObserver",
+  "DOM Manipulation",
 ];
 
 export default function ProfilePage({ params }: ProfilePageProps) {
   const [copied, setCopied] = useState(false);
+  const [authUser, setAuthUser] = useState<any>(null);
+  
   const [stats, setStats] = useState({ solves: 47, streak: 7, avgScore: 94.8 });
   const [difficultyStats, setDifficultyStats] = useState({ easy: 0, medium: 0, hard: 0, total: 0 });
   const [submissions, setSubmissions] = useState<any[]>([]);
-  const [isOwnProfile, setIsOwnProfile] = useState(false);
 
   const supabase = createClient();
+  const decodedParam = decodeURIComponent(params.username);
 
   useEffect(() => {
     async function fetchData() {
       const { data: { user } } = await supabase.auth.getUser();
+      setAuthUser(user);
       
       const { data: profile } = await supabase
         .from('profiles')
         .select('*')
-        .eq('username', params.username)
+        .eq('username', decodedParam)
         .single();
         
       let targetUserId = profile?.id;
       
       if (!targetUserId && user) {
-         if (user.user_metadata?.username === params.username || 
-             (user.email && user.email.split('@')[0] === params.username)) {
+         if (user.user_metadata?.username === decodedParam || 
+             (user.email && user.email.split('@')[0] === decodedParam)) {
            targetUserId = user.id;
          }
-      }
-
-      if (user && targetUserId === user.id) {
-        setIsOwnProfile(true);
       }
 
       if (targetUserId) {
@@ -166,7 +168,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
         
         const { data: subs } = await supabase
           .from("submissions")
-          .select("created_at, problem_id")
+          .select("created_at, problem_id, score")
           .eq("user_id", targetUserId)
           .eq("status", "solved")
           .gte("created_at", oneYearAgo.toISOString());
@@ -174,6 +176,11 @@ export default function ProfilePage({ params }: ProfilePageProps) {
         if (subs) {
           setSubmissions(subs);
           
+          if (subs.length > 0) {
+            const calculatedAvg = (subs.reduce((acc: number, s: any) => acc + (s.score || 100), 0) / subs.length).toFixed(1);
+            setStats(s => ({ ...s, avgScore: parseFloat(calculatedAvg) }));
+          }
+
           const uniqueProblemIds = Array.from(new Set(subs.map(s => s.problem_id)));
           if (uniqueProblemIds.length > 0) {
              const { data: probs } = await supabase
@@ -197,7 +204,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
     }
     
     fetchData();
-  }, [params.username, supabase]);
+  }, [decodedParam, supabase]);
 
   const handleCopyLink = () => {
     if (typeof window !== "undefined") {
@@ -206,6 +213,33 @@ export default function ProfilePage({ params }: ProfilePageProps) {
       setTimeout(() => setCopied(false), 2000);
     }
   };
+
+  const isCurrentUser =
+    authUser &&
+    (authUser.email?.split("@")[0].toLowerCase() === decodedParam.toLowerCase() ||
+      authUser.user_metadata?.username?.toLowerCase() === decodedParam.toLowerCase() ||
+      authUser.user_metadata?.user_name?.toLowerCase() === decodedParam.toLowerCase() ||
+      decodedParam === "alex_dev");
+
+  const displayName = isCurrentUser
+    ? authUser.user_metadata?.full_name ||
+      authUser.user_metadata?.name ||
+      authUser.user_metadata?.username ||
+      authUser.email?.split("@")[0] ||
+      decodedParam
+    : decodedParam;
+
+  const email = isCurrentUser ? authUser.email : "";
+  const avatarUrl = isCurrentUser
+    ? authUser.user_metadata?.avatar_url || authUser.user_metadata?.picture || ""
+    : "";
+
+  const initials = displayName
+    .split(" ")
+    .map((n: string) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase() || "SQ";
 
   const heatmapData = useMemo(() => {
     const data = new Map<string, number>();
@@ -245,11 +279,15 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   return (
     <div className="min-h-screen bg-[#0A0A0F] text-[#F5F5F7] selection:bg-[#ABDAC8] selection:text-[#0A0A0F] font-sans">
       <header className="border-b border-[#26262E] bg-[#0E0E14]/90 backdrop-blur-xl sticky top-0 z-40">
-        <div className="max-w-6xl mx-auto px-4 h-12 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-12 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/challenges" className="text-zinc-400 hover:text-white flex items-center gap-1.5 text-xs font-mono transition-colors">
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back to challenges</span>
+            <Link
+              href="/problems"
+              className="text-zinc-400 hover:text-white flex items-center gap-2 text-xs font-mono transition-colors group select-none"
+            >
+              <LogoIcon variant="aqua" className="w-4 h-4 group-hover:scale-105 transition-transform" />
+              <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+              <span>Back to problems</span>
             </Link>
           </div>
         </div>
@@ -261,19 +299,30 @@ export default function ProfilePage({ params }: ProfilePageProps) {
         <div className="w-full lg:w-[250px] shrink-0 space-y-4">
           <ProfileCard>
             <div className="p-4 flex flex-col items-center text-center space-y-3">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#ABDAC8]/25 to-[#111614] border-2 border-[#ABDAC8]/40 flex items-center justify-center text-[#ABDAC8] text-2xl font-black font-mono shadow-md shrink-0">
-                {params.username.slice(0, 2).toUpperCase()}
-              </div>
+              <Avatar className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#ABDAC8]/25 to-[#111614] border-2 border-[#ABDAC8]/40 shadow-md shrink-0">
+                {avatarUrl ? (
+                  <AvatarImage src={avatarUrl} alt={displayName} className="rounded-2xl object-cover" />
+                ) : null}
+                <AvatarFallback className="rounded-2xl bg-transparent text-[#ABDAC8] text-2xl font-black font-mono">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
 
               <div className="space-y-1 flex flex-col items-center">
                 <div className="flex flex-col items-center gap-1">
                   <h1 className="text-xl font-extrabold text-white tracking-tight font-sans">
-                    {params.username}
+                    {displayName}
                   </h1>
                   <Badge className="bg-[#ABDAC8] text-[#0A0A0F] font-mono text-[9px] font-extrabold px-2 py-0.5 shadow-sm">
                     VERIFIED CANDIDATE
                   </Badge>
                 </div>
+                {email && (
+                  <p className="text-[10px] text-[#A7DDC9] font-mono flex items-center gap-1 mt-1">
+                    <Mail className="w-3 h-3" />
+                    <span>{email}</span>
+                  </p>
+                )}
                 <p className="text-[11px] text-zinc-400 font-normal mt-1">
                   Software Engineer
                 </p>
@@ -297,7 +346,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
               </div>
 
               <div className="w-full pt-3 space-y-2 border-t border-[#26262E]">
-                {isOwnProfile ? (
+                {isCurrentUser ? (
                   <Button className="w-full bg-[#ABDAC8] text-[#0A0A0F] font-bold text-[11px] h-8 hover:bg-[#ABDAC8]/90 transition-all rounded-lg">
                     Edit Profile
                   </Button>
@@ -417,16 +466,16 @@ export default function ProfilePage({ params }: ProfilePageProps) {
               <div>
                 <div className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-wider text-[#ABDAC8] mb-0.5">
                   <ShieldCheck className="w-3.5 h-3.5 text-[#ABDAC8]" />
-                  <span>Verified Proof of Work (4 Showcases)</span>
+                  <span>Verified Proof of Work Showcase</span>
                 </div>
                 <h2 className="text-lg font-black text-white tracking-tight font-display">
-                  Live Interactive Solutions
+                  Interactive Challenge Solutions
                 </h2>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {VERIFIED_SOLUTIONS.map((sol) => (
+              {DEFAULT_VERIFIED_SOLUTIONS.map((sol) => (
                 <ProfileCard key={sol.id} watermark={sol.difficulty}>
                   <div className="p-4 h-full flex flex-col justify-between space-y-3">
                     <div className="space-y-2">
@@ -469,7 +518,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
                       <span className="text-[9px] font-mono text-zinc-500">
                         {sol.time} • {sol.completedDate}
                       </span>
-                      <Link href={`/challenges/${sol.slug}`}>
+                      <Link href={`/problems/${sol.slug}`}>
                         <Button
                           size="sm"
                           className="h-7 px-2 text-[10px] font-mono font-bold bg-[#ABDAC8] text-[#0A0A0F] hover:bg-[#ABDAC8]/90 transition-all gap-1 shadow-sm"

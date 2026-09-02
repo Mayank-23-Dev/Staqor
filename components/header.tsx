@@ -58,12 +58,6 @@ export function Header() {
           <Link href="/" className="flex items-center gap-2">
             <Logo />
           </Link>
-          <Badge
-            variant="outline"
-            className="text-[10px] uppercase font-mono text-[#ABDAC8] border-[#ABDAC8]/30 py-0 px-1.5 bg-[#111614] hidden sm:inline-flex"
-          >
-            v1.0 MVP
-          </Badge>
         </div>
 
         {/* Desktop Navigation Links */}

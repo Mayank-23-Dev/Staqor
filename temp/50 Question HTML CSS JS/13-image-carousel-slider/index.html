@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>13 - Image Carousel Slider</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 13 • Level 2: Components</span>
+            <h1>Modern Carousel & Image Slider</h1>
+            <p>CSS Transform translateX slide animations, auto-play with hover pause, touch swipe, and dot pagination.</p>
+        </header>
+
+        <div class="slider-container" id="sliderContainer">
+            <div class="slider-track" id="sliderTrack">
+                <!-- Slide 1 -->
+                <div class="slide">
+                    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200&auto=format&fit=crop&q=80" alt="Majestic Mountains">
+                    <div class="slide-caption">
+                        <span class="caption-tag">Nature</span>
+                        <h2>Majestic Alpine Horizons</h2>
+                        <p>Breathtaking mountain ridges glowing beneath twilight hues.</p>
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="slide">
+                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&auto=format&fit=crop&q=80" alt="Cyber Technology">
+                    <div class="slide-caption">
+                        <span class="caption-tag">Hardware</span>
+                        <h2>Silicon Microcircuitry</h2>
+                        <p>Engineering the foundations of quantum computing and neural processors.</p>
+                    </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="slide">
+                    <img src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1200&auto=format&fit=crop&q=80" alt="Metropolis Cityscape">
+                    <div class="slide-caption">
+                        <span class="caption-tag">Urban</span>
+                        <h2>Midnight Neon Metropolis</h2>
+                        <p>The electric heartbeat of futuristic city skyscrapers at dusk.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arrow Controls -->
+            <button class="nav-btn prev-btn" id="prevBtn" aria-label="Previous Slide">‹</button>
+            <button class="nav-btn next-btn" id="nextBtn" aria-label="Next Slide">›</button>
+
+            <!-- Dot Indicators -->
+            <div class="dots-container" id="dotsContainer"></div>
+        </div>
+
+        <!-- Slider Status Bar -->
+        <div class="slider-status">
+            <span>Auto-Play: <strong id="autoplayStatus">Active (Paused on hover)</strong></span>
+            <button class="btn-toggle-play" id="togglePlayBtn">Pause</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

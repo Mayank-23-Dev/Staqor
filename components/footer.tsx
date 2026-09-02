@@ -126,14 +126,14 @@ export function Footer() {
 }
 
 const curriculumLinks = [
-  { title: "Frontend UI & Layouts", href: "/challenges?track=frontend-ui" },
-  { title: "JavaScript & DOM Architecture", href: "/challenges?track=javascript-dom" },
-  { title: "React Component Systems", href: "/challenges?track=react-components" },
-  { title: "Backend & REST APIs", href: "/challenges?track=backend-apis" },
-  { title: "Databases & SQL Queries", href: "/challenges?track=database-sql" },
-  { title: "Distributed Systems & Caching", href: "/challenges?track=systems-caching" },
-  { title: "Real-World Bug Diagnostics", href: "/challenges?track=bug-diagnostics" },
-  { title: "End-to-End Scenarios", href: "/challenges?track=end-to-end" },
+  { title: "Frontend UI & Layouts", href: "/problems?track=frontend-ui" },
+  { title: "JavaScript & DOM Architecture", href: "/problems?track=javascript-dom" },
+  { title: "React Component Systems", href: "/problems?track=react-components" },
+  { title: "Backend & REST APIs", href: "/problems?track=backend-apis" },
+  { title: "Databases & SQL Queries", href: "/problems?track=database-sql" },
+  { title: "Distributed Systems & Caching", href: "/problems?track=systems-caching" },
+  { title: "Real-World Bug Diagnostics", href: "/problems?track=bug-diagnostics" },
+  { title: "End-to-End Scenarios", href: "/problems?track=end-to-end" },
 ];
 
 const resourcesLinks = [

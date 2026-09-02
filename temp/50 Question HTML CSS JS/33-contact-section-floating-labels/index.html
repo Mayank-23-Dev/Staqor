@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>33 - Contact Us Section</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="section-header">
+            <span class="badge">Question 33 • Level 3: Sections</span>
+            <h2>Let's Build Something Exceptional</h2>
+            <p>Send an inquiry to our engineering team. All messages receive response within 24 hours.</p>
+        </header>
+
+        <div class="contact-grid">
+            <!-- Info Column -->
+            <div class="info-card">
+                <h3>Contact Information</h3>
+                <p>Reach out directly for enterprise architecture consultations.</p>
+                <div class="info-items">
+                    <div class="item">📍 100 Market St, San Francisco, CA</div>
+                    <div class="item">📧 enterprise@novacloud.io</div>
+                    <div class="item">📞 +1 (555) 389-4920</div>
+                </div>
+            </div>
+
+            <!-- Floating Label Form -->
+            <form class="form-card" id="contactForm">
+                <div class="floating-group">
+                    <input type="text" id="nameInput" placeholder=" " required>
+                    <label for="nameInput">Your Full Name</label>
+                </div>
+
+                <div class="floating-group">
+                    <input type="email" id="emailInput" placeholder=" " required>
+                    <label for="emailInput">Business Email</label>
+                </div>
+
+                <div class="floating-group">
+                    <textarea id="msgInput" rows="4" placeholder=" " required></textarea>
+                    <label for="msgInput">Project Description / Question</label>
+                </div>
+
+                <button type="submit" class="btn-submit">Send Message →</button>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

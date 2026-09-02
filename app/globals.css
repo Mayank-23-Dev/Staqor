@@ -14,7 +14,7 @@
     --popover: 240 15% 8%; /* #111117 */
     --popover-foreground: 240 6% 96%;
 
-    /* Sage Mint Primary (#ABDAC8) */
+    /* Sage Mint Primary (#ABDAC8 / #A7DDC9) */
     --primary: 158 44% 76%;
     --primary-foreground: 240 20% 5%; /* #0A0A0F for strict high contrast */
 
@@ -67,5 +67,58 @@
     font-feature-settings: "rlig" 1, "calt" 1;
     background-color: #0A0A0F;
     color: #F5F5F7;
+  }
+
+  /* Global dark themed scrollbars - never render OS default white bars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #26262E;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3C3C3C;
+  }
+  * {
+    scrollbar-color: #26262E transparent;
+    scrollbar-width: thin;
+  }
+}
+
+@layer utilities {
+  /* Complete scrollbar-hiding utilities across all browsers */
+  .scrollbar-none::-webkit-scrollbar,
+  .no-scrollbar::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+  }
+
+  .scrollbar-none,
+  .no-scrollbar {
+    -ms-overflow-style: none !important; /* IE and Edge */
+    scrollbar-width: none !important; /* Firefox */
+  }
+
+  /* Explicit dark scrollbar utility */
+  .scrollbar-dark::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scrollbar-dark::-webkit-scrollbar-track {
+    background: #0A0A0F;
+  }
+  .scrollbar-dark::-webkit-scrollbar-thumb {
+    background: #26262E;
+    border-radius: 3px;
+  }
+  .scrollbar-dark::-webkit-scrollbar-thumb:hover {
+    background: #3C3C3C;
   }
 }

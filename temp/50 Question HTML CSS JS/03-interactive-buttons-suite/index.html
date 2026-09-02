@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>03 - Interactive Buttons Suite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 03 • Level 1: Basics</span>
+            <h1>Interactive Button Showcase</h1>
+            <p>Explore 8 distinct button styles with modern hover effects, coordinates-based ripple animations, 3D tactile clicks, and loading states.</p>
+        </header>
+
+        <div class="button-grid">
+            <!-- 1. Ripple Wave -->
+            <div class="button-card">
+                <h3>1. Coordinates Ripple</h3>
+                <p>Spawns a dynamic circular wave at the exact click point.</p>
+                <div class="btn-box">
+                    <button class="btn btn-ripple">Click Me <span class="badge-pill">Ripple</span></button>
+                </div>
+            </div>
+
+            <!-- 2. Glowing Cyber Neon -->
+            <div class="button-card">
+                <h3>2. Cyber Neon Glow</h3>
+                <p>Pulsing multi-color border and ambient glow.</p>
+                <div class="btn-box">
+                    <button class="btn btn-neon">Cyber Action</button>
+                </div>
+            </div>
+
+            <!-- 3. 3D Tactile Push -->
+            <div class="button-card">
+                <h3>3. 3D Tactile Push</h3>
+                <p>Realistic mechanical depth that compresses on active press.</p>
+                <div class="btn-box">
+                    <button class="btn btn-3d">Push Button</button>
+                </div>
+            </div>
+
+            <!-- 4. Gradient Border Shine -->
+            <div class="button-card">
+                <h3>4. Gradient Shimmer</h3>
+                <p>Sliding gloss shine effect on hover.</p>
+                <div class="btn-box">
+                    <button class="btn btn-shimmer"><span>Shimmer Glow</span></button>
+                </div>
+            </div>
+
+            <!-- 5. Glassmorphism -->
+            <div class="button-card">
+                <h3>5. Frosted Glass</h3>
+                <p>Semi-transparent backdrop blur with subtle highlight.</p>
+                <div class="btn-box">
+                    <button class="btn btn-glass">Frosted Glass</button>
+                </div>
+            </div>
+
+            <!-- 6. Magnetic Cursor Effect -->
+            <div class="button-card">
+                <h3>6. Magnetic Cursor</h3>
+                <p>Button dynamically tilts towards your cursor position.</p>
+                <div class="btn-box">
+                    <button class="btn btn-magnetic" id="magneticBtn">Magnetic Field</button>
+                </div>
+            </div>
+
+            <!-- 7. Glitch Hover Effect -->
+            <div class="button-card">
+                <h3>7. Glitch Matrix</h3>
+                <p>Retro cyberpunk chromatic aberration on hover.</p>
+                <div class="btn-box">
+                    <button class="btn btn-glitch" data-text="GLITCH_MODE">GLITCH_MODE</button>
+                </div>
+            </div>
+
+            <!-- 8. Async Spinner Loading State -->
+            <div class="button-card">
+                <h3>8. Async Loading State</h3>
+                <p>Transitions to a spinner and checkmark on completion.</p>
+                <div class="btn-box">
+                    <button class="btn btn-loading" id="asyncBtn">
+                        <span class="btn-text">Submit Order</span>
+                        <div class="spinner"></div>
+                        <span class="success-icon">✓</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="counter-footer">
+            <span>Total Button Clicks Tracked: <strong id="totalClicks">0</strong></span>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

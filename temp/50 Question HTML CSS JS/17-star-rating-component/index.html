@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>17 - Star Rating Component</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 17 • Level 2: Components</span>
+            <h1>Interactive Star Rating Widget</h1>
+            <p>Hover previews, live mood sentiment feedback, score submission, and reset state.</p>
+        </header>
+
+        <div class="rating-card">
+            <h2>How was your development experience?</h2>
+            <p>Hover over stars to rate our component architecture.</p>
+
+            <div class="stars-box" id="starsBox">
+                <span class="star" data-rating="1">★</span>
+                <span class="star" data-rating="2">★</span>
+                <span class="star" data-rating="3">★</span>
+                <span class="star" data-rating="4">★</span>
+                <span class="star" data-rating="5">★</span>
+            </div>
+
+            <div class="rating-feedback" id="ratingFeedback">Select your rating</div>
+
+            <div class="rating-actions">
+                <button class="btn btn-primary" id="submitRatingBtn" disabled>Submit Rating</button>
+                <button class="btn btn-secondary" id="resetRatingBtn">Reset</button>
+            </div>
+        </div>
+
+        <div class="thank-card hidden" id="thankCard">
+            <h3>🎉 Thank you for your review!</h3>
+            <p>You rated us <strong id="finalScore">0</strong> out of 5 stars.</p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

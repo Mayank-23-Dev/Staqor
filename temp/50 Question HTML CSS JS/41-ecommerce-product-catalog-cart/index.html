@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>41 - E-Commerce Store & Cart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Top Nav -->
+    <header class="navbar">
+        <div class="logo">🛍️ CyberStore</div>
+        <button class="cart-btn" id="openCartBtn">
+            <span>🛒 Cart</span>
+            <span class="cart-count" id="cartCount">0</span>
+        </button>
+    </header>
+
+    <main class="container">
+        <!-- Products Grid -->
+        <h1 class="page-title">Featured Tech Hardware</h1>
+        <div class="products-grid" id="productsGrid">
+            <!-- 1 -->
+            <div class="p-card">
+                <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=600&auto=format&fit=crop&q=80" alt="Smart Watch">
+                <div class="p-body">
+                    <h3>CyberPulse Smartwatch</h3>
+                    <div class="p-price">$199.00</div>
+                    <button class="btn btn-add" data-id="1" data-title="CyberPulse Smartwatch" data-price="199">Add to Cart</button>
+                </div>
+            </div>
+            <!-- 2 -->
+            <div class="p-card">
+                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80" alt="Headphones">
+                <div class="p-body">
+                    <h3>Studio Max Wireless ANC</h3>
+                    <div class="p-price">$349.00</div>
+                    <button class="btn btn-add" data-id="2" data-title="Studio Max Wireless ANC" data-price="349">Add to Cart</button>
+                </div>
+            </div>
+            <!-- 3 -->
+            <div class="p-card">
+                <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop&q=80" alt="Camera">
+                <div class="p-body">
+                    <h3>RetroLens Classic 35mm</h3>
+                    <div class="p-price">$489.00</div>
+                    <button class="btn btn-add" data-id="3" data-title="RetroLens Classic 35mm" data-price="489">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Slide-out Cart Drawer -->
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <h3>Your Shopping Cart</h3>
+            <button class="close-cart" id="closeCartBtn">&times;</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <p class="empty-cart-msg">Your shopping bag is empty.</p>
+        </div>
+        <div class="cart-footer">
+            <div class="total-row">
+                <span>Subtotal:</span>
+                <strong id="cartSubtotal">$0.00</strong>
+            </div>
+            <button class="btn btn-checkout" id="checkoutBtn">Proceed to Checkout →</button>
+        </div>
+    </div>
+    <div class="drawer-backdrop" id="cartBackdrop"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #07090e;
+    color: #f1f5f9;
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.container {
+    max-width: 700px;
+    width: 100%;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.badge {
+    display: inline-block;
+    background: rgba(0, 242, 254, 0.15);
+    color: #00f2fe;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    border: 1px solid rgba(0, 242, 254, 0.3);
+}
+
+.header h1 {
+    font-size: 2.2rem;
+    color: #ffffff;
+    margin-bottom: 0.4rem;
+}
+
+.header p {
+    color: #94a3b8;
+}
+
+.clock-card {
+    background: #0f1422;
+    border: 1px solid #1e293b;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 0 40px rgba(0, 242, 254, 0.15);
+}
+
+.clock-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.btn-group {
+    display: flex;
+    gap: 6px;
+}
+
+.control-btn {
+    background: #172033;
+    border: 1px solid #334155;
+    color: #94a3b8;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.control-btn.active {
+    background: #00f2fe;
+    color: #07090e;
+    border-color: #00f2fe;
+}
+
+.tz-select {
+    background: #172033;
+    border: 1px solid #334155;
+    color: #f1f5f9;
+    padding: 6px 12px;
+    border-radius: 6px;
+    outline: none;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.display-box {
+    background: #06080e;
+    border: 1px solid #1f293d;
+    border-radius: 14px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    box-shadow: inset 0 0 20px rgba(0, 242, 254, 0.1);
+}
+
+.time-wrapper {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #00f2fe;
+    text-shadow: 0 0 20px rgba(0, 242, 254, 0.6);
+    line-height: 1;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 550px) {
+    .time-wrapper {
+        font-size: 2.3rem;
+    }
+}
+
+.colon {
+    animation: blink 1s step-start infinite;
+    padding: 0 4px;
+}
+
+@keyframes blink {
+    50% { opacity: 0.2; }
+}
+
+.period {
+    font-size: 1.2rem;
+    margin-left: 10px;
+    color: #38bdf8;
+}
+
+.date-display {
+    font-family: 'Share Tech Mono', monospace;
+    color: #94a3b8;
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+}
+
+.seconds-track {
+    width: 100%;
+    height: 6px;
+    background: #172033;
+    border-radius: 999px;
+    margin-top: 1.5rem;
+    overflow: hidden;
+}
+
+.seconds-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #00f2fe, #4facfe);
+    box-shadow: 0 0 10px #00f2fe;
+    transition: width 0.2s linear;
+}
