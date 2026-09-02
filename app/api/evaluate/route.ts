@@ -4,6 +4,8 @@ import { getChallengeBySlug, FALLBACK_CHALLENGE } from "@/lib/supabase/db";
 import { groq, buildGroqPrompt } from "@/lib/groq";
 import { runStructuralPreFilter } from "@/lib/groq/prefilter";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -16,10 +18,45 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 1. Fetch challenge spec & rubric
-    const challenge = await getChallengeBySlug(challengeSlug);
+    const supabase = await createClient();
 
-    // 2. Structural Correctness & Syntax Pre-Filter Gate (Checks syntax & execution before LLM call)
+    // 1. Fetch challenge/problem spec & rubric
+    let challenge: any = null;
+    try {
+      challenge = await getChallengeBySlug(challengeSlug);
+    } catch {
+      challenge = null;
+    }
+
+    if (!challenge || challenge.slug === FALLBACK_CHALLENGE.slug && challengeSlug !== FALLBACK_CHALLENGE.slug) {
+      // Check problems table from Supabase
+      const { data: problemData } = await supabase
+        .from("problems")
+        .select("*")
+        .eq("slug", challengeSlug)
+        .single();
+
+      if (problemData) {
+        challenge = {
+          id: problemData.id,
+          slug: problemData.slug,
+          title: problemData.title,
+          description: problemData.description,
+          spec_markdown: problemData.description,
+          rubric: [
+            { id: "R1", name: "Functionality", weight: 50, criteria: "Code fulfills core requirements and test cases." },
+            { id: "R2", name: "UI/UX & Styling", weight: 30, criteria: "Visual layout and interaction fidelity." },
+            { id: "R3", name: "Code Quality", weight: 20, criteria: "Clean, robust, and readable implementation." },
+          ],
+        };
+      }
+    }
+
+    if (!challenge) {
+      challenge = FALLBACK_CHALLENGE;
+    }
+
+    // 2. Structural Correctness & Syntax Pre-Filter Gate
     const preFilter = runStructuralPreFilter(code, challenge);
     if (!preFilter.passed) {
       const gateResult = {
@@ -39,12 +76,12 @@ export async function POST(req: NextRequest) {
 
       // Optional persistence in Supabase
       try {
-        const supabase = await createClient();
         if (userId && userId !== "anonymous") {
           await supabase.from("submissions").insert({
             user_id: userId,
             challenge_id: challenge.id,
-            code_submitted: code,
+            problem_id: challenge.id,
+            code_submitted: typeof code === "object" ? JSON.stringify(code) : code,
             attempt_type: attemptType,
             score: 0,
             passed: false,
@@ -58,6 +95,7 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json({
         evaluation: gateResult,
+        passed: false,
         challengeSlug,
         gateFailed: true,
         timestamp: new Date().toISOString(),
@@ -65,11 +103,11 @@ export async function POST(req: NextRequest) {
     }
 
     // 3. Groq AI Evaluation with fallback parsing
-    let parsedResult;
+    let parsedResult: any;
     try {
       const { systemPrompt, userPrompt } = buildGroqPrompt({
         challengeTitle: challenge.title,
-        specMarkdown: challenge.spec_markdown,
+        specMarkdown: challenge.spec_markdown || challenge.description || "",
         rubric: challenge.rubric,
         userCode: code,
         attemptType,
@@ -90,7 +128,7 @@ export async function POST(req: NextRequest) {
       // Graceful fallback evaluator if Groq key isn't provided or offline
       const hasHtml = code.html && code.html.length > 20;
       const hasCss = code.css && code.css.length > 20;
-      const hasJs = code.js && code.js.length > 10;
+      const hasJs = (code.js && code.js.length > 10) || (typeof code === "string" && code.length > 20);
       const calcScore = Math.min(100, (hasHtml ? 35 : 0) + (hasCss ? 35 : 0) + (hasJs ? 30 : 0));
 
       parsedResult = {
@@ -123,14 +161,14 @@ export async function POST(req: NextRequest) {
       };
     }
 
-    // 3. Optional persistence in Supabase if authenticated
+    // 4. Optional persistence in Supabase if authenticated
     try {
-      const supabase = await createClient();
       if (userId && userId !== "anonymous") {
         await supabase.from("submissions").insert({
           user_id: userId,
           challenge_id: challenge.id,
-          code_submitted: code,
+          problem_id: challenge.id,
+          code_submitted: typeof code === "object" ? JSON.stringify(code) : code,
           attempt_type: attemptType,
           score: parsedResult.score || 0,
           passed: parsedResult.passed || false,
@@ -144,6 +182,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       evaluation: parsedResult,
+      passed: parsedResult.passed || false,
       challengeSlug,
       timestamp: new Date().toISOString(),
     });

@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { getAppUrl } from "@/lib/auth";
+import { getAppUrl } from "@/lib/auth/url";
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const next = requestUrl.searchParams.get("next") ?? "/challenges";
+  const next = requestUrl.searchParams.get("next") ?? "/problems";
   const baseUrl = getAppUrl();
   const cleanNext = next.startsWith("/") ? next : `/${next}`;
 
@@ -22,4 +22,3 @@ export async function GET(request: Request) {
   // If code exchange failed or missing, redirect to login with error
   return NextResponse.redirect(new URL("/login?error=auth-code-error", baseUrl));
 }
-

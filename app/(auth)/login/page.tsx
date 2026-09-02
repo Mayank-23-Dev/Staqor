@@ -33,7 +33,7 @@ function LoginForm() {
 
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") || "/challenges";
+  const redirectTo = searchParams.get("redirectTo") || "/problems";
   const supabase = createClient();
 
   // 3D GSAP Tilt Ref

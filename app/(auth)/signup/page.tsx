@@ -24,7 +24,6 @@ import {
   Mail,
   Terminal,
 } from "lucide-react";
-
 export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -105,9 +104,10 @@ export default function SignupPage() {
         options: {
           data: {
             name: name.trim(),
+            full_name: name.trim(),
             username: name.trim(),
           },
-          emailRedirectTo: `${appUrl}/auth/callback?next=/challenges`,
+          emailRedirectTo: `${appUrl}/auth/callback?next=/problems`,
         },
       });
 
@@ -116,7 +116,7 @@ export default function SignupPage() {
       }
 
       if (data.session) {
-        router.push("/challenges");
+        router.push("/problems");
         router.refresh();
       } else {
         setSuccessMessage("Account created! Please check your email inbox to confirm your registration.");
@@ -136,7 +136,7 @@ export default function SignupPage() {
       const { error: oauthErr } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${appUrl}/auth/callback?next=/challenges`,
+          redirectTo: `${appUrl}/auth/callback?next=/problems`,
         },
       });
       if (oauthErr) throw oauthErr;

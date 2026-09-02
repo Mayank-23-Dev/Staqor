@@ -46,7 +46,7 @@ export async function updateSession(request: NextRequest) {
   // If Supabase OAuth redirected with ?code= to any route other than /auth/callback (e.g. landing page /)
   if (request.nextUrl.searchParams.has("code") && !pathname.startsWith("/auth/callback")) {
     const code = request.nextUrl.searchParams.get("code")!;
-    const next = pathname === "/" ? "/challenges" : pathname;
+    const next = pathname === "/" ? "/problems" : pathname;
     const url = request.nextUrl.clone();
     url.pathname = "/auth/callback";
     url.searchParams.set("code", code);
@@ -63,7 +63,7 @@ export async function updateSession(request: NextRequest) {
 
   if (user && isAuthRoute) {
     const url = request.nextUrl.clone();
-    url.pathname = "/challenges";
+    url.pathname = "/problems";
     return NextResponse.redirect(url);
   }
 
