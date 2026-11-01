@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>18 - Multi-Step Form Progress Bar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 18 • Level 2: Components</span>
+            <h1>Multi-Step Wizard Form</h1>
+            <p>Step-by-step progress tracking, validation gating, and state transitions.</p>
+        </header>
+
+        <div class="wizard-card">
+            <!-- Step Progress Indicator -->
+            <div class="steps-indicator">
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="step-node active" data-step="1">
+                    <span>1</span>
+                    <label>Account</label>
+                </div>
+                <div class="step-node" data-step="2">
+                    <span>2</span>
+                    <label>Profile</label>
+                </div>
+                <div class="step-node" data-step="3">
+                    <span>3</span>
+                    <label>Review</label>
+                </div>
+            </div>
+
+            <!-- Steps Form -->
+            <form id="wizardForm">
+                <!-- Step 1 -->
+                <div class="step-panel active" id="step1">
+                    <h3>Step 1: Account Credentials</h3>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="emailInput" placeholder="name@company.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="passInput" placeholder="At least 6 characters" required>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="step-panel" id="step2">
+                    <h3>Step 2: Profile Details</h3>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="fullnameInput" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Role / Position</label>
+                        <input type="text" id="roleInput" placeholder="Lead Software Architect" required>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="step-panel" id="step3">
+                    <h3>Step 3: Confirm & Launch</h3>
+                    <p>Please review your details before submitting:</p>
+                    <div class="summary-box">
+                        <p><strong>Email:</strong> <span id="sumEmail">-</span></p>
+                        <p><strong>Name:</strong> <span id="sumName">-</span></p>
+                        <p><strong>Role:</strong> <span id="sumRole">-</span></p>
+                    </div>
+                </div>
+
+                <!-- Wizard Actions -->
+                <div class="wizard-actions">
+                    <button type="button" class="btn btn-secondary" id="prevStepBtn" disabled>Back</button>
+                    <button type="button" class="btn btn-primary" id="nextStepBtn">Next Step →</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

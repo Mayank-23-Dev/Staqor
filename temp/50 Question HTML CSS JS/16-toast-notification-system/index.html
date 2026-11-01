@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>16 - Toast Notification System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 16 • Level 2: Components</span>
+            <h1>Toast Notification System</h1>
+            <p>Stacked dynamic toasts with countdown progress bars, 4 intent states, and custom auto-dismiss timeouts.</p>
+        </header>
+
+        <div class="trigger-card">
+            <h2>Spawn Notification Banners</h2>
+            <div class="actions-grid">
+                <button class="btn btn-success" id="successToast">✓ Success Toast</button>
+                <button class="btn btn-error" id="errorToast">✕ Error Toast</button>
+                <button class="btn btn-warning" id="warningToast">⚠️ Warning Toast</button>
+                <button class="btn btn-info" id="infoToast">ℹ️ Info Toast</button>
+            </div>
+        </div>
+
+        <!-- Toast Notification Container -->
+        <div class="toast-container" id="toastContainer"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

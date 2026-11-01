@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>29 - Animated Stats Counter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Fira+Code:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="section-header">
+            <span class="badge">Question 29 • Level 3: Sections</span>
+            <h2>Proven Reliability at Planet Scale</h2>
+            <p>Numbers that demonstrate operational resilience and global platform adoption.</p>
+        </header>
+
+        <div class="stats-grid" id="statsGrid">
+            <!-- Stat 1 -->
+            <div class="stat-card">
+                <span class="stat-icon">👥</span>
+                <div class="number-wrapper">
+                    <span class="counter" data-target="250000">0</span>
+                    <span class="suffix">+</span>
+                </div>
+                <h3>Active Developers</h3>
+                <p>Building real-time web applications daily</p>
+            </div>
+
+            <!-- Stat 2 -->
+            <div class="stat-card">
+                <span class="stat-icon">⚡</span>
+                <div class="number-wrapper">
+                    <span class="counter" data-target="99.99" data-decimals="2">0</span>
+                    <span class="suffix">%</span>
+                </div>
+                <h3>Uptime SLA</h3>
+                <p>Guaranteed multi-region failover tolerance</p>
+            </div>
+
+            <!-- Stat 3 -->
+            <div class="stat-card">
+                <span class="stat-icon">🌍</span>
+                <div class="number-wrapper">
+                    <span class="counter" data-target="180">0</span>
+                    <span class="suffix">+</span>
+                </div>
+                <h3>Countries Covered</h3>
+                <p>Distributed edge servers across continents</p>
+            </div>
+
+            <!-- Stat 4 -->
+            <div class="stat-card">
+                <span class="stat-icon">🚀</span>
+                <div class="number-wrapper">
+                    <span class="counter" data-target="14">0</span>
+                    <span class="suffix">ms</span>
+                </div>
+                <h3>Median P99 Latency</h3>
+                <p>Fast global packet routing network</p>
+            </div>
+        </div>
+
+        <div class="replay-box">
+            <button class="btn btn-secondary" id="replayBtn">🔄 Replay Animation</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

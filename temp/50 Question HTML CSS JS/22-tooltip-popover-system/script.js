@@ -1,0 +1,1 @@
+console.log('Tooltip system initialized via CSS data-attributes!');

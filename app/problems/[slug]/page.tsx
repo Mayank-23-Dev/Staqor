@@ -1,40 +1,58 @@
 import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
-import IDEClient from "./IDEClient";
+import { getProblemBySlug } from "@/lib/problems-data";
+import { ProblemWorkspace } from "@/components/problems/ProblemWorkspace";
 
 export default async function ProblemIDEPage({ params }: { params: { slug: string } }) {
   const supabase = createClient();
-  const { data: problem, error } = await supabase
-    .from("problems")
-    .select("*")
-    .eq("slug", params.slug)
-    .single();
+  let problem: any = null;
 
-  if (error || !problem) {
+  try {
+    const { data: dbProblem } = await supabase
+      .from("problems")
+      .select("*")
+      .eq("slug", params.slug)
+      .single();
+
+    if (dbProblem) {
+      problem = dbProblem;
+    }
+  } catch (e) {
+    // fallback to local dataset
+  }
+
+  if (!problem) {
+    const localProblem = getProblemBySlug(params.slug);
+    if (localProblem) {
+      problem = {
+        id: localProblem.id,
+        title: `${localProblem.number}. ${localProblem.title}`,
+        slug: localProblem.slug,
+        folder: localProblem.folder,
+        screenshot_url: localProblem.screenshot_url,
+        difficulty: localProblem.difficulty,
+        topic: localProblem.category,
+        category: localProblem.category,
+        summary: localProblem.summary,
+        description: localProblem.description,
+        starter_code: localProblem.starter_code,
+        model_solution: localProblem.model_solution,
+      };
+    }
+  }
+
+  if (!problem) {
     return notFound();
   }
 
   // Get user info
-  const { data: { user } } = await supabase.auth.getUser();
+  let user: any = null;
+  try {
+    const { data: authData } = await supabase.auth.getUser();
+    user = authData?.user || null;
+  } catch {
+    user = null;
+  }
 
-  return (
-    <div className="min-h-screen bg-[#0A0A0F] text-[#F5F5F7] flex flex-col">
-      <header className="h-14 border-b border-white/10 flex items-center px-4 shrink-0">
-        <h1 className="font-semibold text-lg">{problem.title}</h1>
-        <div className="ml-4 text-xs px-2 py-1 bg-white/5 rounded text-muted-foreground">
-          {problem.difficulty}
-        </div>
-      </header>
-      
-      <div className="flex-1 flex overflow-hidden">
-        <div className="w-1/3 border-r border-white/10 p-6 overflow-y-auto">
-          <h2 className="text-xl font-bold mb-4">{problem.title}</h2>
-          <div className="prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: problem.description }} />
-        </div>
-        <div className="w-2/3 flex flex-col">
-          <IDEClient problem={problem} user={user} />
-        </div>
-      </div>
-    </div>
-  );
+  return <ProblemWorkspace problem={problem} user={user} />;
 }

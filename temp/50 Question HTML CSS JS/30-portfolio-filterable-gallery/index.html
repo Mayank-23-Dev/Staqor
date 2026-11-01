@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30 - Filterable Portfolio Gallery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="section-header">
+            <span class="badge">Question 30 • Level 3: Sections</span>
+            <h2>Selected Client Work & Projects</h2>
+            <p>Filter projects by domain category and click any card for full-screen Lightbox preview.</p>
+            
+            <!-- Category Filter Buttons -->
+            <div class="filter-buttons" id="filterButtons">
+                <button class="filter-btn active" data-filter="all">All Projects</button>
+                <button class="filter-btn" data-filter="web">Web Apps</button>
+                <button class="filter-btn" data-filter="mobile">Mobile UI</button>
+                <button class="filter-btn" data-filter="branding">AI Branding</button>
+            </div>
+        </header>
+
+        <!-- Gallery Grid -->
+        <div class="gallery-grid" id="galleryGrid">
+            <!-- 1 -->
+            <div class="gallery-item" data-category="web">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=80" alt="FinTech Dashboard">
+                <div class="overlay">
+                    <span class="tag">Web App</span>
+                    <h3>FinTech Analytics Cloud</h3>
+                </div>
+            </div>
+
+            <!-- 2 -->
+            <div class="gallery-item" data-category="mobile">
+                <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&auto=format&fit=crop&q=80" alt="Mobile Crypto Wallet">
+                <div class="overlay">
+                    <span class="tag">Mobile UI</span>
+                    <h3>CryptoVault iOS App</h3>
+                </div>
+            </div>
+
+            <!-- 3 -->
+            <div class="gallery-item" data-category="branding">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80" alt="Generative 3D Mesh">
+                <div class="overlay">
+                    <span class="tag">AI Branding</span>
+                    <h3>NeuroSynthetics Identity</h3>
+                </div>
+            </div>
+
+            <!-- 4 -->
+            <div class="gallery-item" data-category="web">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80" alt="SaaS Marketing Portal">
+                <div class="overlay">
+                    <span class="tag">Web App</span>
+                    <h3>Prism Studio Web App</h3>
+                </div>
+            </div>
+
+            <!-- 5 -->
+            <div class="gallery-item" data-category="mobile">
+                <img src="https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?w=800&auto=format&fit=crop&q=80" alt="Smart Home App">
+                <div class="overlay">
+                    <span class="tag">Mobile UI</span>
+                    <h3>Aura Smart Thermostat</h3>
+                </div>
+            </div>
+
+            <!-- 6 -->
+            <div class="gallery-item" data-category="branding">
+                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&auto=format&fit=crop&q=80" alt="Hardware Brand">
+                <div class="overlay">
+                    <span class="tag">AI Branding</span>
+                    <h3>Quantum Core Hardware</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal -->
+    <div class="lightbox-modal hidden" id="lightboxModal">
+        <button class="lightbox-close" id="closeLightbox">&times;</button>
+        <div class="lightbox-content">
+            <img src="" id="lightboxImg" alt="Preview">
+            <h3 id="lightboxTitle">Title</h3>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>11 - Accordion FAQ Component</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 11 • Level 2: Components</span>
+            <h1>Interactive FAQ Accordion</h1>
+            <p>Smooth max-height CSS transitions, SVG icon rotation, single/multi-expand mode, and expand all controls.</p>
+        </header>
+
+        <div class="accordion-wrapper">
+            <!-- Toolbar -->
+            <div class="accordion-toolbar">
+                <div class="mode-toggle">
+                    <label>
+                        <input type="checkbox" id="singleModeCheckbox" checked>
+                        <span>Single Item Mode</span>
+                    </label>
+                </div>
+                <div class="toolbar-actions">
+                    <button class="tool-btn" id="expandAllBtn">Expand All</button>
+                    <button class="tool-btn" id="collapseAllBtn">Collapse All</button>
+                </div>
+            </div>
+
+            <!-- Accordion List -->
+            <div class="accordion" id="faqAccordion">
+                <!-- Item 1 -->
+                <div class="accordion-item active">
+                    <button class="accordion-header" aria-expanded="true">
+                        <span class="question-text">What is the difference between Flexbox and CSS Grid?</span>
+                        <span class="accordion-icon">▾</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="content-inner">
+                            <p><strong>CSS Flexbox</strong> is primarily designed for 1-dimensional layouts (either in a row OR a column), making it ideal for navigation bars, alignment, and distributing space along a single axis.</p>
+                            <p><strong>CSS Grid</strong> is built for 2-dimensional layouts (simultaneous rows AND columns), making it superior for overall page layout systems, complex photo galleries, and card matrices.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span class="question-text">How do CSS custom properties (variables) work?</span>
+                        <span class="accordion-icon">▾</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="content-inner">
+                            <p>CSS variables are defined using two dashes (e.g. <code>--primary-color: #38bdf8;</code>) and accessed with the <code>var()</code> function. Unlike preprocessor variables (Sass/Less), CSS custom properties are dynamic, cascade through the DOM tree, and can be read or modified in real-time using JavaScript via <code>document.documentElement.style.setProperty()</code>.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span class="question-text">What is the Event Loop in JavaScript?</span>
+                        <span class="accordion-icon">▾</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="content-inner">
+                            <p>The Event Loop is a fundamental architectural mechanism in JavaScript's single-threaded runtime. It constantly monitors the Call Stack and the Task/Microtask Queues. When the Call Stack is empty, it pushes pending callbacks from Promises (microtasks) and setTimeout/DOM events (macrotasks) onto the stack to execute asynchronously without blocking.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 4 -->
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span class="question-text">Why use Semantic HTML5 elements?</span>
+                        <span class="accordion-icon">▾</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="content-inner">
+                            <p>Semantic tags like <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;article&gt;</code>, and <code>&lt;footer&gt;</code> provide meaningful context to screen readers (Accessibility / a11y), improve search engine indexing (SEO), and ensure code is readable and maintainable across teams.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

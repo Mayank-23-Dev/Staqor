@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>49 - Expense Tracker Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Fira+Code:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 49 • Level 4: Complete Webpage</span>
+            <h1>Finance & Expense Tracker</h1>
+        </header>
+
+        <div class="summary-cards">
+            <div class="s-card">
+                <span>Total Balance</span>
+                <strong id="totalBal">$4,250.00</strong>
+            </div>
+            <div class="s-card">
+                <span>Total Income</span>
+                <strong class="inc" id="totalInc">+$5,800.00</strong>
+            </div>
+            <div class="s-card">
+                <span>Total Expenses</span>
+                <strong class="exp" id="totalExp">-$1,550.00</strong>
+            </div>
+        </div>
+
+        <div class="app-layout">
+            <form class="entry-form" id="entryForm">
+                <h3>Add New Transaction</h3>
+                <input type="text" id="descInput" placeholder="Description (e.g. AWS Cloud Server)" required>
+                <input type="number" id="amtInput" placeholder="Amount (e.g. 150)" required>
+                <select id="typeInput">
+                    <option value="expense">Expense (-)</option>
+                    <option value="income">Income (+)</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Add Entry</button>
+            </form>
+
+            <div class="history-list">
+                <h3>Transaction History</h3>
+                <div class="transactions" id="txList">
+                    <div class="tx-item expense">
+                        <span>AWS Cloud Server</span>
+                        <strong>-$150.00</strong>
+                    </div>
+                    <div class="tx-item income">
+                        <span>Consulting Client Retainer</span>
+                        <strong>+$5,800.00</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

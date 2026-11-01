@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10 - Interactive Quote Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Plus+Jakarta+Sans:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 10 • Level 1: Basics</span>
+            <h1>Inspirational Quote Studio</h1>
+            <p>Master styled blockquotes, typography transitions, Web Speech synthesis API, and clipboard copy.</p>
+        </header>
+
+        <div class="quote-card" id="quoteCard">
+            <div class="quote-header">
+                <span class="category-pill" id="quoteCategory">Innovation</span>
+                <span class="quote-icon">“</span>
+            </div>
+
+            <div class="quote-body">
+                <p class="quote-text" id="quoteText">The only way to do great work is to love what you do.</p>
+                <div class="quote-author" id="quoteAuthor">— Steve Jobs</div>
+            </div>
+
+            <div class="card-footer">
+                <div class="action-buttons">
+                    <button class="icon-btn" id="speakBtn" title="Read Quote Aloud">🔊</button>
+                    <button class="icon-btn" id="copyBtn" title="Copy to Clipboard">📋</button>
+                    <button class="icon-btn" id="tweetBtn" title="Tweet Quote">🐦</button>
+                </div>
+                <button class="btn-primary" id="newQuoteBtn">✨ New Quote</button>
+            </div>
+        </div>
+
+        <div class="toast hidden" id="toast">Copied quote to clipboard!</div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

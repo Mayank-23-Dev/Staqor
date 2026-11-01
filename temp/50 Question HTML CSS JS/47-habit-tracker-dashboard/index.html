@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>47 - Daily Habit Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="habit-app">
+        <header class="app-header">
+            <h1>📅 Daily Habit Tracker</h1>
+            <button class="btn btn-add" id="addHabitBtn">+ New Habit</button>
+        </header>
+
+        <div class="habits-table">
+            <div class="table-header">
+                <span>Habit Title</span>
+                <div class="week-days">
+                    <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+                </div>
+            </div>
+
+            <div class="habits-list" id="habitsList">
+                <div class="habit-row">
+                    <span class="habit-name">🧘 Morning Meditation</span>
+                    <div class="day-boxes">
+                        <input type="checkbox" checked><input type="checkbox" checked><input type="checkbox"><input type="checkbox" checked><input type="checkbox"><input type="checkbox"><input type="checkbox">
+                    </div>
+                </div>
+                <div class="habit-row">
+                    <span class="habit-name">💻 Code for 2 Hours</span>
+                    <div class="day-boxes">
+                        <input type="checkbox" checked><input type="checkbox" checked><input type="checkbox" checked><input type="checkbox" checked><input type="checkbox"><input type="checkbox"><input type="checkbox">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

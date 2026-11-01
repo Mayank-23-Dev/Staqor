@@ -42,7 +42,7 @@ export function ProblemsPage() {
       {/* Main Responsive Layout */}
       <div className="flex-1 container mx-auto px-2 sm:px-4 lg:px-6 py-4 flex gap-5 max-w-[1600px]">
         {/* 1. Left Sidebar (Fixed ~260px on Desktop, Hidden on Mobile/Tablet) */}
-        <div className="hidden lg:block w-[260px] flex-shrink-0 sticky top-18 h-[calc(100vh-80px)] rounded-lg overflow-hidden border border-border/70 shadow-sm">
+        <div className="hidden lg:block w-[260px] flex-shrink-0 self-start sticky top-20 rounded-lg overflow-hidden border border-border/70 shadow-sm">
           <Sidebar
             selectedList={selectedList}
             onSelectList={handleSelectList}
@@ -72,8 +72,8 @@ export function ProblemsPage() {
           />
         </main>
 
-        {/* 3. Right Sidebar (Fixed ~300px on Desktop, Hidden on Mobile/Tablet) */}
-        <aside className="hidden lg:block w-[300px] flex-shrink-0 sticky top-18 h-[calc(100vh-80px)] overflow-y-auto scrollbar-none space-y-4">
+        {/* 3. Right Sidebar (Natural height expansion, no clipping) */}
+        <aside className="hidden lg:block w-[300px] flex-shrink-0 self-start space-y-4">
           <RightSidebar
             selectedCompany={selectedCompany}
             onSelectCompany={handleSelectCompany}

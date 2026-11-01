@@ -1,0 +1,144 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #0b0f19;
+    color: #f8fafc;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    padding: 3rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    max-width: 600px;
+    width: 100%;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.badge {
+    display: inline-block;
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.header h1 {
+    font-size: 2.2rem;
+    margin-bottom: 0.4rem;
+}
+
+.header p {
+    color: #94a3b8;
+}
+
+.uploader-card {
+    background: #131b2e;
+    border: 1px solid #1e293b;
+    border-radius: 18px;
+    padding: 2rem;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+}
+
+.drop-zone {
+    position: relative;
+    border: 2px dashed #334155;
+    border-radius: 14px;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    transition: all 0.2s;
+    background: #0b0f19;
+}
+
+.drop-zone.dragover {
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.05);
+}
+
+.file-input { display: none; }
+
+.upload-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.drop-zone h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.4rem;
+}
+
+.drop-zone p {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+}
+
+.browse-btn {
+    background: transparent;
+    border: none;
+    color: #38bdf8;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.file-limits {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+/* File List */
+.file-list {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.file-item {
+    background: #0b0f19;
+    border: 1px solid #1e293b;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.file-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.file-size {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.btn-remove {
+    background: transparent;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 1.1rem;
+}

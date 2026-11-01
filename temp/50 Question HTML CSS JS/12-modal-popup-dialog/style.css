@@ -1,0 +1,223 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #0b0f19;
+    color: #f8fafc;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    padding: 3rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+.container {
+    max-width: 650px;
+    width: 100%;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.badge {
+    display: inline-block;
+    background: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.header h1 {
+    font-size: 2.2rem;
+    margin-bottom: 0.4rem;
+}
+
+.header p {
+    color: #94a3b8;
+}
+
+.demo-card {
+    background: #131b2e;
+    border: 1px solid #1e293b;
+    border-radius: 18px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    margin-bottom: 1.5rem;
+}
+
+.demo-card h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+}
+
+.demo-card p {
+    color: #94a3b8;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.btn-primary { background: #4f46e5; color: white; }
+.btn-primary:hover { background: #4338ca; }
+
+.btn-danger { background: #e11d48; color: white; }
+.btn-danger:hover { background: #be123c; }
+
+.btn-secondary { background: #1e293b; color: #cbd5e1; border: 1px solid #334155; }
+.btn-secondary:hover { background: #334155; color: white; }
+
+.status-box {
+    background: #131b2e;
+    border: 1px solid #1e293b;
+    padding: 1rem;
+    border-radius: 10px;
+    text-align: center;
+    color: #38bdf8;
+    font-size: 0.9rem;
+}
+
+/* Modal Overlay & Box */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 1rem;
+    opacity: 1;
+    transition: opacity 0.25s ease;
+}
+
+.modal-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-box {
+    background: #131b2e;
+    border: 1px solid #334155;
+    border-radius: 18px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+    transform: scale(1);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-overlay.hidden .modal-box {
+    transform: scale(0.92);
+}
+
+.modal-sm {
+    max-width: 420px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.4rem 1.6rem;
+    border-bottom: 1px solid #1e293b;
+}
+
+.modal-header h3 {
+    font-size: 1.2rem;
+    color: #f8fafc;
+}
+
+.close-modal {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.6rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.close-modal:hover {
+    color: #f8fafc;
+}
+
+.modal-body {
+    padding: 1.6rem;
+}
+
+.modal-body p {
+    color: #94a3b8;
+    line-height: 1.6;
+}
+
+.modal-body strong {
+    color: #f43f5e;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    color: #cbd5e1;
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+}
+
+.form-group input, .form-group textarea {
+    width: 100%;
+    background: #0b0f19;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: #f8fafc;
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+}
+
+.form-group input:focus, .form-group textarea:focus {
+    border-color: #4f46e5;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 1.2rem 1.6rem;
+    border-top: 1px solid #1e293b;
+}

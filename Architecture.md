@@ -9,15 +9,14 @@ own `brand_primary` for grading purposes — that's user-authored content, unrel
 Staqor's own brand).
 
 ## 1. Stack
-- **Frontend:** Next.js 14 (App Router) + React + Tailwind CSS + Shadcn/ui
+- **Frontend & Backend:** Next.js 14 (App Router) + React + Tailwind CSS + Shadcn/ui
 - **Animation (landing page only):** GSAP
 - **Editor:** Monaco Editor (`@monaco-editor/react`)
-- **Backend:** Next.js API Routes (or standalone Express if the CLI prefers separation)
 - **Database:** MongoDB (flexible schema fits `code_submitted`, rubric arrays well)
 - **AI:** Groq SDK (`@groq/groq-sdk`)
-- **Auth:** JWT + HTTP-only cookies
-- **Payments:** Stripe (webhooks → update `user.role`)
-- **Hosting:** Vercel (frontend) + Fly.io or AWS/Azure (backend), or a single Fly.io instance for MVP
+- **Auth:** Supabase Auth (`@supabase/supabase-js`, `@supabase/ssr` with Next.js middleware & session cookies)
+- **Payments:** Deferred / Removed for initial build
+- **Hosting / Deployment:** Vercel
 
 ## 2. High-Level System Flow
 
@@ -53,21 +52,21 @@ Admin Panel → Challenge CRUD → "Sandbox Tester" → Groq (dry-run against mo
 │   │   ├── challenges/           # CRUD
 │   │   └── sandbox-tester/
 │   └── api/
-│       ├── auth/[...]/route.ts
+│   └── api/
+│       ├── auth/route.ts         # Supabase session inspection & sync
 │       ├── challenges/route.ts
 │       ├── evaluate/route.ts     # RUN + SUBMIT handler
 │       ├── attempts/route.ts
-│       └── stripe/webhook/route.ts
+│       └── health/route.ts       # Service & DB health check
 ├── components/
 │   ├── editor/                   # Monaco wrapper, tab bar, preview iframe
-│   ├── notifier/                 # paywall modal
 │   ├── profile/                  # read-only replay viewer
 │   └── ui/                       # shadcn components
 ├── lib/
 │   ├── db/                       # mongo client, models
 │   ├── groq/                     # prompt constructor, retry logic
-│   ├── auth/
-│   └── stripe/
+│   ├── auth/                     # Supabase session helper
+│   └── supabase/                 # client, server, middleware SSR helpers
 ├── models/                       # users, challenges, submissions, attempt_counts
 └── docs/                         # this file, PRD, Rules, Phases, Design, Memory
 ```
@@ -82,7 +81,7 @@ See PRD source spec for full field-level schema (`users`, `challenges`, `rubric`
 
 ## 5. The Groq Evaluation Pipeline
 1. Client sends `{ challenge_id, code: {html, css, js}, attempt_type }`.
-2. API route: verify auth → check `attempt_counts` → if capped, return 429 Notifier payload.
+2. API route: verify auth → check `attempt_counts` → if capped, return 429 payload.
 3. Sanitize user code (escape backticks/newlines) to prevent prompt injection.
 4. Build dynamic prompt (static system prompt + per-challenge rubric + user code).
 5. Call Groq. Parse JSON.
@@ -101,8 +100,7 @@ See PRD source spec for full field-level schema (`users`, `challenges`, `rubric`
 - Payload cap: 1MB per submission.
 
 ## 7. Environments & Config
-- `.env`: `MONGODB_URI`, `GROQ_API_KEY`, `JWT_SECRET`, `STRIPE_SECRET_KEY`,
-  `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_APP_URL`.
+- `.env`: `MONGODB_URI`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `GROQ_API_KEY`, `NEXT_PUBLIC_APP_URL`.
 - Separate Groq API keys for dev/staging vs prod to isolate cost tracking.
 
 ## 8. Post-MVP Roadmap (do not build in v1)

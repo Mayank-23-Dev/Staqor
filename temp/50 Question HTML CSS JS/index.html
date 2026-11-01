@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>50 Questions HTML, CSS & JS Master Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Fira+Code:wght@600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #06080e; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; padding: 3rem 1.5rem; }
+        .header { text-align: center; max-width: 850px; margin: 0 auto 3.5rem; }
+        .main-badge { display: inline-block; background: rgba(99, 102, 241, 0.15); color: #818cf8; padding: 6px 16px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; margin-bottom: 1rem; border: 1px solid rgba(99, 102, 241, 0.3); }
+        .header h1 { font-size: 3rem; font-weight: 800; margin-bottom: 0.8rem; background: linear-gradient(135deg, #f8fafc, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header p { color: #94a3b8; font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem; }
+
+        .toolbar { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 3rem; }
+        .filter-btn { background: #111827; border: 1px solid #1f2937; color: #9ca3af; padding: 8px 18px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; }
+        .filter-btn:hover { color: white; border-color: #38bdf8; }
+        .filter-btn.active { background: #6366f1; color: white; border-color: #6366f1; }
+
+        .search-bar { width: 100%; max-width: 480px; margin: 0 auto 2.5rem; }
+        .search-bar input { width: 100%; background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 0.85rem 1.2rem; color: white; font-family: inherit; font-size: 1rem; outline: none; }
+        .search-bar input:focus { border-color: #6366f1; }
+
+        .hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.8rem; max-width: 1350px; margin: 0 auto; }
+        .hub-card { background: #0f1422; border: 1px solid #1e293b; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.25s, border-color 0.25s; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .hub-card:hover { transform: translateY(-6px); border-color: #6366f1; box-shadow: 0 15px 35px rgba(99, 102, 241, 0.2); }
+        .hub-card.hidden { display: none; }
+
+        .thumb-wrapper { height: 180px; overflow: hidden; background: #080c15; border-bottom: 1px solid #1e293b; }
+        .card-thumb { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 0.4s ease; }
+        .hub-card:hover .card-thumb { transform: scale(1.05); }
+
+        .card-top { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 1.4rem 0.5rem; }
+        .hub-num { font-family: 'Fira Code', monospace; font-size: 1.1rem; font-weight: 800; color: #38bdf8; }
+        .hub-badge { font-size: 0.75rem; font-weight: 800; padding: 3px 10px; border-radius: 999px; }
+        .badge-l1 { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+        .badge-l2 { background: rgba(129, 140, 248, 0.15); color: #818cf8; }
+        .badge-l3 { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+        .badge-l4 { background: rgba(244, 63, 94, 0.15); color: #f43f5e; }
+
+        .hub-title { font-size: 1.15rem; font-weight: 700; padding: 0 1.4rem; margin-bottom: 0.5rem; color: #f8fafc; }
+        .hub-desc { color: #94a3b8; font-size: 0.88rem; line-height: 1.5; padding: 0 1.4rem; margin-bottom: 1.4rem; flex: 1; }
+
+        .card-footer { border-top: 1px solid #1e293b; padding: 1rem 1.4rem; background: #0c101c; }
+        .hub-link { display: inline-flex; align-items: center; color: #38bdf8; text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: color 0.2s; }
+        .hub-link:hover { color: #ffffff; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <span class="main-badge">50 Question Curriculum</span>
+        <h1>HTML, CSS & JavaScript Master Hub</h1>
+        <p>A progressive master collection of 50 hands-on projects transitioning smoothly from basic font typography to interactive UI components, modern sections, and complete production webpages.</p>
+
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search across all 50 questions (e.g. modal, font, grid, cart)...">
+        </div>
+
+        <div class="toolbar" id="filterToolbar">
+            <button class="filter-btn active" data-filter="all">All (50)</button>
+            <button class="filter-btn" data-filter="badge-l1">Level 1: Basics (10)</button>
+            <button class="filter-btn" data-filter="badge-l2">Level 2: Components (15)</button>
+            <button class="filter-btn" data-filter="badge-l3">Level 3: Sections (13)</button>
+            <button class="filter-btn" data-filter="badge-l4">Level 4: Webpages (12)</button>
+        </div>
+    </header>
+
+    <main class="hub-grid" id="hubGrid">
+        
+    <div class="hub-card" data-category="badge-l1">
+        <div class="thumb-wrapper">
+            <img src="01-typography-font-showcase/screenshot.png" alt="Typography & Font Studio" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#01</span>
+            <span class="hub-badge badge-l1">Level 1: Basics</span>
+        </div>
+        <h3 class="hub-title">Typography & Font Studio</h3>
+        <p class="hub-desc">Google Fonts loader, weight/size sliders, letter spacing, live text-transform & CSS generator.</p>
+        <div class="card-footer">
+            <a href="01-typography-font-showcase/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l1">
+        <div class="thumb-wrapper">
+            <img src="02-gradient-text-glow-card/screenshot.png" alt="Gradient Text & Glowing Effect Card" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#02</span>
+            <span class="hub-badge badge-l1">Level 1: Basics</span>
+        </div>
+        <h3 class="hub-title">Gradient Text & Glowing Effect Card</h3>
+        <p class="hub-desc">CSS background-clip text gradients, neon glow box-shadow, and dynamic angle/color controls.</p>
+        <div class="card-footer">
+            <a href="02-gradient-text-glow-card/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l1">
+        <div class="thumb-wrapper">
+            <img src="03-interactive-buttons-suite/screenshot.png" alt="Interactive Buttons Suite" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#03</span>
+            <span class="hub-badge badge-l1">Level 1: Basics</span>
+        </div>
+        <h3 class="hub-title">Interactive Buttons Suite</h3>
+        <p class="hub-desc">8 distinct button styles: Coordinates-based ripple, 3D push, magnetic hover, glitch, and async spinner.</p>
+        <div class="card-footer">
+            <a href="03-interactive-buttons-suite/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l1">
+        <div class="thumb-wrapper">
+            <img src="04-simple-profile-card/screenshot.png" alt="Developer Profile Card" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#04</span>
+            <span class="hub-badge badge-l1">Level 1: Basics</span>
+        </div>
+        <h3 class="hub-title">Developer Profile Card</h3>
+        <p class="hub-desc">CSS Box Model, rounded avatar, status badges, skill tags, and interactive follow counter.</p>
+        <div class="card-footer">
+            <a href="04-simple-profile-card/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l1">
+        <div class="thumb-wrapper">
+            <img src="05-color-palette-generator/screenshot.png" alt="Color Palette Generator" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#05</span>
+            <span class="hub-badge badge-l1">Level 1: Basics</span>
+        </div>
+        <h3 class="hub-title">Color Palette Generator</h3>
+        <p class="hub-desc">Hex color generator with spacebar trigger, color lock, luminance contrast math, and CSS export.</p>
+        <div class="card-footer">
+            <a href="05-color-palette-generator/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l1">
+        <div class="thumb-wrapper">
+            <img src="06-live-character-counter/screenshot.png" alt="Live Character & Text Analyzer" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#06</span>
+            <span class="hub-badge badge-l1">Level 1: Basics</span>
+        </div>
+        <h3 class="hub-title">Live Character & Text Analyzer</h3>
+        <p class="hub-desc">Real-time character, word, sentence counter, reading time estimate, and SVG circular progress ring.</p>
+        <div class="card-footer">
+            <a href="06-live-character-counter/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l1">
+        <div class="thumb-wrapper">
+            <img src="07-dark-light-mode-toggle/screenshot.png" alt="Dark & Light Mode Switcher" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#07</span>
+            <span class="hub-badge badge-l1">Level 1: Basics</span>
+        </div>
+        <h3 class="hub-title">Dark & Light Mode Switcher</h3>
+        <p class="hub-desc">Semantic CSS variables theme switching with animated sun/moon toggle and localStorage persistence.</p>
+        <div class="card-footer">
+            <a href="07-dark-light-mode-toggle/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l1">
+        <div class="thumb-wrapper">
+            <img src="08-responsive-badge-card/screenshot.png" alt="Positioned Badge & Ribbon Cards" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#08</span>
+            <span class="hub-badge badge-l1">Level 1: Basics</span>
+        </div>
+        <h3 class="hub-title">Positioned Badge & Ribbon Cards</h3>
+        <p class="hub-desc">CSS Absolute/Relative positioning, 45° corner ribbons, image zoom overlays, and favorite triggers.</p>
+        <div class="card-footer">
+            <a href="08-responsive-badge-card/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l1">
+        <div class="thumb-wrapper">
+            <img src="09-digital-clock-custom-fonts/screenshot.png" alt="Cyberpunk Digital Clock" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#09</span>
+            <span class="hub-badge badge-l1">Level 1: Basics</span>
+        </div>
+        <h3 class="hub-title">Cyberpunk Digital Clock</h3>
+        <p class="hub-desc">Segmented LED digital clock with 12/24 hour toggle, flashing colon, seconds bar, and timezone switch.</p>
+        <div class="card-footer">
+            <a href="09-digital-clock-custom-fonts/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l1">
+        <div class="thumb-wrapper">
+            <img src="10-interactive-quote-generator/screenshot.png" alt="Inspirational Quote Studio" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#10</span>
+            <span class="hub-badge badge-l1">Level 1: Basics</span>
+        </div>
+        <h3 class="hub-title">Inspirational Quote Studio</h3>
+        <p class="hub-desc">Styled blockquotes, dynamic quote transitions, Web Speech synthesis API, and clipboard copy.</p>
+        <div class="card-footer">
+            <a href="10-interactive-quote-generator/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l2">
+        <div class="thumb-wrapper">
+            <img src="11-accordion-faq-component/screenshot.png" alt="Collapsible FAQ Accordion" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#11</span>
+            <span class="hub-badge badge-l2">Level 2: Components</span>
+        </div>
+        <h3 class="hub-title">Collapsible FAQ Accordion</h3>
+        <p class="hub-desc">Smooth max-height CSS transitions, icon rotation, single/multi-expand mode, and expand all.</p>
+        <div class="card-footer">
+            <a href="11-accordion-faq-component/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l2">
+        <div class="thumb-wrapper">
+            <img src="12-modal-popup-dialog/screenshot.png" alt="Modal Popup & Backdrop Dialog" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#12</span>
+            <span class="hub-badge badge-l2">Level 2: Components</span>
+        </div>
+        <h3 class="hub-title">Modal Popup & Backdrop Dialog</h3>
+        <p class="hub-desc">Accessible modal overlay with backdrop blur, scale keyframes, form validation, and ESC handler.</p>
+        <div class="card-footer">
+            <a href="12-modal-popup-dialog/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l2">
+        <div class="thumb-wrapper">
+            <img src="13-image-carousel-slider/screenshot.png" alt="Image Carousel & Slider" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#13</span>
+            <span class="hub-badge badge-l2">Level 2: Components</span>
+        </div>
+        <h3 class="hub-title">Image Carousel & Slider</h3>
+        <p class="hub-desc">Slide transform animation, auto-play with hover pause, indicator dots, and thumbnail support.</p>
+        <div class="card-footer">
+            <a href="13-image-carousel-slider/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l2">
+        <div class="thumb-wrapper">
+            <img src="14-tabs-navigation-component/screenshot.png" alt="Sliding Indicator Tabs" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#14</span>
+            <span class="hub-badge badge-l2">Level 2: Components</span>
+        </div>
+        <h3 class="hub-title">Sliding Indicator Tabs</h3>
+        <p class="hub-desc">Dynamic bounding box pill indicator calculation, smooth content transitions, and tab switching.</p>
+        <div class="card-footer">
+            <a href="14-tabs-navigation-component/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l2">
+        <div class="thumb-wrapper">
+            <img src="15-custom-dropdown-select/screenshot.png" alt="Custom Searchable Dropdown" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#15</span>
+            <span class="hub-badge badge-l2">Level 2: Components</span>
+        </div>
+        <h3 class="hub-title">Custom Searchable Dropdown</h3>
+        <p class="hub-desc">Custom select menu with live keyword filtering, keyboard navigation, and click-outside dismiss.</p>
+        <div class="card-footer">
+            <a href="15-custom-dropdown-select/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l2">
+        <div class="thumb-wrapper">
+            <img src="16-toast-notification-system/screenshot.png" alt="Toast Notification Engine" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#16</span>
+            <span class="hub-badge badge-l2">Level 2: Components</span>
+        </div>
+        <h3 class="hub-title">Toast Notification Engine</h3>
+        <p class="hub-desc">Stacked dynamic toasts with countdown progress bars, 4 intent states, and custom auto-dismiss.</p>
+        <div class="card-footer">
+            <a href="16-toast-notification-system/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l2">
+        <div class="thumb-wrapper">
+            <img src="17-star-rating-component/screenshot.png" alt="Star Rating Widget" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#17</span>
+            <span class="hub-badge badge-l2">Level 2: Components</span>
+        </div>
+        <h3 class="hub-title">Star Rating Widget</h3>
+        <p class="hub-desc">Hover star preview, live mood sentiment feedback, score submission, and reset state.</p>
+        <div class="card-footer">
+            <a href="17-star-rating-component/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l2">
+        <div class="thumb-wrapper">
+            <img src="18-multi-step-form-progress/screenshot.png" alt="Multi-Step Wizard Form" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#18</span>
+            <span class="hub-badge badge-l2">Level 2: Components</span>
+        </div>
+        <h3 class="hub-title">Multi-Step Wizard Form</h3>
+        <p class="hub-desc">Step-by-step progress tracking bar, validation gating per step, and state transitions.</p>
+        <div class="card-footer">
+            <a href="18-multi-step-form-progress/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l2">
+        <div class="thumb-wrapper">
+            <img src="19-live-search-autocomplete/screenshot.png" alt="Search Bar with Live Autocomplete" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#19</span>
+            <span class="hub-badge badge-l2">Level 2: Components</span>
+        </div>
+        <h3 class="hub-title">Search Bar with Live Autocomplete</h3>
+        <p class="hub-desc">Debounced keystroke handling, highlight matched query letters, and category tags.</p>
+        <div class="card-footer">
+            <a href="19-live-search-autocomplete/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l2">
+        <div class="thumb-wrapper">
+            <img src="20-custom-range-slider/screenshot.png" alt="Range Slider with Dynamic Tooltip" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#20</span>
+            <span class="hub-badge badge-l2">Level 2: Components</span>
+        </div>
+        <h3 class="hub-title">Range Slider with Dynamic Tooltip</h3>
+        <p class="hub-desc">Calculates thumb position offsets in real-time with dual-color dynamic progress tracks.</p>
+        <div class="card-footer">
+            <a href="20-custom-range-slider/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l2">
+        <div class="thumb-wrapper">
+            <img src="21-animated-hamburger-menu/screenshot.png" alt="Morphing Hamburger Menu" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#21</span>
+            <span class="hub-badge badge-l2">Level 2: Components</span>
+        </div>
+        <h3 class="hub-title">Morphing Hamburger Menu</h3>
+        <p class="hub-desc">3-line hamburger to 'X' close icon transition with slide-in navigation sidebar drawer.</p>
+        <div class="card-footer">
+            <a href="21-animated-hamburger-menu/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l2">
+        <div class="thumb-wrapper">
+            <img src="22-tooltip-popover-system/screenshot.png" alt="Tooltip & Popover Engine" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#22</span>
+            <span class="hub-badge badge-l2">Level 2: Components</span>
+        </div>
+        <h3 class="hub-title">Tooltip & Popover Engine</h3>
+        <p class="hub-desc">CSS data-attributes and pseudo-elements providing 4 cardinal positioning directions.</p>
+        <div class="card-footer">
+            <a href="22-tooltip-popover-system/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l2">
+        <div class="thumb-wrapper">
+            <img src="23-drag-drop-file-uploader/screenshot.png" alt="File Drag & Drop Upload Zone" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#23</span>
+            <span class="hub-badge badge-l2">Level 2: Components</span>
+        </div>
+        <h3 class="hub-title">File Drag & Drop Upload Zone</h3>
+        <p class="hub-desc">Dragover highlighting, file size checking, preview list, and simulated upload progress.</p>
+        <div class="card-footer">
+            <a href="23-drag-drop-file-uploader/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l2">
+        <div class="thumb-wrapper">
+            <img src="24-skeleton-loading-card/screenshot.png" alt="Skeleton Shimmer Loading Card" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#24</span>
+            <span class="hub-badge badge-l2">Level 2: Components</span>
+        </div>
+        <h3 class="hub-title">Skeleton Shimmer Loading Card</h3>
+        <p class="hub-desc">Fluid gradient wave animation replacing content during async network requests.</p>
+        <div class="card-footer">
+            <a href="24-skeleton-loading-card/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l2">
+        <div class="thumb-wrapper">
+            <img src="25-pricing-card-toggle/screenshot.png" alt="Pricing Card with Billing Switch" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#25</span>
+            <span class="hub-badge badge-l2">Level 2: Components</span>
+        </div>
+        <h3 class="hub-title">Pricing Card with Billing Switch</h3>
+        <p class="hub-desc">Monthly / Yearly billing switch with 20% annual discount badge calculation.</p>
+        <div class="card-footer">
+            <a href="25-pricing-card-toggle/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l3">
+        <div class="thumb-wrapper">
+            <img src="26-hero-section-typewriter/screenshot.png" alt="Hero Section with Typewriter Effect" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#26</span>
+            <span class="hub-badge badge-l3">Level 3: Sections</span>
+        </div>
+        <h3 class="hub-title">Hero Section with Typewriter Effect</h3>
+        <p class="hub-desc">Modern tech hero section with typewriter text, glowing gradient blobs, and dual CTA buttons.</p>
+        <div class="card-footer">
+            <a href="26-hero-section-typewriter/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l3">
+        <div class="thumb-wrapper">
+            <img src="27-features-grid-3d-tilt/screenshot.png" alt="Features Grid with 3D Tilt Effect" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#27</span>
+            <span class="hub-badge badge-l3">Level 3: Sections</span>
+        </div>
+        <h3 class="hub-title">Features Grid with 3D Tilt Effect</h3>
+        <p class="hub-desc">6-card grid with 3D mouse parallax tilt effect and dynamic mouse spotlight gradients.</p>
+        <div class="card-footer">
+            <a href="27-features-grid-3d-tilt/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l3">
+        <div class="thumb-wrapper">
+            <img src="28-testimonials-slider-section/screenshot.png" alt="Testimonials Slider Section" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#28</span>
+            <span class="hub-badge badge-l3">Level 3: Sections</span>
+        </div>
+        <h3 class="hub-title">Testimonials Slider Section</h3>
+        <p class="hub-desc">Customer feedback quotes, 5-star ratings, avatar cards, and trusted client logo cloud.</p>
+        <div class="card-footer">
+            <a href="28-testimonials-slider-section/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l3">
+        <div class="thumb-wrapper">
+            <img src="29-animated-counter-stats/screenshot.png" alt="Animated Statistics Counter" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#29</span>
+            <span class="hub-badge badge-l3">Level 3: Sections</span>
+        </div>
+        <h3 class="hub-title">Animated Statistics Counter</h3>
+        <p class="hub-desc">IntersectionObserver metric counter animating numbers when scrolled into viewport.</p>
+        <div class="card-footer">
+            <a href="29-animated-counter-stats/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l3">
+        <div class="thumb-wrapper">
+            <img src="30-portfolio-filterable-gallery/screenshot.png" alt="Filterable Portfolio Gallery" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#30</span>
+            <span class="hub-badge badge-l3">Level 3: Sections</span>
+        </div>
+        <h3 class="hub-title">Filterable Portfolio Gallery</h3>
+        <p class="hub-desc">Category filter buttons with smooth grid shuffle animations and full-screen Lightbox modal.</p>
+        <div class="card-footer">
+            <a href="30-portfolio-filterable-gallery/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l3">
+        <div class="thumb-wrapper">
+            <img src="31-vertical-roadmap-timeline/screenshot.png" alt="Vertical Roadmap Timeline" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#31</span>
+            <span class="hub-badge badge-l3">Level 3: Sections</span>
+        </div>
+        <h3 class="hub-title">Vertical Roadmap Timeline</h3>
+        <p class="hub-desc">Alternating left/right vertical timeline with glowing pulse nodes and milestone release tags.</p>
+        <div class="card-footer">
+            <a href="31-vertical-roadmap-timeline/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l3">
+        <div class="thumb-wrapper">
+            <img src="32-team-showcase-overlay/screenshot.png" alt="Team Member Showcase Overlay" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#32</span>
+            <span class="hub-badge badge-l3">Level 3: Sections</span>
+        </div>
+        <h3 class="hub-title">Team Member Showcase Overlay</h3>
+        <p class="hub-desc">Team grid with cards that slide up an overlay with biography, skillset tags, and social links.</p>
+        <div class="card-footer">
+            <a href="32-team-showcase-overlay/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l3">
+        <div class="thumb-wrapper">
+            <img src="33-contact-section-floating-labels/screenshot.png" alt="Contact Section with Floating Labels" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#33</span>
+            <span class="hub-badge badge-l3">Level 3: Sections</span>
+        </div>
+        <h3 class="hub-title">Contact Section with Floating Labels</h3>
+        <p class="hub-desc">Modern contact section with animated floating label inputs, regex validation, and submit feedback.</p>
+        <div class="card-footer">
+            <a href="33-contact-section-floating-labels/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l3">
+        <div class="thumb-wrapper">
+            <img src="34-pricing-comparison-table/screenshot.png" alt="Pricing Comparison Table" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#34</span>
+            <span class="hub-badge badge-l3">Level 3: Sections</span>
+        </div>
+        <h3 class="hub-title">Pricing Comparison Table</h3>
+        <p class="hub-desc">Comprehensive feature comparison matrix table comparing 3 plan tiers across 10 features.</p>
+        <div class="card-footer">
+            <a href="34-pricing-comparison-table/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l3">
+        <div class="thumb-wrapper">
+            <img src="35-faq-searchable-section/screenshot.png" alt="FAQ Searchable Knowledgebase" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#35</span>
+            <span class="hub-badge badge-l3">Level 3: Sections</span>
+        </div>
+        <h3 class="hub-title">FAQ Searchable Knowledgebase</h3>
+        <p class="hub-desc">Section with live search query filtering, instant match highlights, and accordion cards.</p>
+        <div class="card-footer">
+            <a href="35-faq-searchable-section/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l3">
+        <div class="thumb-wrapper">
+            <img src="36-modern-footer-newsletter/screenshot.png" alt="Multi-Column Footer & Newsletter" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#36</span>
+            <span class="hub-badge badge-l3">Level 3: Sections</span>
+        </div>
+        <h3 class="hub-title">Multi-Column Footer & Newsletter</h3>
+        <p class="hub-desc">Responsive multi-column footer with email subscription validation and Back-to-Top button.</p>
+        <div class="card-footer">
+            <a href="36-modern-footer-newsletter/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l3">
+        <div class="thumb-wrapper">
+            <img src="37-cta-banner-particles/screenshot.png" alt="CTA Banner with Canvas Particles" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#37</span>
+            <span class="hub-badge badge-l3">Level 3: Sections</span>
+        </div>
+        <h3 class="hub-title">CTA Banner with Canvas Particles</h3>
+        <p class="hub-desc">Call To Action banner with HTML5 canvas particle network connecting nearby nodes.</p>
+        <div class="card-footer">
+            <a href="37-cta-banner-particles/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l3">
+        <div class="thumb-wrapper">
+            <img src="38-sticky-navbar-scroll-progress/screenshot.png" alt="Sticky Navbar & Scroll Progress" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#38</span>
+            <span class="hub-badge badge-l3">Level 3: Sections</span>
+        </div>
+        <h3 class="hub-title">Sticky Navbar & Scroll Progress</h3>
+        <p class="hub-desc">Sticky glassmorphic navbar with top scroll progress indicator bar and section navigation.</p>
+        <div class="card-footer">
+            <a href="38-sticky-navbar-scroll-progress/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l4">
+        <div class="thumb-wrapper">
+            <img src="39-developer-portfolio-webpage/screenshot.png" alt="Personal Developer Portfolio" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#39</span>
+            <span class="hub-badge badge-l4">Level 4: Webpage / App</span>
+        </div>
+        <h3 class="hub-title">Personal Developer Portfolio</h3>
+        <p class="hub-desc">Full portfolio with interactive terminal code emulator, skill progress bars, and projects.</p>
+        <div class="card-footer">
+            <a href="39-developer-portfolio-webpage/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l4">
+        <div class="thumb-wrapper">
+            <img src="40-saas-landing-page/screenshot.png" alt="SaaS Product Landing Page" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#40</span>
+            <span class="hub-badge badge-l4">Level 4: Webpage / App</span>
+        </div>
+        <h3 class="hub-title">SaaS Product Landing Page</h3>
+        <p class="hub-desc">Full-featured SaaS Landing Page with Hero, Feature matrix, Pricing cards, and FAQ.</p>
+        <div class="card-footer">
+            <a href="40-saas-landing-page/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l4">
+        <div class="thumb-wrapper">
+            <img src="41-ecommerce-product-catalog-cart/screenshot.png" alt="E-Commerce Store & Cart Drawer" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#41</span>
+            <span class="hub-badge badge-l4">Level 4: Webpage / App</span>
+        </div>
+        <h3 class="hub-title">E-Commerce Store & Cart Drawer</h3>
+        <p class="hub-desc">Product catalog, add-to-cart, slide-out drawer, quantity adjustments, and checkout simulation.</p>
+        <div class="card-footer">
+            <a href="41-ecommerce-product-catalog-cart/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l4">
+        <div class="thumb-wrapper">
+            <img src="42-recipe-finder-webpage/screenshot.png" alt="Gourmet Recipe Finder Webpage" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#42</span>
+            <span class="hub-badge badge-l4">Level 4: Webpage / App</span>
+        </div>
+        <h3 class="hub-title">Gourmet Recipe Finder Webpage</h3>
+        <p class="hub-desc">Recipe discovery website with live search, meal badges, ingredient modal, and bookmarks.</p>
+        <div class="card-footer">
+            <a href="42-recipe-finder-webpage/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l4">
+        <div class="thumb-wrapper">
+            <img src="43-kanban-task-board/screenshot.png" alt="Sprint Kanban Task Board" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#43</span>
+            <span class="hub-badge badge-l4">Level 4: Webpage / App</span>
+        </div>
+        <h3 class="hub-title">Sprint Kanban Task Board</h3>
+        <p class="hub-desc">Interactive 3-column task board using HTML5 Drag and Drop API with priority tags.</p>
+        <div class="card-footer">
+            <a href="43-kanban-task-board/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l4">
+        <div class="thumb-wrapper">
+            <img src="44-weather-forecast-dashboard/screenshot.png" alt="Global Weather Dashboard" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#44</span>
+            <span class="hub-badge badge-l4">Level 4: Webpage / App</span>
+        </div>
+        <h3 class="hub-title">Global Weather Dashboard</h3>
+        <p class="hub-desc">City search, live meteorological data, temperature, humidity, wind, and forecast.</p>
+        <div class="card-footer">
+            <a href="44-weather-forecast-dashboard/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l4">
+        <div class="thumb-wrapper">
+            <img src="45-music-player-webpage/screenshot.png" alt="Music & Podcast Audio Player" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#45</span>
+            <span class="hub-badge badge-l4">Level 4: Webpage / App</span>
+        </div>
+        <h3 class="hub-title">Music & Podcast Audio Player</h3>
+        <p class="hub-desc">Audio player with rotating vinyl record animation, seek bar, time display, and controls.</p>
+        <div class="card-footer">
+            <a href="45-music-player-webpage/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l4">
+        <div class="thumb-wrapper">
+            <img src="46-quiz-application-webpage/screenshot.png" alt="JavaScript & Web Tech Quiz" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#46</span>
+            <span class="hub-badge badge-l4">Level 4: Webpage / App</span>
+        </div>
+        <h3 class="hub-title">JavaScript & Web Tech Quiz</h3>
+        <p class="hub-desc">Interactive quiz with timer, instant feedback explanations, and score summary screen.</p>
+        <div class="card-footer">
+            <a href="46-quiz-application-webpage/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l4">
+        <div class="thumb-wrapper">
+            <img src="47-habit-tracker-dashboard/screenshot.png" alt="Daily Habit Tracker Web App" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#47</span>
+            <span class="hub-badge badge-l4">Level 4: Webpage / App</span>
+        </div>
+        <h3 class="hub-title">Daily Habit Tracker Web App</h3>
+        <p class="hub-desc">Daily habit tracking table with 7-day checkboxes, streak calculation, and add habit modal.</p>
+        <div class="card-footer">
+            <a href="47-habit-tracker-dashboard/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l4">
+        <div class="thumb-wrapper">
+            <img src="48-real-estate-listings-webpage/screenshot.png" alt="Luxury Real Estate Portal" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#48</span>
+            <span class="hub-badge badge-l4">Level 4: Webpage / App</span>
+        </div>
+        <h3 class="hub-title">Luxury Real Estate Portal</h3>
+        <p class="hub-desc">Property listings with search, price specs, image cards, and detail modal.</p>
+        <div class="card-footer">
+            <a href="48-real-estate-listings-webpage/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l4">
+        <div class="thumb-wrapper">
+            <img src="49-expense-tracker-dashboard/screenshot.png" alt="Finance & Expense Tracker" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#49</span>
+            <span class="hub-badge badge-l4">Level 4: Webpage / App</span>
+        </div>
+        <h3 class="hub-title">Finance & Expense Tracker</h3>
+        <p class="hub-desc">Income & expense tracker with balance cards, transaction history, and breakdown.</p>
+        <div class="card-footer">
+            <a href="49-expense-tracker-dashboard/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    <div class="hub-card" data-category="badge-l4">
+        <div class="thumb-wrapper">
+            <img src="50-agency-complete-webpage/screenshot.png" alt="Nexus Creative Agency Master Site" class="card-thumb" loading="lazy">
+        </div>
+        <div class="card-top">
+            <span class="hub-num">#50</span>
+            <span class="hub-badge badge-l4">Level 4: Webpage / App</span>
+        </div>
+        <h3 class="hub-title">Nexus Creative Agency Master Site</h3>
+        <p class="hub-desc">Comprehensive digital agency multi-section website with Hero, Services, Case Studies, and Contact.</p>
+        <div class="card-footer">
+            <a href="50-agency-complete-webpage/index.html" class="hub-link" target="_blank">Launch Project →</a>
+        </div>
+    </div>
+    
+    </main>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.hub-card');
+
+        let currentFilter = 'all';
+
+        function applyFilters() {
+            const query = searchInput.value.toLowerCase().trim();
+
+            cards.forEach(card => {
+                const category = card.dataset.category;
+                const matchesFilter = currentFilter === 'all' || category === currentFilter;
+                const matchesSearch = card.textContent.toLowerCase().includes(query);
+
+                if (matchesFilter && matchesSearch) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                applyFilters();
+            });
+        });
+
+        searchInput.addEventListener('input', applyFilters);
+    </script>
+</body>
+</html>

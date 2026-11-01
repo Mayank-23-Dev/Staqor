@@ -1,0 +1,61 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #080c15;
+    color: #f8fafc;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    padding: 4rem 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.container { max-width: 950px; width: 100%; }
+.section-header { text-align: center; margin-bottom: 3rem; }
+.badge { display: inline-block; background: rgba(99, 102, 241, 0.15); color: #818cf8; padding: 4px 12px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.6rem; }
+.section-header h2 { font-size: 2.4rem; margin-bottom: 0.5rem; }
+.section-header p { color: #94a3b8; }
+
+.table-card {
+    background: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 20px;
+    overflow-x: auto;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+}
+
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.comparison-table th, .comparison-table td {
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid #1f2937;
+}
+
+.comparison-table th {
+    background: #0d1320;
+    font-size: 1rem;
+    color: #f8fafc;
+}
+
+.feature-col, .feature-title {
+    text-align: left;
+    font-weight: 600;
+}
+
+.highlight {
+    background: rgba(99, 102, 241, 0.08);
+    color: #38bdf8;
+    font-weight: 700;
+}
+
+.comparison-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}

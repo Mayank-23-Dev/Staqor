@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>08 - Responsive Badge Card</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 08 • Level 1: Basics</span>
+            <h1>Positioned Badge & Ribbon Cards</h1>
+            <p>CSS Absolute & Relative positioning, 45-degree ribbon cuts, image zoom overlays, and interactive tags.</p>
+        </header>
+
+        <div class="cards-grid">
+            <!-- Card 1: Ribbon Hot Sale -->
+            <div class="product-card">
+                <div class="ribbon-corner"><span>HOT SALE</span></div>
+                <div class="img-container">
+                    <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=600&auto=format&fit=crop&q=80" alt="Smart Watch">
+                    <button class="btn-favorite" title="Add to Wishlist">❤️</button>
+                    <div class="quick-view">Quick View</div>
+                </div>
+                <div class="card-content">
+                    <span class="category-tag">Wearables</span>
+                    <h3>CyberPulse Pro Smartwatch</h3>
+                    <div class="price-row">
+                        <span class="price-current">$199.00</span>
+                        <span class="price-old">$299.00</span>
+                        <span class="discount-pill">-33% OFF</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Floating Pill Badge -->
+            <div class="product-card">
+                <div class="floating-badge new">⚡ NEW RELEASE</div>
+                <div class="img-container">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80" alt="Headphones">
+                    <button class="btn-favorite" title="Add to Wishlist">🤍</button>
+                    <div class="quick-view">Quick View</div>
+                </div>
+                <div class="card-content">
+                    <span class="category-tag">Audio</span>
+                    <h3>Studio Max Wireless ANC</h3>
+                    <div class="price-row">
+                        <span class="price-current">$349.00</span>
+                        <span class="stock-badge">In Stock</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Featured Exclusive Ribbon -->
+            <div class="product-card">
+                <div class="floating-badge featured">★ FEATURED</div>
+                <div class="img-container">
+                    <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop&q=80" alt="Vintage Camera">
+                    <button class="btn-favorite" title="Add to Wishlist">🤍</button>
+                    <div class="quick-view">Quick View</div>
+                </div>
+                <div class="card-content">
+                    <span class="category-tag">Photography</span>
+                    <h3>RetroLens Classic 35mm</h3>
+                    <div class="price-row">
+                        <span class="price-current">$489.00</span>
+                        <span class="discount-pill">Limited Batch</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

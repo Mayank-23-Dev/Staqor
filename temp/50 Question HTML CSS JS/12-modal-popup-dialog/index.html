@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>12 - Modal Popup Dialog</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 12 • Level 2: Components</span>
+            <h1>Modal Popup & Backdrop Dialog</h1>
+            <p>Master accessible modal overlays, CSS scale animations, scroll locks, form inputs, and keyboard ESC handlers.</p>
+        </header>
+
+        <div class="demo-card">
+            <h2>Interactive Modal Demonstrations</h2>
+            <p>Click any button below to trigger custom animated modal dialogs with backdrop blur.</p>
+            <div class="btn-group">
+                <button class="btn btn-primary" id="openFormModalBtn">📝 Open Feedback Modal</button>
+                <button class="btn btn-danger" id="openConfirmModalBtn">⚠️ Open Danger Confirmation</button>
+            </div>
+        </div>
+
+        <div class="status-box" id="feedbackStatus">
+            <span>Last action: <em>No action taken yet</em></span>
+        </div>
+    </div>
+
+    <!-- 1. Form Modal -->
+    <div class="modal-overlay hidden" id="formModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modalTitle">✨ Send Your Feedback</h3>
+                <button class="close-modal" aria-label="Close modal">&times;</button>
+            </div>
+            <form id="feedbackForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="userName">Your Full Name</label>
+                        <input type="text" id="userName" placeholder="e.g. Alex Morgan" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmail">Email Address</label>
+                        <input type="email" id="userEmail" placeholder="alex@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userFeedback">Comments & Feedback</label>
+                        <textarea id="userFeedback" rows="3" placeholder="Tell us about your experience..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. Danger Confirmation Modal -->
+    <div class="modal-overlay hidden" id="confirmModal" role="dialog" aria-modal="true">
+        <div class="modal-box modal-sm">
+            <div class="modal-header">
+                <h3>⚠️ Delete Project Confirmation</h3>
+                <button class="close-modal" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to permanently delete this repository? This action <strong>cannot be undone</strong>.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary cancel-btn">Keep Project</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

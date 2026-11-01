@@ -30,21 +30,23 @@ interface RightSidebarProps {
 }
 
 export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarProps) {
-  // Calendar state
-  const [currentMonth, setCurrentMonth] = useState("August 2026");
+  const now = new Date();
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [isCheckedIn, setIsCheckedIn] = useState(false);
   const [companySearch, setCompanySearch] = useState("");
-  const [companyPage, setCompanyPage] = useState(0);
 
-  // Mock days in current month (August 2026: 31 days)
-  // August 1, 2026 is Saturday (starts at offset 6 in a Mon-Sun grid, or offset 6 in Sun-Sat)
-  // Days with active solve dots
   const [activeSolveDays, setActiveSolveDays] = useState<number[]>([]);
   const [streak, setStreak] = useState(0);
   const [solvedMonth, setSolvedMonth] = useState(0);
-  const currentDay = 31; // For this mock
 
   const supabase = createClient();
+
+  const currentMonthName = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  const currentDay = now.getDate();
+  const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+  const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
+  const startOffset = firstDayOfMonth; // 0 for Sunday, 1 for Monday, etc.
+  const totalSlots = Math.ceil((daysInMonth + startOffset) / 7) * 7;
 
   useEffect(() => {
     async function fetchStats() {
@@ -57,17 +59,16 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
         .eq("user_id", user.id)
         .single();
       if (stats) {
-        setStreak(stats.current_streak);
+        setStreak(stats.current_streak || 0);
       }
 
       // get this month's submissions
-      const year = new Date().getFullYear();
-      const month = String(new Date().getMonth() + 1).padStart(2, '0');
+      const year = currentDate.getFullYear();
+      const month = String(currentDate.getMonth() + 1).padStart(2, '0');
       const { data: subs } = await supabase
         .from("submissions")
         .select("created_at")
         .eq("user_id", user.id)
-        .eq("status", "solved")
         .gte("created_at", `${year}-${month}-01T00:00:00Z`);
 
       if (subs) {
@@ -81,13 +82,10 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
       }
     }
     fetchStats();
-  }, []);
+  }, [currentDate]);
 
   // Days of week header
   const weekDays = ["S", "M", "T", "W", "T", "F", "S"];
-  // 31 days + starting offset for August 2026 (Aug 1 is Saturday -> index 6 for Sunday-first)
-  const startOffset = 6;
-  const totalSlots = 35; // 5 rows of 7
 
   // Weekly Contest / Challenge Days
   const weeklyDays = Array.from({ length: 5 }).map((_, i) => {
@@ -107,12 +105,6 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
   // Filtered companies
   const filteredCompanies = MOCK_COMPANIES.filter((c) =>
     c.name.toLowerCase().includes(companySearch.toLowerCase())
-  );
-  const companiesPerPage = 6;
-  const totalCompanyPages = Math.ceil(filteredCompanies.length / companiesPerPage);
-  const displayedCompanies = filteredCompanies.slice(
-    companyPage * companiesPerPage,
-    (companyPage + 1) * companiesPerPage
   );
 
   const handleCheckIn = () => {
@@ -135,7 +127,7 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
             <div className="flex items-center gap-1.5">
               <CalendarIcon className="w-4 h-4 text-primary" />
               <CardTitle className="text-xs font-semibold tracking-wide text-foreground">
-                {currentMonth}
+                {currentMonthName}
               </CardTitle>
             </div>
             <div className="flex items-center gap-0.5">
@@ -143,7 +135,7 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
                 variant="ghost"
                 size="icon"
                 className="h-5 w-5 text-muted-foreground hover:text-foreground"
-                onClick={() => setCurrentMonth("July 2026")}
+                onClick={() => setCurrentDate((d) => new Date(d.getFullYear(), d.getMonth() - 1, 1))}
               >
                 <ChevronLeft className="w-3 h-3" />
               </Button>
@@ -151,7 +143,7 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
                 variant="ghost"
                 size="icon"
                 className="h-5 w-5 text-muted-foreground hover:text-foreground"
-                onClick={() => setCurrentMonth("August 2026")}
+                onClick={() => setCurrentDate((d) => new Date(d.getFullYear(), d.getMonth() + 1, 1))}
               >
                 <ChevronRight className="w-3 h-3" />
               </Button>
@@ -173,8 +165,12 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
           <div className="grid grid-cols-7 gap-1 text-center">
             {Array.from({ length: totalSlots }).map((_, index) => {
               const dayNumber = index - startOffset + 1;
-              const isCurrentMonthDay = dayNumber > 0 && dayNumber <= 31;
-              const isToday = dayNumber === currentDay;
+              const isCurrentMonthDay = dayNumber > 0 && dayNumber <= daysInMonth;
+              const isToday =
+                isCurrentMonthDay &&
+                dayNumber === currentDay &&
+                currentDate.getMonth() === now.getMonth() &&
+                currentDate.getFullYear() === now.getFullYear();
               const hasSolved = activeSolveDays.includes(dayNumber);
 
               if (!isCurrentMonthDay) {
@@ -211,7 +207,7 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
             <span className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-primary" /> Active Solves
             </span>
-            <span className="font-mono text-foreground font-medium">{solvedMonth} / 31 Solved</span>
+            <span className="font-mono text-foreground font-medium">{solvedMonth} / {daysInMonth} Solved</span>
           </div>
         </CardContent>
       </Card>
@@ -317,29 +313,12 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
                 Trending Companies
               </CardTitle>
             </div>
-            <div className="flex items-center gap-0.5">
-              <Button
-                variant="ghost"
-                size="icon"
-                disabled={companyPage === 0}
-                className="h-5 w-5 text-muted-foreground hover:text-foreground disabled:opacity-40"
-                onClick={() => setCompanyPage((p) => Math.max(0, p - 1))}
-              >
-                <ChevronLeft className="w-3 h-3" />
-              </Button>
-              <span className="text-[10px] text-muted-foreground font-mono px-1">
-                {companyPage + 1}/{totalCompanyPages || 1}
-              </span>
-              <Button
-                variant="ghost"
-                size="icon"
-                disabled={companyPage >= totalCompanyPages - 1}
-                className="h-5 w-5 text-muted-foreground hover:text-foreground disabled:opacity-40"
-                onClick={() => setCompanyPage((p) => Math.min(totalCompanyPages - 1, p + 1))}
-              >
-                <ChevronRight className="w-3 h-3" />
-              </Button>
-            </div>
+            <Badge
+              variant="outline"
+              className="text-[10px] font-mono font-normal text-muted-foreground border-border/80 bg-background/50 px-1.5 py-0"
+            >
+              {filteredCompanies.length} Total
+            </Badge>
           </div>
 
           {/* Company Search Input */}
@@ -348,17 +327,14 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
             <Input
               placeholder="Search companies..."
               value={companySearch}
-              onChange={(e) => {
-                setCompanySearch(e.target.value);
-                setCompanyPage(0);
-              }}
+              onChange={(e) => setCompanySearch(e.target.value)}
               className="h-7 pl-8 pr-3 text-xs bg-background border-border"
             />
           </div>
         </CardHeader>
 
         <CardContent className="p-3.5 pt-1 space-y-1">
-          {displayedCompanies.map((company) => {
+          {filteredCompanies.map((company) => {
             const isSelected = selectedCompany === company.name;
             return (
               <button
@@ -384,7 +360,7 @@ export function RightSidebar({ selectedCompany, onSelectCompany }: RightSidebarP
             );
           })}
 
-          {displayedCompanies.length === 0 && (
+          {filteredCompanies.length === 0 && (
             <p className="text-xs text-muted-foreground py-3 text-center">
               No matching companies found.
             </p>

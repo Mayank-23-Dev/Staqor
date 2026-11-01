@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>25 - Interactive Pricing Cards</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 25 • Level 2: Components</span>
+            <h1>Interactive Pricing Plans</h1>
+            <p>Monthly / Yearly billing switch with 20% annual discount badge calculation.</p>
+            
+            <!-- Billing Switch -->
+            <div class="billing-switch">
+                <span class="bill-label active" id="monthlyLabel">Monthly</span>
+                <label class="switch">
+                    <input type="checkbox" id="billingToggle">
+                    <span class="slider round"></span>
+                </label>
+                <span class="bill-label" id="annualLabel">Yearly</span>
+                <span class="save-badge">SAVE 20%</span>
+            </div>
+        </header>
+
+        <div class="pricing-grid">
+            <!-- 1. Starter -->
+            <div class="pricing-card">
+                <h3>Starter</h3>
+                <p class="plan-desc">For indie hackers and solo founders.</p>
+                <div class="price-box">
+                    <span class="currency">$</span>
+                    <span class="price-val" data-monthly="19" data-annual="15">19</span>
+                    <span class="period">/ mo</span>
+                </div>
+                <ul class="features-list">
+                    <li>✓ 5 Cloud Workspaces</li>
+                    <li>✓ 10GB SSD Storage</li>
+                    <li>✓ Community Forum Support</li>
+                </ul>
+                <button class="btn btn-secondary">Get Started</button>
+            </div>
+
+            <!-- 2. Pro (Featured) -->
+            <div class="pricing-card featured">
+                <div class="popular-tag">MOST POPULAR</div>
+                <h3>Professional</h3>
+                <p class="plan-desc">For growing startups and scaling teams.</p>
+                <div class="price-box">
+                    <span class="currency">$</span>
+                    <span class="price-val" data-monthly="49" data-annual="39">49</span>
+                    <span class="period">/ mo</span>
+                </div>
+                <ul class="features-list">
+                    <li>✓ Unlimited Workspaces</li>
+                    <li>✓ 100GB High-Speed SSD</li>
+                    <li>✓ 24/7 Priority Support</li>
+                    <li>✓ Automated Daily Backups</li>
+                </ul>
+                <button class="btn btn-primary">Start 14-Day Free Trial</button>
+            </div>
+
+            <!-- 3. Enterprise -->
+            <div class="pricing-card">
+                <h3>Enterprise</h3>
+                <p class="plan-desc">For large organizations with strict SLA.</p>
+                <div class="price-box">
+                    <span class="currency">$</span>
+                    <span class="price-val" data-monthly="149" data-annual="119">149</span>
+                    <span class="period">/ mo</span>
+                </div>
+                <ul class="features-list">
+                    <li>✓ Dedicated Cloud Instance</li>
+                    <li>✓ Custom SLA Guarantee</li>
+                    <li>✓ SSO & SAML Security</li>
+                </ul>
+                <button class="btn btn-secondary">Contact Sales</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

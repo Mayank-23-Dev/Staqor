@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>22 - Tooltip & Popover System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 22 • Level 2: Components</span>
+            <h1>Tooltip & Popover Engine</h1>
+            <p>CSS data-attributes and pseudo-elements providing 4 cardinal positioning directions.</p>
+        </header>
+
+        <div class="card">
+            <h2>Hover Over Any Directional Button</h2>
+            
+            <div class="tooltips-grid">
+                <button class="btn has-tooltip" data-tooltip="Tooltip displayed on Top" data-position="top">⬆️ Top Tooltip</button>
+                <button class="btn has-tooltip" data-tooltip="Tooltip displayed on Bottom" data-position="bottom">⬇️ Bottom Tooltip</button>
+                <button class="btn has-tooltip" data-tooltip="Tooltip displayed on Left" data-position="left">⬅️ Left Tooltip</button>
+                <button class="btn has-tooltip" data-tooltip="Tooltip displayed on Right" data-position="right">➡️ Right Tooltip</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

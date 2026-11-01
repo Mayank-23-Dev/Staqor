@@ -1,0 +1,26 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #080c15; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; padding: 3rem 1.5rem; display: flex; justify-content: center; }
+.container { max-width: 800px; width: 100%; }
+.header { text-align: center; margin-bottom: 2rem; }
+.badge { display: inline-block; background: rgba(99,102,241,0.15); color: #818cf8; padding: 4px 12px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.6rem; }
+.header h1 { font-size: 2.2rem; }
+
+.summary-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 2rem; }
+.s-card { background: #111827; border: 1px solid #1f2937; border-radius: 14px; padding: 1.2rem; text-align: center; }
+.s-card span { font-size: 0.8rem; color: #94a3b8; display: block; margin-bottom: 0.3rem; }
+.s-card strong { font-family: 'Fira Code', monospace; font-size: 1.4rem; }
+.inc { color: #22c55e; }
+.exp { color: #ef4444; }
+
+.app-layout { display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; }
+@media (max-width: 700px) { .app-layout { grid-template-columns: 1fr; } .summary-cards { grid-template-columns: 1fr; } }
+
+.entry-form, .history-list { background: #111827; border: 1px solid #1f2937; border-radius: 18px; padding: 1.5rem; }
+.entry-form h3, .history-list h3 { font-size: 1.1rem; margin-bottom: 1rem; }
+.entry-form input, .entry-form select { width: 100%; background: #080c15; border: 1px solid #334155; border-radius: 8px; padding: 0.75rem; color: white; margin-bottom: 0.8rem; font-family: inherit; }
+.btn-primary { width: 100%; background: #6366f1; color: white; border: none; padding: 0.75rem; border-radius: 8px; font-weight: 700; cursor: pointer; }
+
+.transactions { display: flex; flex-direction: column; gap: 8px; }
+.tx-item { display: flex; justify-content: space-between; background: #080c15; border: 1px solid #1f2937; padding: 0.8rem; border-radius: 8px; font-size: 0.9rem; }
+.tx-item.expense strong { color: #ef4444; }
+.tx-item.income strong { color: #22c55e; }

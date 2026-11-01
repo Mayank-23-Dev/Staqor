@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>06 - Live Character Counter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 06 • Level 1: Basics</span>
+            <h1>Live Text & Character Analyzer</h1>
+            <p>Real-time character, word, sentence, reading time, and SVG progress meter calculation.</p>
+        </header>
+
+        <div class="editor-card">
+            <!-- Metrics Bar -->
+            <div class="metrics-grid">
+                <div class="metric-box">
+                    <span class="val" id="charCount">0</span>
+                    <span class="lbl">Characters</span>
+                </div>
+                <div class="metric-box">
+                    <span class="val" id="wordCount">0</span>
+                    <span class="lbl">Words</span>
+                </div>
+                <div class="metric-box">
+                    <span class="val" id="sentenceCount">0</span>
+                    <span class="lbl">Sentences</span>
+                </div>
+                <div class="metric-box">
+                    <span class="val" id="readingTime">0 min</span>
+                    <span class="lbl">Reading Time</span>
+                </div>
+            </div>
+
+            <!-- Textarea with SVG Meter -->
+            <div class="textarea-wrapper">
+                <textarea id="textInput" placeholder="Start typing or paste your content here to inspect metrics..."></textarea>
+                
+                <div class="meter-bar">
+                    <div class="limit-status">
+                        <span>Limit: <strong id="currentLimit">0</strong> / 280</span>
+                    </div>
+                    <!-- Circular Progress Meter -->
+                    <div class="progress-ring-box">
+                        <svg class="progress-ring" width="44" height="44">
+                            <circle class="ring-bg" stroke="#1e293b" stroke-width="4" fill="transparent" r="18" cx="22" cy="22"/>
+                            <circle class="ring-progress" id="ringProgress" stroke="#38bdf8" stroke-width="4" stroke-dasharray="113.1" stroke-dashoffset="113.1" stroke-linecap="round" fill="transparent" r="18" cx="22" cy="22"/>
+                        </svg>
+                        <span class="remaining-chars" id="remainingChars">280</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Toolbar -->
+            <div class="toolbar">
+                <div class="tools-left">
+                    <button class="tool-btn" id="upperBtn">UPPERCASE</button>
+                    <button class="tool-btn" id="lowerBtn">lowercase</button>
+                    <button class="tool-btn" id="clearBtn">Clear</button>
+                </div>
+                <button class="btn-copy" id="copyTextBtn">📋 Copy Text</button>
+            </div>
+        </div>
+
+        <div class="toast hidden" id="toast">Copied text to clipboard!</div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

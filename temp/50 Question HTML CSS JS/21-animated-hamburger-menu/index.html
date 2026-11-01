@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>21 - Animated Hamburger Menu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Top Navbar -->
+    <nav class="navbar">
+        <div class="nav-brand">⚡ MorphMenu</div>
+        
+        <!-- Hamburger Icon Button -->
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle navigation drawer">
+            <span class="bar line1"></span>
+            <span class="bar line2"></span>
+            <span class="bar line3"></span>
+        </button>
+    </nav>
+
+    <!-- Side Navigation Drawer -->
+    <div class="nav-drawer" id="navDrawer">
+        <div class="drawer-header">Menu Navigation</div>
+        <ul class="drawer-links">
+            <li><a href="#">🏠 Home Dashboard</a></li>
+            <li><a href="#">🚀 Products & Services</a></li>
+            <li><a href="#">💎 Enterprise Pricing</a></li>
+            <li><a href="#">📖 Documentation</a></li>
+            <li><a href="#">📞 Contact Support</a></li>
+        </ul>
+    </div>
+
+    <!-- Backdrop Overlay -->
+    <div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+    <div class="page-content">
+        <div class="badge">Question 21 • Level 2: Components</div>
+        <h1>Morphing Hamburger Navigation</h1>
+        <p>Click the hamburger icon at the top-right corner to see the 3-line transformation into an 'X' close icon with a smooth slide-in sidebar drawer.</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

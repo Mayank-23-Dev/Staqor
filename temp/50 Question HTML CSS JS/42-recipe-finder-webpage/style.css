@@ -1,0 +1,17 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #080c15; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; padding: 3rem 1.5rem; }
+.container { max-width: 1050px; margin: 0 auto; }
+.header { text-align: center; margin-bottom: 3rem; }
+.badge { display: inline-block; background: rgba(99,102,241,0.15); color: #818cf8; padding: 4px 12px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.6rem; }
+.header h1 { font-size: 2.4rem; margin-bottom: 0.5rem; }
+.header p { color: #94a3b8; margin-bottom: 1.5rem; }
+.search-bar input { width: 100%; max-width: 500px; background: #111827; border: 1px solid #334155; border-radius: 12px; padding: 0.85rem 1.2rem; color: white; font-family: inherit; font-size: 1rem; outline: none; }
+.search-bar input:focus { border-color: #6366f1; }
+.recipes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+.r-card { background: #111827; border: 1px solid #1f2937; border-radius: 20px; overflow: hidden; }
+.r-card img { width: 100%; height: 220px; object-fit: cover; }
+.r-info { padding: 1.5rem; }
+.r-cat { color: #38bdf8; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; margin-bottom: 0.4rem; display: block; }
+.r-info h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+.r-info p { color: #94a3b8; font-size: 0.9rem; line-height: 1.5; }
+.r-card.hidden { display: none; }

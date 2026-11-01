@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>23 - Drag & Drop File Uploader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="badge">Question 23 • Level 2: Components</span>
+            <h1>File Drag & Drop Upload Zone</h1>
+            <p>Drag event highlighting, file size checking, preview list, and simulated upload progress.</p>
+        </header>
+
+        <div class="uploader-card">
+            <div class="drop-zone" id="dropZone">
+                <input type="file" id="fileInput" multiple class="file-input">
+                <span class="upload-icon">📁</span>
+                <h3>Drag & drop files here</h3>
+                <p>or <button type="button" class="browse-btn" id="browseBtn">browse local files</button></p>
+                <span class="file-limits">Supports JPG, PNG, PDF, ZIP (Max 10MB each)</span>
+            </div>
+
+            <div class="file-list" id="fileList"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

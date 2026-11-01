@@ -1,16 +1,11 @@
 import { NextResponse } from "next/server";
-import { connectToDatabase } from "@/lib/db";
-import { Challenge } from "@/models/Challenge";
+import { getAllChallenges } from "@/lib/supabase/db";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    await connectToDatabase();
-    const challenges = await Challenge.find({ is_active: true })
-      .select("slug title track difficulty order")
-      .sort({ order: 1 });
-
+    const challenges = await getAllChallenges();
     return NextResponse.json({ challenges });
   } catch (error) {
     return NextResponse.json(

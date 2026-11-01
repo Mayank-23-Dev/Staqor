@@ -1,0 +1,118 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #080c15;
+    color: #f8fafc;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    padding: 4rem 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    max-width: 1100px;
+    width: 100%;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+}
+
+.badge {
+    display: inline-block;
+    background: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+}
+
+.section-header h2 {
+    font-size: 2.5rem;
+    margin-bottom: 0.6rem;
+}
+
+.section-header p {
+    color: #94a3b8;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.8rem;
+    perspective: 1000px;
+}
+
+.tilt-card {
+    position: relative;
+    background: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 20px;
+    padding: 2.2rem;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out, border-color 0.2s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.tilt-card:hover {
+    border-color: #6366f1;
+}
+
+.spotlight {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        350px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(99, 102, 241, 0.18),
+        transparent 80%
+    );
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+.tilt-card:hover .spotlight {
+    opacity: 1;
+}
+
+.card-inner {
+    position: relative;
+    z-index: 2;
+    transform: translateZ(20px);
+}
+
+.card-icon {
+    font-size: 2.2rem;
+    display: inline-block;
+    margin-bottom: 1rem;
+    background: #1e293b;
+    width: 56px;
+    height: 56px;
+    line-height: 56px;
+    text-align: center;
+    border-radius: 14px;
+    border: 1px solid #334155;
+}
+
+.card-inner h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.6rem;
+    color: #f8fafc;
+}
+
+.card-inner p {
+    color: #94a3b8;
+    line-height: 1.6;
+    font-size: 0.92rem;
+}

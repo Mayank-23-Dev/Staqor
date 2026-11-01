@@ -1,84 +1,265 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/server";
 import { groq, buildGroqPrompt } from "@/lib/groq";
+import { runStructuralPreFilter } from "@/lib/groq/prefilter";
+import { getProblemBySlug } from "@/lib/problems-data";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { userId, challengeSlug, code, attemptType } = body;
+    const {
+      userId = "anonymous",
+      challengeSlug = "typography-font-showcase",
+      problemTitle,
+      specMarkdown,
+      code,
+      userCode,
+      modelSolution,
+      attemptType = "run",
+    } = body;
 
-    if (!userId || !challengeSlug || !code || !attemptType) {
+    const submittedCode = userCode || (typeof code === "object" ? code : { html: "", css: "", js: code || "" });
+
+    if (!submittedCode || !attemptType) {
       return NextResponse.json(
-        { error: "Missing required evaluation fields" },
+        { error: "Missing code payload or attempt type" },
         { status: 400 }
       );
     }
 
-    // Initialize Supabase Admin client to fetch problem
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY! // Should use service role in real app
-    );
+    // Payload size safety check (< 1MB)
+    const totalPayloadBytes =
+      (submittedCode.html || "").length +
+      (submittedCode.css || "").length +
+      (submittedCode.js || "").length;
 
-    // Fetch challenge spec
-    const { data: challenge, error } = await supabase
-      .from("problems")
-      .select("*")
-      .eq("slug", challengeSlug)
-      .single();
-
-    if (error || !challenge) {
-      return NextResponse.json({ error: "Challenge not found" }, { status: 404 });
+    if (totalPayloadBytes > 1000000) {
+      return NextResponse.json(
+        { error: "Payload exceeds 1MB limit" },
+        { status: 413 }
+      );
     }
 
-    // Dummy rubric for now, since it's not in the problems table schema
-    const dummyRubric = [
-      { id: "R1", name: "Functionality", weight: 50, criteria: "Code fulfills the core requirements." },
-      { id: "R2", name: "UI/UX", weight: 30, criteria: "Looks somewhat like the description." },
-      { id: "R3", name: "Code Quality", weight: 20, criteria: "Clean and readable code." }
-    ];
+    const supabase = await createClient();
 
-    // Assemble Groq Prompt
-    const { systemPrompt, userPrompt } = buildGroqPrompt({
-      challengeTitle: challenge.title,
-      specMarkdown: challenge.description,
-      rubric: dummyRubric,
-      userCode: code,
-      attemptType,
+    // 1. Fetch challenge/problem spec & reference model
+    let challengeData: any = getProblemBySlug(challengeSlug);
+    let title = problemTitle || challengeData?.title || challengeSlug;
+    let description = specMarkdown || challengeData?.description || "";
+    let referenceModel = modelSolution || challengeData?.model_solution;
+
+    if (!challengeData) {
+      try {
+        const { data: dbProb } = await supabase
+          .from("problems")
+          .select("*")
+          .eq("slug", challengeSlug)
+          .single();
+
+        if (dbProb) {
+          title = dbProb.title;
+          description = dbProb.description;
+          referenceModel = referenceModel || dbProb.model_solution;
+        }
+      } catch {
+        // use fallback data
+      }
+    }
+
+    // 2. Run Structural Pre-Filter Gate (Checks empty code, starter boilerplate, JS syntax errors)
+    const preFilterResult = runStructuralPreFilter(submittedCode, {
+      title,
+      track: challengeData?.category || "HTML & CSS",
+      spec_markdown: description,
+      starter_code: challengeData?.starter_code,
     });
 
-    // Groq Evaluation
-    let parsedResult;
+    if (!preFilterResult.passed) {
+      const failScore = preFilterResult.score ?? 0;
+      return NextResponse.json({
+        evaluation: {
+          score: failScore,
+          passed: false,
+          breakdown: preFilterResult.breakdown || [],
+          overall_feedback:
+            preFilterResult.overall_feedback ||
+            preFilterResult.reason ||
+            "Your code did not pass the structural pre-filter checks.",
+        },
+        passed: false,
+        score: failScore,
+        breakdown: preFilterResult.breakdown || [],
+        overall_feedback:
+          preFilterResult.overall_feedback ||
+          preFilterResult.reason ||
+          "Your code did not pass the structural pre-filter checks.",
+        challengeSlug,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    // 3. Define Rubric
+    const defaultRubric = [
+      {
+        id: "R1",
+        name: "Visual Layout & Markup Fidelity",
+        weight: 35,
+        criteria: "Accurate HTML semantic container structure, CSS Flexbox/Grid alignment, typography specifications, colors, and responsive card styling.",
+      },
+      {
+        id: "R2",
+        name: "DOM Interaction & State Logic",
+        weight: 40,
+        criteria: "Functional JavaScript event listeners, dynamic DOM updates, real-time value changes, input binding, and responsive controls.",
+      },
+      {
+        id: "R3",
+        name: "Code Cleanliness & Specification Conformance",
+        weight: 25,
+        criteria: "Clean modular code, proper naming, no broken syntax or runtime exceptions, and adherence to requirements.",
+      },
+    ];
+
+    // 4. Groq AI Evaluation with Model Solution Benchmark
+    let parsedResult: any;
     try {
-      const response = await groq.chat.completions.create({
-        model: "llama-3.3-70b-versatile",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        response_format: { type: "json_object" },
+      const { systemPrompt, userPrompt } = buildGroqPrompt({
+        challengeTitle: title,
+        specMarkdown: description,
+        rubric: defaultRubric,
+        userCode: submittedCode,
+        modelSolution: referenceModel,
+        attemptType,
       });
 
+      const candidateModels = [
+        "openai/gpt-oss-120b",
+        "qwen/qwen3.8-27b",
+        "openai/gpt-oss-20b",
+        "groq/compound",
+      ];
+
+      let response: any = null;
+      let lastErr: any = null;
+
+      for (const modelName of candidateModels) {
+        try {
+          response = await groq.chat.completions.create({
+            model: modelName,
+            temperature: 0.1,
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            response_format: { type: "json_object" },
+          });
+          if (response?.choices?.[0]?.message?.content) {
+            break;
+          }
+        } catch (e: any) {
+          lastErr = e;
+          continue;
+        }
+      }
+
+      if (!response?.choices?.[0]?.message?.content) {
+        throw lastErr || new Error("Failed to get evaluation response from AI models");
+      }
+
       const content = response.choices[0]?.message?.content || "{}";
-      parsedResult = JSON.parse(content);
-    } catch (groqErr) {
-      console.error(groqErr);
+      const rawParsed = JSON.parse(content);
+
+      // Server-Side Score & Pass Verification
+      let validatedScore = typeof rawParsed.score === "number" ? Math.round(rawParsed.score) : 0;
+      validatedScore = Math.max(0, Math.min(100, validatedScore));
+
+      // Strictly enforce passed criteria: score >= 80 ONLY
+      const validatedPassed = Boolean(validatedScore >= 80);
+
+      // Validate Breakdown
+      const validatedBreakdown = Array.isArray(rawParsed.breakdown)
+        ? rawParsed.breakdown.map((item: any) => ({
+            rubric_id: String(item.rubric_id || "R1"),
+            name: String(item.name || "Rubric Criterion"),
+            score: typeof item.score === "number" ? Math.max(0, Math.min(100, Math.round(item.score))) : 0,
+            feedback: String(item.feedback || ""),
+          }))
+        : [];
+
+      parsedResult = {
+        score: validatedScore,
+        passed: validatedPassed,
+        breakdown: validatedBreakdown,
+        overall_feedback:
+          String(rawParsed.overall_feedback || "").trim() ||
+          (validatedPassed
+            ? "Great job! Your implementation satisfies the challenge requirements."
+            : "Review the feedback and refine your markup, styles, or event listeners."),
+      };
+    } catch (groqErr: any) {
+      // Fail safely if AI service is unavailable - NEVER award pass on failure
+      console.error("[Groq Evaluation Error]:", groqErr?.message || groqErr);
       return NextResponse.json(
-        { error: "AI Evaluation service is temporarily unavailable." },
+        {
+          error: "Evaluation service encountered an issue. Please try again.",
+          evaluation: {
+            score: 0,
+            passed: false,
+            breakdown: [],
+            overall_feedback: "AI Evaluation service is temporarily unavailable. Your submission was not marked as passed. Please retry in a few moments.",
+          },
+          passed: false,
+          score: 0,
+          breakdown: [],
+          overall_feedback: "AI Evaluation service is temporarily unavailable. Your submission was not marked as passed. Please retry in a few moments.",
+          challengeSlug,
+          timestamp: new Date().toISOString(),
+        },
         { status: 503 }
       );
     }
 
+    // 5. Persist Submission in Supabase if authenticated
+    try {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      const effectiveUserId = authUser?.id || (userId && userId !== "anonymous" ? userId : null);
+
+      if (effectiveUserId) {
+        await supabase.from("submissions").insert({
+          user_id: effectiveUserId,
+          problem_id: String(challengeData?.id || challengeSlug),
+          challenge_id: challengeData?.slug || challengeSlug,
+          code_submitted: typeof submittedCode === "object" ? submittedCode : JSON.stringify(submittedCode),
+          attempt_type: attemptType,
+          score: parsedResult.score,
+          passed: parsedResult.passed,
+          status: parsedResult.passed ? "solved" : "attempted",
+          groq_response: parsedResult,
+          is_public: parsedResult.passed && attemptType === "submit",
+        });
+      }
+    } catch (dbErr) {
+      console.warn("[Server DB Persist Warning]:", dbErr);
+    }
+
     return NextResponse.json({
       evaluation: parsedResult,
-      passed: parsedResult.passed || false,
+      passed: parsedResult.passed,
+      score: parsedResult.score,
+      breakdown: parsedResult.breakdown,
+      overall_feedback: parsedResult.overall_feedback,
+      challengeSlug,
+      timestamp: new Date().toISOString(),
     });
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
     return NextResponse.json(
-      { error: "Internal evaluation server error" },
+      {
+        error: error?.message || "Internal evaluation server error",
+        passed: false,
+        score: 0,
+      },
       { status: 500 }
     );
   }

@@ -58,55 +58,87 @@ export function ProblemsTable({
   selectedCompany = "",
   selectedList = "",
 }: ProblemsTableProps) {
-  const [problems, setProblems] = useState<Problem[]>([]);
+  const [problems, setProblems] = useState<Problem[]>(MOCK_PROBLEMS);
   const supabase = createClient();
 
   useEffect(() => {
     async function fetchProblems() {
-      // Fetch problems
-      const { data: probData, error: probError } = await supabase
-        .from("problems")
-        .select("*");
-      
-      if (probError || !probData) {
-        console.error("Error fetching problems", probError);
-        return;
-      }
+      try {
+        let statusMap: Record<string, ProblemStatus> = {};
 
-      // Fetch user status
-      const { data: { user } } = await supabase.auth.getUser();
-      let statusMap: Record<string, ProblemStatus> = {};
-      
-      if (user) {
-        const { data: statusData, error: statusError } = await supabase
-          .from("user_problem_status")
-          .select("*")
-          .eq("user_id", user.id);
-          
-        if (!statusError && statusData) {
-          statusData.forEach(st => {
-            statusMap[st.problem_id] = st.status as ProblemStatus;
-          });
+        // 1. Check local storage for instantaneous client sync
+        if (typeof window !== "undefined") {
+          try {
+            const localSolved = JSON.parse(localStorage.getItem("staqor_solved_problems") || "[]");
+            if (Array.isArray(localSolved)) {
+              localSolved.forEach((item: any) => {
+                const str = String(item).toLowerCase();
+                const clean = str.replace(/^\d+-/, "");
+                statusMap[str] = "solved";
+                statusMap[clean] = "solved";
+              });
+            }
+          } catch {}
         }
+
+        // 2. Fetch user status from Supabase
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user) {
+          const { data: statusData } = await supabase
+            .from("submissions")
+            .select("problem_id, challenge_id, status, passed, score")
+            .eq("user_id", user.id);
+            
+          if (statusData) {
+            statusData.forEach((st: any) => {
+              const isSolved =
+                st.status === "solved" ||
+                st.passed === true ||
+                (typeof st.score === "number" && st.score >= 80);
+
+              const pids = [st.problem_id, st.challenge_id].filter(Boolean);
+
+              pids.forEach((pid) => {
+                const pidStr = String(pid).toLowerCase();
+                const pidNum = parseInt(pidStr, 10);
+                const cleanSlug = pidStr.replace(/^\d+-/, "");
+
+                if (isSolved) {
+                  statusMap[pidStr] = "solved";
+                  if (!isNaN(pidNum)) statusMap[String(pidNum)] = "solved";
+                  statusMap[cleanSlug] = "solved";
+                } else {
+                  if (statusMap[pidStr] !== "solved") statusMap[pidStr] = "attempted";
+                  if (!isNaN(pidNum) && statusMap[String(pidNum)] !== "solved") statusMap[String(pidNum)] = "attempted";
+                  if (statusMap[cleanSlug] !== "solved") statusMap[cleanSlug] = "attempted";
+                }
+              });
+            });
+          }
+        }
+
+        // 3. Overlay solved statuses on MOCK_PROBLEMS
+        const withStatus = MOCK_PROBLEMS.map((p) => {
+          const cleanSlug = p.slug.toLowerCase().replace(/^\d+-/, "");
+          const status =
+            statusMap[String(p.id)] ||
+            statusMap[p.slug.toLowerCase()] ||
+            statusMap[cleanSlug] ||
+            "unsolved";
+
+          return {
+            ...p,
+            status: status as ProblemStatus,
+          };
+        });
+        setProblems(withStatus);
+      } catch (err) {
+        setProblems(MOCK_PROBLEMS);
       }
-
-      const formatted: Problem[] = probData.map(p => ({
-        id: p.id,
-        title: p.title,
-        slug: p.slug,
-        acceptance: p.acceptance_rate ? `${p.acceptance_rate}%` : "50%",
-        difficulty: p.difficulty as Difficulty,
-        status: statusMap[p.id] || "unsolved",
-        favorite: false,
-        category: (p.category as Category) || "All Topics",
-        tags: p.topic ? [p.topic] : [],
-        companies: [],
-      }));
-
-      setProblems(formatted);
     }
     fetchProblems();
-  }, []);
+  }, [supabase]);
   const [selectedCategory, setSelectedCategory] = useState<string>("All Topics");
   const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState<string>("all");

@@ -1,0 +1,142 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #0b0f19;
+    color: #f8fafc;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    padding: 3rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    max-width: 550px;
+    width: 100%;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.badge {
+    display: inline-block;
+    background: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.header h1 {
+    font-size: 2.2rem;
+    margin-bottom: 0.4rem;
+}
+
+.header p {
+    color: #94a3b8;
+}
+
+.slider-card {
+    background: #131b2e;
+    border: 1px solid #1e293b;
+    border-radius: 18px;
+    padding: 2.5rem 2rem 2rem;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+}
+
+.slider-card h2 {
+    font-size: 1.3rem;
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+.range-wrapper {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.floating-tooltip {
+    position: absolute;
+    top: -45px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #4f46e5;
+    color: white;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    pointer-events: none;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4);
+}
+
+.floating-tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px 5px 0;
+    border-style: solid;
+    border-color: #4f46e5 transparent transparent;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 99px;
+    background: #1e293b;
+    outline: none;
+    cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 3px solid #4f46e5;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.range-limits {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 2rem;
+}
+
+.calculated-output {
+    background: #0b0f19;
+    border: 1px solid #1e293b;
+    border-radius: 10px;
+    padding: 1.2rem;
+}
+
+.calc-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.calc-row span { color: #94a3b8; }
+.calc-row strong { font-size: 1.3rem; color: #38bdf8; font-family: 'Fira Code', monospace; }

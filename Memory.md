@@ -16,13 +16,87 @@
 
 ---
 
-## Log
+### [2026-09-01] — Landing Page: How Staqor Works Tree Diagram, Pricing Removal & Rich Card Animations
+- **What was built:**
+  - **Tree Diagram How It Works ([`components/landing/HowItWorks.tsx`](file:///D:/Staqor/components/landing/HowItWorks.tsx)):**
+    - Scroll-revealed SVG connecting line diagram using Framer Motion `useScroll()` & `useTransform()`.
+    - Center top "DEVELOPER" node branching downward into 3 connected steps (*01. Choose Challenge*, *02. Code in Monaco*, *03. AI Score & Proof*).
+    - Interactive step highlighting on hover (`activeStep` 0, 1, 2) which adds glowing drop-shadows to the corresponding SVG branches and cards.
+    - 3 rich step cards with top radial ambient lights, watermark numbers, icon badges, and arrow transitions.
+  - **Removed Pricing Section:**
+    - Completely deleted the Pricing section and cleaned up navbar links.
+  - **Removed Proof of Impact / Testimonials:**
+    - Cleaned up testimonials section and unused icon imports.
+  - **Rich Card Animations Across All Sections:**
+    - Added 3D tactile hover lift (`hover:-translate-y-2 hover:scale-[1.02]`), glowing border pulses, mouse-following spotlights, and animated icons to Track Cards, How It Works Cards, and Why Staqor Cards.
+- **Known gaps / notes:**
+  - Production build compiled successfully (`next build`).
+- **Next recommended action:** Ready for review and deployment.
 
-### [Not Started] — Project Initialized
-- Docs created: PRD.md, Architecture.md, Rules.md, Phases.md, Design.md, Memory.md.
-- Current phase: **Phase 0 — Project Scaffold** (see Phases.md).
-- No code written yet.
-- Next action: scaffold Next.js 14 app, connect MongoDB, verify health-check route.
+### [2026-09-01] — Phase 2 & Groq: Locked Code Regions & Structural Correctness Pre-Filter Gate
+- **What was built:**
+  - **Locked/Read-Only Code Regions (`lib/supabase/db.ts`, `components/editor/CodeEditor.tsx`, `components/editor/WorkspaceContainer.tsx`):**
+    - Extended `IChallengeCode` and `IChallenge` with `locked_files: ("html" | "css" | "js")[]`.
+    - Integrated read-only enforcement in Monaco Editor (`readOnly: true`), showing lock badges on file tabs, and "Read-Only Scaffolding" indicator for scoped challenges (e.g. JS/DOM challenges where HTML/CSS is locked scaffolding).
+  - **Structural Correctness Pre-Filter Gate (`lib/groq/prefilter.ts`, `app/api/evaluate/route.ts`):**
+    - Pre-execution validation checking JavaScript syntax errors, malformed HTML, empty submissions, and track-specific code presence before LLM invocation.
+    - If pre-filter fails: immediately returns clear syntax/runtime feedback and marks the attempt without spending a Groq LLM call/quota.
+    - If pre-filter passes: proceeds to full Groq AI rubric evaluation.
+  - **UI Diagnostic Banner (`components/editor/WorkspaceContainer.tsx`):**
+    - Renders an alert failure card in the AI Feedback tab explaining syntax/logic errors when the gate fails.
+- **Known gaps / notes:**
+  - Zero token expenditure on invalid syntax/empty attempts verified.
+- **Next recommended action:** Proceed with expanding challenge catalog definitions with custom track locks.
+
+### [2026-09-01] — Phase 2 & Workspace: Stacked IDE/Console & 4-Tab Problem/Live Preview Split
+- **What was built:**
+  - **Left Panel (40%):** Added 4th tab "Live Preview" alongside "Problem Spec", "Rubric Criteria", and "AI Feedback". Houses the sandboxed iframe runtime (`sandbox="allow-scripts allow-modals"`), status badges ("LIVE SANDBOX" / "Isolated Runtime"), viewport device toggles (Desktop/Tablet/Mobile), and "Re-run" action.
+  - **Right Panel (60%):** Expanded Monaco Code Editor (`index.html`, `style.css`, `script.js`) to full panel width. Stacked the full-width Sandbox Console vertically beneath it (LeetCode-style Code / Test Result split) with draggable resize divider (`#26262E`), collapse toggle, timestamped logs, and log counter badge.
+  - **Styling:** Adheres strictly to `Design.md` App Shell Mode (near-black `#0A0A0F` canvas, `#111117` panels, `#26262E` separators, mint `#ABDAC8` active tab underlines and buttons, zero GSAP).
+- **Known gaps / notes:**
+  - Code hot-reloading and evaluation synchronization verified across all 4 left panel tabs and right console drawer.
+- **Next recommended action:** Proceed with challenge test-case expansions and rubric tuning.
+
+### [2026-09-01] — Phase 3 & Auth: LeetCode-Style Challenges Catalog + OAuth Redirect Bugfix
+- **What was built:**
+  - **Auth OAuth Redirect Bugfix (`lib/auth/url.ts`, `app/auth/callback/route.ts`, `lib/supabase/middleware.ts`, `app/(auth)/login/page.tsx`, `app/(auth)/signup/page.tsx`):**
+    - Added `getAppUrl()` dynamically reading `NEXT_PUBLIC_APP_URL` or `VERCEL_URL` (avoiding hardcoded localhost).
+    - Server-side OAuth code exchange in `app/auth/callback/route.ts` stripping `?code=` query params and redirecting cleanly to `/challenges`.
+    - Catching stray `?code=` query parameters in middleware and forwarding them directly to `/auth/callback`.
+  - **LeetCode-Style Challenges Catalog Layout (`app/(app)/challenges/page.tsx`, `components/challenges/ChallengesCatalogView.tsx`, `lib/supabase/db.ts`):**
+    - **Left Sidebar:** Categories/Tracks filter (All, HTML/CSS, JS/DOM, React, Vue, Node.js/API, Bug-Fix, Full-Stack) with dynamic counts and `#0D0D12` background.
+    - **Top Filter Bar:** Difficulty chips (Easy `#4ADE80`, Medium `#FBBF24`, Hard `#F87171`), Status chips (Todo, Solved, Locked), debounced search input, and active filter counter.
+    - **Main Table List:** Dense table with Solved checkmarks (`#4ADE80`), Locked badges (`#F87171` for 5 runs & 3 submits), attempt quota bars, and 20 items/page pagination.
+    - **Right Sidebar:** Solved count SVG Progress Ring (`#ABDAC8`), Difficulty breakdown bars, Daily Streak widget (`users.stats.streak_days`), Badges Earned preview strip, and Free Quota enforcement info.
+    - Real Supabase database queries for challenges and user's `attempt_counts` / `submissions` with comprehensive fallback catalog.
+- **Known gaps / notes:**
+  - Additional challenge content in content/challenges will be loaded as Phase 3 matures.
+- **Next recommended action:** Proceed with Phase 2 challenge workspace polish and evaluation refinements.
+
+### [Phase 1 Complete] — Supabase Authentication & Session Navigation
+- **What was built:**
+  - **Signup Page (`app/(auth)/signup/page.tsx`):** Supabase `signUp` with email/password + metadata username and GitHub / Google OAuth options with email confirmation messaging.
+  - **Login Page (`app/(auth)/login/page.tsx`):** Supabase `signInWithPassword` + GitHub / Google OAuth with redirect URL support and suspense boundary.
+  - **User Navigation (`components/navigation/UserNav.tsx`):** Dynamic avatar header component with live auth state listener, profile dropdown menu (Dashboard, Challenges, Public Profile), and one-click Sign Out.
+  - **Middleware & Route Guard:** Session refresh on all requests and strict protection for `/dashboard` and `/admin` routes.
+  - **Deployed to Vercel Production:** Live at `https://staqor.vercel.app`.
+- **Current phase:** Phase 1 Complete and Verified.
+- **Next recommended action:** Proceed to **Phase 2 — Single Challenge, End-to-End** or challenge expansion.
+
+### [Phase 0 Complete] — Project Scaffold, Supabase DB & Sandbox Compiler
+- **What was built:**
+  - **Removed MongoDB Entirely:** Replaced with Supabase PostgreSQL schema (`supabase/schema.sql`) and database query helpers (`lib/supabase/db.ts`).
+  - **Side-by-Side Live Sandbox Compiler:**
+    - Monaco Editor with multi-tab `index.html`, `style.css`, `script.js`, and Staqor custom dark theme.
+    - Sandboxed iframe runtime (`sandbox="allow-scripts allow-modals"`) with real-time compilation, responsive viewport controls (Desktop, Tablet, Mobile), and hot-reload.
+    - Live Interactive Developer Console capturing `console.log`, `warn`, `error`, and runtime exceptions.
+    - AI Rubric evaluator integration with score breakdown.
+  - **Deployed Live to Vercel (Without Repo):**
+    - Production Live URL: **`https://staqor.vercel.app`**
+    - Direct Deployment: `https://staqor-jocs2mzts-mayank-devs-projects-409df602.vercel.app`
+    - Inspected and verified health check (`/api/health`) and live challenge workspace (`/challenges/interactive-pricing-card`).
+- **Current phase:** Scaffold, Sandbox compiler engine, and Vercel production deployment verified.
+- **Next recommended action:** Proceed with Supabase Auth form integration & profile syncing.
 
 <!--
 Template for future entries:

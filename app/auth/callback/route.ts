@@ -1,20 +1,24 @@
-import { NextResponse } from 'next/server'
-import { createClient } from '@/utils/supabase/server'
+import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { getAppUrl } from "@/lib/auth/url";
 
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url)
-  const code = searchParams.get('code')
-  // if "next" is in param, use it as the redirect URL
-  const next = searchParams.get('next') ?? '/problems'
+  const requestUrl = new URL(request.url);
+  const code = requestUrl.searchParams.get("code");
+  const next = requestUrl.searchParams.get("next") ?? "/problems";
+  const baseUrl = getAppUrl();
+  const cleanNext = next.startsWith("/") ? next : `/${next}`;
 
   if (code) {
-    const supabase = createClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    const supabase = await createClient();
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      return NextResponse.redirect(`${origin}${next}`)
+      // Exchange succeeded, session cookie is set via createClient
+      // Redirect cleanly to post-login destination stripping ?code=
+      return NextResponse.redirect(new URL(cleanNext, baseUrl));
     }
   }
 
-  // return the user to an error page with some instructions
-  return NextResponse.redirect(`${origin}/login?error=auth-callback-failed`)
+  // If code exchange failed or missing, redirect to login with error
+  return NextResponse.redirect(new URL("/login?error=auth-code-error", baseUrl));
 }

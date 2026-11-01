@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>35 - FAQ Searchable Section</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="section-header">
+            <span class="badge">Question 35 • Level 3: Sections</span>
+            <h2>Frequently Asked Questions</h2>
+            <p>Have questions? Search our real-time knowledgebase below.</p>
+            
+            <div class="search-wrapper">
+                <input type="text" id="faqSearch" placeholder="Type a keyword (e.g. pricing, latency, security)...">
+            </div>
+        </header>
+
+        <div class="faq-list" id="faqList">
+            <div class="faq-card">
+                <h3>What is NovaCloud's latency SLA?</h3>
+                <p>We guarantee P99 latency below 20ms across our top 50 metropolitan edge clusters.</p>
+            </div>
+            <div class="faq-card">
+                <h3>How does billing and pricing scaling work?</h3>
+                <p>You are billed based on monthly active workspace tiers. Extra bandwidth is charged at $0.05 per GB.</p>
+            </div>
+            <div class="faq-card">
+                <h3>What security compliances are maintained?</h3>
+                <p>NovaCloud is SOC2 Type II, ISO 27001, and HIPAA compliant with automated continuous auditing.</p>
+            </div>
+            <div class="faq-card">
+                <h3>Can I migrate from AWS or Google Cloud?</h3>
+                <p>Yes, we provide 1-click terraform and Docker container import scripts with zero downtime migration support.</p>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

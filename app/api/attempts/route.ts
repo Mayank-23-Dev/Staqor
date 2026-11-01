@@ -1,27 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectToDatabase } from "@/lib/db";
-import { AttemptCount } from "@/models/AttemptCount";
+import { getAttemptCount } from "@/lib/supabase/db";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   try {
-    await connectToDatabase();
     const { searchParams } = new URL(req.url);
-    const userId = searchParams.get("userId");
-    const challengeId = searchParams.get("challengeId");
+    const userId = searchParams.get("userId") || "anonymous-dev";
+    const challengeId = searchParams.get("challengeId") || "interactive-pricing-card";
 
-    if (!userId || !challengeId) {
-      return NextResponse.json(
-        { error: "userId and challengeId are required" },
-        { status: 400 }
-      );
-    }
-
-    const attempt = await AttemptCount.findOne({
-      user_id: userId,
-      challenge_id: challengeId,
-    });
+    const attempt = await getAttemptCount(userId, challengeId);
 
     return NextResponse.json({
       run_count: attempt?.run_count || 0,
